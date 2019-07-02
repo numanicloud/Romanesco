@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>../bin/Plugins/Builtin/</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>../bin/Plugins/Builtin/</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Romanesco.Interface\Romanesco.Interface.csproj" />
+    <ProjectReference Include="..\Romanesco.Model\Romanesco.Model.csproj" />
+    <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.ViewModel.csproj" />
+    <ProjectReference Include="..\Romanesco.View\Romanesco.View.csproj" />
+  </ItemGroup>
+
+</Project>

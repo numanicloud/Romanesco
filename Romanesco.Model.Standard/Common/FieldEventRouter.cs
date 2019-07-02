@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Romanesco.Model.States {
-    public interface IFieldState {
+namespace Romanesco.Model.Common {
+    public class FieldEventRouter {
 
     }
 }

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Reactive.Bindings;
+using Romanesco.Interface;
+using Romanesco.Model.States;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Reactive.Bindings;
-using Romanesco.Model.States;
 
 namespace Romanesco.ViewModel {
-    public class IntViewModel : Interface.IStateViewModel {
-        private readonly IntState state;
+    public class NoneViewModel : IStateViewModel {
+        private readonly NoneState state;
 
         public ReactiveProperty<string> Title { get; }
 
@@ -14,7 +15,7 @@ namespace Romanesco.ViewModel {
 
         public ReactiveProperty<string> FormattedString { get; }
 
-        public IntViewModel(IntState state) {
+        public NoneViewModel(NoneState state) {
             this.state = state;
             Title = state.Title;
             Content = state.Content;
