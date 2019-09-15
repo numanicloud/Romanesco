@@ -11,8 +11,7 @@ namespace Romanesco.Model.Factories
     public class PrimitiveStateFactory : IStateFactory
     {
         public IFieldState InterpretAsState(ValueSettability settability,
-            InterpretProperty interpretProperty,
-            InterpretField interpretField)
+            StateInterpretFunc interpret)
         {
             if (settability.Type == typeof(int)) return new IntState(settability);
             if (settability.Type == typeof(float)) return new FloatState(settability);

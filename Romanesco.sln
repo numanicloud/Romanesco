@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Annotations", "Ro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuiltinPlugin", "BuiltinPlugin", "{F5D542FD-12EF-4403-90D7-341A515BE1C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Romanesco.BuiltinPlugin.Test", "Romanesco.BuiltinPlugin.Test\Romanesco.BuiltinPlugin.Test.csproj", "{D71384DB-B0E8-4880-838C-8D08B1EA0B7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{3B8A333A-C731-4314-9A42-A394B331C8A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B8A333A-C731-4314-9A42-A394B331C8A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B8A333A-C731-4314-9A42-A394B331C8A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D71384DB-B0E8-4880-838C-8D08B1EA0B7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D71384DB-B0E8-4880-838C-8D08B1EA0B7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D71384DB-B0E8-4880-838C-8D08B1EA0B7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D71384DB-B0E8-4880-838C-8D08B1EA0B7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{D925AEC5-428C-4269-AADD-3CA18C685C86} = {F5D542FD-12EF-4403-90D7-341A515BE1C9}
 		{16FBCB0F-5B91-47A1-AEC3-C04E9D5C87D1} = {F5D542FD-12EF-4403-90D7-341A515BE1C9}
 		{7BACE71E-2D77-43D1-A31E-152F99383ED1} = {F5D542FD-12EF-4403-90D7-341A515BE1C9}
+		{D71384DB-B0E8-4880-838C-8D08B1EA0B7E} = {F5D542FD-12EF-4403-90D7-341A515BE1C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {87D5578B-44E4-4B3D-8D5F-9B5D1879A11D}

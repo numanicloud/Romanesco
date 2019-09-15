@@ -12,9 +12,7 @@ namespace Romanesco.Model.Factories
 {
     public class ClassStateFactory : IStateFactory
     {
-        public IFieldState InterpretAsState(ValueSettability settability,
-            InterpretProperty interpretProperty,
-            InterpretField interpretField)
+        public IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret)
         {
             PwMemberAttribute GetMemberAttributeOrDefault(MemberInfo member)
             {
@@ -30,11 +28,11 @@ namespace Romanesco.Model.Factories
             var properties = from p in type.GetProperties()
                              let attr = GetMemberAttributeOrDefault(p)
                              where attr != null
-                             select (state: interpretProperty(p), attr);
+                             select (state: interpret(new ValueSettability(p)), attr);
             var fields = from f in type.GetFields()
                          let attr = GetMemberAttributeOrDefault(f)
                          where attr != null
-                         select (state: interpretField(f), attr);
+                         select (state: interpret(new ValueSettability(f)), attr);
             var members = properties.Concat(fields);
 
             foreach (var m in members)

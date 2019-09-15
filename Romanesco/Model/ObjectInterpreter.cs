@@ -31,7 +31,7 @@ namespace Romanesco.Model
         {
             foreach (var factory in Factories)
             {
-                var result = factory.InterpretAsState(settability, InterpretAsState, InterpretAsState);
+                var result = factory.InterpretAsState(settability, InterpretAsState);
                 if (result != null)
                 {
                     return result;
