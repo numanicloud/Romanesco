@@ -12,6 +12,6 @@
     </UserControl.Resources>
 
     <ContentControl Template="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type style:EditorStyles}, ResourceId=TitledField}}">
-        <TextBox Text="{Binding Content.Value}" Width="32" Padding="2"/>
+        <TextBox Text="{Binding PrimitiveContent.Value}" Width="32" Padding="2" HorizontalAlignment="Left"/>
     </ContentControl>
 </UserControl>

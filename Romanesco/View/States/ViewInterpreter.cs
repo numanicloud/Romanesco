@@ -1,4 +1,6 @@
 ﻿using Romanesco.Common;
+using Romanesco.Common.Utility;
+using Romanesco.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,14 +14,14 @@ namespace Romanesco.View {
             this.factories = factories;
         }
 
-        public object InterpretAsView(IStateViewModel viewModel) {
+        public StateViewContext InterpretAsView(IStateViewModel viewModel) {
             foreach (var factory in factories) {
                 var result = factory.InterpretAsView(viewModel, InterpretAsView);
                 if (result != null) {
                     return result;
                 }
             }
-            return new NoneView();
+            return new StateViewContext(new NoneView(), new NoneView(), new NoneViewModel(new Model.States.NoneState()));
         }
     }
 }

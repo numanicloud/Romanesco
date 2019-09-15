@@ -3,6 +3,8 @@ using Romanesco.Common;
 using Romanesco.Model.States;
 using System;
 using System.Collections.Generic;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 
 namespace Romanesco.ViewModel {
@@ -15,11 +17,14 @@ namespace Romanesco.ViewModel {
 
         public ReactiveProperty<string> FormattedString { get; }
 
+        public IObservable<Unit> ShowDetail { get; }
+
         public NoneViewModel(NoneState state) {
             this.state = state;
             Title = state.Title;
             Content = state.Content;
             FormattedString = state.FormattedString;
+            ShowDetail = Observable.Never<Unit>();
         }
     }
 }

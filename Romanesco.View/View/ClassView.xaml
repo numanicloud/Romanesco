@@ -12,14 +12,20 @@
     </UserControl.Resources>
     
     <Grid>
-        <ScrollViewer>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" MinWidth="120">
             <ItemsControl ItemsSource="{Binding ChildViews}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <UserControl Content="{Binding BlockControl}"/>
+                        <UserControl Content="{Binding InlineControl}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+        <UserControl Content="{Binding ClosedUpView.Value}" Grid.Column="1"/>
     </Grid>
 </UserControl>

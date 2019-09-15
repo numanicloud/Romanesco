@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 using Reactive.Bindings;
 
@@ -17,6 +19,8 @@ namespace Romanesco.Common.Utility
 
         public ReactiveProperty<T> PrimitiveContent { get; }
 
+        public IObservable<Unit> ShowDetail { get; }
+
         public PrimitiveTypeViewModel(IFieldState state, ReactiveProperty<T> primitiveContent)
         {
             State = state;
@@ -24,6 +28,7 @@ namespace Romanesco.Common.Utility
             Title = state.Title;
             Content = state.Content;
             FormattedString = state.FormattedString;
+            ShowDetail = Observable.Never<Unit>();
         }
     }
 }

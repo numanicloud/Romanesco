@@ -11,7 +11,7 @@ namespace Romanesco.View.Factories
 {
     public class PrimitiveViewFactory : IViewFactory
     {
-        public object InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively)
+        public StateViewContext InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively)
         {
             switch (viewModel)
             {
@@ -27,16 +27,16 @@ namespace Romanesco.View.Factories
             }
         }
 
-        private object TextView(IStateViewModel viewModel)
+        private StateViewContext TextView(IStateViewModel viewModel)
         {
             var control = new TextView() { DataContext = viewModel };
-            return new StateViewContext(control, control);
+            return new StateViewContext(control, control, viewModel);
         }
 
-        private object CheckView(IStateViewModel viewModel)
+        private StateViewContext CheckView(IStateViewModel viewModel)
         {
             var control = new CheckboxView { DataContext = viewModel };
-            return new StateViewContext(control, control);
+            return new StateViewContext(control, control, viewModel);
         }
     }
 }

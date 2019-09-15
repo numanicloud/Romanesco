@@ -18,6 +18,21 @@ using System.Windows.Shapes;
 using Romanesco.Annotations;
 
 namespace Romanesco {
+    public class Fuga
+    {
+        [PwMember]
+        public float X { get; set; }
+        [PwMember]
+        public float Y { get; set; }
+        [PwMember]
+        public float Z { get; set; }
+
+        public override string? ToString()
+        {
+            return $"Fuga:({X}, {Y}, {Z})";
+        }
+    }
+
     public class Hoge
     {
         [PwMember]
@@ -37,6 +52,13 @@ namespace Romanesco {
         [PwMember]
         public double Double;
         public int Hidden;
+        [PwMember]
+        public Fuga Fuga { get; set; }
+
+        public override string? ToString()
+        {
+            return $"Integer = {Integer}";
+        }
     }
 
     public class Project
