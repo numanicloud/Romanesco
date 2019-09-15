@@ -1,5 +1,5 @@
 ﻿using Romanesco.Extensibility;
-using Romanesco.Interface;
+using Romanesco.Common;
 using Romanesco.Model;
 using System;
 using System.Collections.Generic;
@@ -15,8 +15,35 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Romanesco.Annotations;
 
 namespace Romanesco {
+    public class Hoge
+    {
+        [PwMember]
+        public int Integer { get; set; }
+        [PwMember]
+        public bool Boolean { get; set; }
+        [PwMember]
+        public string String { get; set; }
+        [PwMember]
+        public float Float { get; set; }
+        [PwMember]
+        public byte Byte;
+        [PwMember]
+        public short Short;
+        [PwMember]
+        public long Long;
+        [PwMember]
+        public double Double;
+        public int Hidden;
+    }
+
+    public class Project
+    {
+        public Hoge Hoge { get; set; }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -30,7 +57,8 @@ namespace Romanesco {
             var viewModelInterpreter = new ViewModel.ViewModelInterpreter(extensions.StateViewModelFactories);
             var viewInterpreter = new View.ViewInterpreter(extensions.ViewFactories);
 
-            var state = stateInterpreter.InterpretAsState(20, "Root");
+            var hogeProperty = typeof(Project).GetProperty("Hoge");
+            var state = stateInterpreter.InterpretAsState(hogeProperty);
             var viewModel = viewModelInterpreter.InterpretAsViewModel(state);
             var view = viewInterpreter.InterpretAsView(viewModel);
 

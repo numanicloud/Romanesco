@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:Romanesco"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="pack://application:,,,/Romanesco.Styles;component/View/EditorStyles.xaml"/>
     </Application.Resources>
 </Application>

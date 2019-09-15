@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:Romanesco"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <UserControl Content="{Binding Path=Root}"/>
-    </Grid>
+    
+    <ScrollViewer>
+        <StackPanel Orientation="Vertical" Grid.IsSharedSizeScope="True">
+            <UserControl Content="{Binding Path=Root.BlockControl}"/>
+        </StackPanel>
+    </ScrollViewer>
 </Window>

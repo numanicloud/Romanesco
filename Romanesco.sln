@@ -11,11 +11,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.ViewModel", "Roma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.View", "Romanesco.View\Romanesco.View.csproj", "{16FBCB0F-5B91-47A1-AEC3-C04E9D5C87D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Interface", "Romanesco.Interface\Romanesco.Interface.csproj", "{EEAA1C9E-3526-4ECA-8C4F-5D25772A9085}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco", "Romanesco\Romanesco.csproj", "{609FEC82-18E6-4A12-8632-1D3FE785F1D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Romanesco.BuiltinPlugin", "Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj", "{7BACE71E-2D77-43D1-A31E-152F99383ED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin", "Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj", "{7BACE71E-2D77-43D1-A31E-152F99383ED1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Styles", "Romanesco.Styles\Romanesco.Styles.csproj", "{5DB20132-C90C-407E-B36C-121F745BE896}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Common", "Romanesco.Common\Romanesco.Common.csproj", "{EE2E93EB-B159-4F7A-8CB5-E8CE5961E0AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Annotations", "Romanesco.Annotations\Romanesco.Annotations.csproj", "{3B8A333A-C731-4314-9A42-A394B331C8A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuiltinPlugin", "BuiltinPlugin", "{F5D542FD-12EF-4403-90D7-341A515BE1C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +45,6 @@ Global
 		{16FBCB0F-5B91-47A1-AEC3-C04E9D5C87D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16FBCB0F-5B91-47A1-AEC3-C04E9D5C87D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16FBCB0F-5B91-47A1-AEC3-C04E9D5C87D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EEAA1C9E-3526-4ECA-8C4F-5D25772A9085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EEAA1C9E-3526-4ECA-8C4F-5D25772A9085}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EEAA1C9E-3526-4ECA-8C4F-5D25772A9085}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EEAA1C9E-3526-4ECA-8C4F-5D25772A9085}.Release|Any CPU.Build.0 = Release|Any CPU
 		{609FEC82-18E6-4A12-8632-1D3FE785F1D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{609FEC82-18E6-4A12-8632-1D3FE785F1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{609FEC82-18E6-4A12-8632-1D3FE785F1D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,9 +53,27 @@ Global
 		{7BACE71E-2D77-43D1-A31E-152F99383ED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BACE71E-2D77-43D1-A31E-152F99383ED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BACE71E-2D77-43D1-A31E-152F99383ED1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB20132-C90C-407E-B36C-121F745BE896}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DB20132-C90C-407E-B36C-121F745BE896}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DB20132-C90C-407E-B36C-121F745BE896}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DB20132-C90C-407E-B36C-121F745BE896}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE2E93EB-B159-4F7A-8CB5-E8CE5961E0AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE2E93EB-B159-4F7A-8CB5-E8CE5961E0AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE2E93EB-B159-4F7A-8CB5-E8CE5961E0AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE2E93EB-B159-4F7A-8CB5-E8CE5961E0AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B8A333A-C731-4314-9A42-A394B331C8A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B8A333A-C731-4314-9A42-A394B331C8A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B8A333A-C731-4314-9A42-A394B331C8A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B8A333A-C731-4314-9A42-A394B331C8A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B041626D-DDB6-439E-8477-4992BC88B264} = {F5D542FD-12EF-4403-90D7-341A515BE1C9}
+		{D925AEC5-428C-4269-AADD-3CA18C685C86} = {F5D542FD-12EF-4403-90D7-341A515BE1C9}
+		{16FBCB0F-5B91-47A1-AEC3-C04E9D5C87D1} = {F5D542FD-12EF-4403-90D7-341A515BE1C9}
+		{7BACE71E-2D77-43D1-A31E-152F99383ED1} = {F5D542FD-12EF-4403-90D7-341A515BE1C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {87D5578B-44E4-4B3D-8D5F-9B5D1879A11D}

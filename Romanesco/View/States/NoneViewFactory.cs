@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Controls;
-using Romanesco.Interface;
+using Romanesco.Common;
 using Romanesco.ViewModel;
 
 namespace Romanesco.View.Factories {
     public class NoneViewFactory : IViewFactory {
-        public UserControl InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively) {
+        public object InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively) {
             if (viewModel is NoneViewModel vm) {
-                return new NoneView() { DataContext = vm };
+                var control = new NoneView() { DataContext = vm };
+                return new Common.Utility.StateViewContext(control, control);
             }
             return null;
         }

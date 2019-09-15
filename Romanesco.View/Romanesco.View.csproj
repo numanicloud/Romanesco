@@ -20,16 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Romanesco.Model\Romanesco.Model.csproj" />
+    <ProjectReference Include="..\Romanesco.Styles\Romanesco.Styles.csproj" />
     <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.ViewModel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="View\IntView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="View\NoneView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Linq;
-using Romanesco.Interface;
+using Romanesco.Common;
 
 namespace Romanesco.Extensibility {
     class PluginLoader {

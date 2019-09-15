@@ -1,4 +1,4 @@
-﻿using Romanesco.Interface;
+﻿using Romanesco.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +12,7 @@ namespace Romanesco.View {
             this.factories = factories;
         }
 
-        public UserControl InterpretAsView(IStateViewModel viewModel) {
+        public object InterpretAsView(IStateViewModel viewModel) {
             foreach (var factory in factories) {
                 var result = factory.InterpretAsView(viewModel, InterpretAsView);
                 if (result != null) {

@@ -17,13 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Romanesco.Interface\Romanesco.Interface.csproj" />
+    <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj" />
+    <ProjectReference Include="..\Romanesco.Common\Romanesco.Common.csproj" />
+    <ProjectReference Include="..\Romanesco.Styles\Romanesco.Styles.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="View\States\NoneView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Update="View\States\NoneView.xaml.cs" />
   </ItemGroup>
 
 </Project>

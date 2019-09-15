@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Romanesco.Interface\Romanesco.Interface.csproj" />
+    <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj" />
+    <ProjectReference Include="..\Romanesco.Common\Romanesco.Common.csproj" />
   </ItemGroup>
 
 </Project>
