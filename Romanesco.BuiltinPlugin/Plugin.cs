@@ -8,16 +8,19 @@ namespace Romanesco.BuiltinPlugin {
         public IEnumerable<IStateFactory> GetStateFactories() {
             yield return new Model.Factories.PrimitiveStateFactory();
             yield return new Model.Factories.ClassStateFactory();
+            yield return new Model.Factories.ListStateFactory();
         }
 
         public IEnumerable<IStateViewModelFactory> GetStateViewModelFactories() {
             yield return new ViewModel.Factories.PrimitiveViewModelFactory();
             yield return new ViewModel.Factories.ClassViewModelFactory();
+            yield return new ViewModel.Factories.ListViewModelFactory();
         }
 
         public IEnumerable<IViewFactory> GetViewFactories() {
             yield return new View.Factories.PrimitiveViewFactory();
             yield return new View.Factories.ClassViewFactory();
+            yield return new View.Factories.ArrayViewFactory();
         }
     }
 }

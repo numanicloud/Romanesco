@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Romanesco.View.View"
+                    xmlns:style="clr-namespace:Romanesco.Styles.View;assembly=Romanesco.Styles">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Romanesco.Styles;component/View/EditorStyles.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <ControlTemplate x:Key="TitledField">
+        <ContentControl Template="{DynamicResource {ComponentResourceKey ResourceId=TitledField, TypeInTargetAssembly={x:Type style:EditorStyles}}}"
+                        Focusable="False">
+            <ContentPresenter Focusable="False"/>
+        </ContentControl>
+    </ControlTemplate>
+    
+</ResourceDictionary>

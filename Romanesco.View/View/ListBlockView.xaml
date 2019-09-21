@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Romanesco.View.View.ClassView"
+﻿<UserControl x:Class="Romanesco.View.View.ListBlockView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,19 +13,16 @@
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition MinWidth="150" Width="auto"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Column="0" MinWidth="120">
-            <ItemsControl ItemsSource="{Binding ChildViews}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <UserControl Content="{Binding InlineControl}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
-        <UserControl Content="{Binding ClosedUpView.Value}" Grid.Column="1"/>
+        <ListBox ItemsSource="{Binding Elements}"
+                 SelectedIndex="{Binding SelectedIndex.Value}"
+                 IsSynchronizedWithCurrentItem="True">
+            <TextBlock Text="{Binding ViewModel.FormattedString.Value}"/>
+        </ListBox>
+
+        <UserControl Grid.Column="1" Content="{Binding SelectedControl.Value}"/>
     </Grid>
 </UserControl>

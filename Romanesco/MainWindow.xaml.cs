@@ -35,25 +35,29 @@ namespace Romanesco {
 
     public class Hoge
     {
-        [PwMember]
+        [PwMember(order: 0)]
         public int Integer { get; set; }
-        [PwMember]
+        [PwMember(order: 1)]
         public bool Boolean { get; set; }
-        [PwMember]
+        [PwMember(order: 2)]
         public string String { get; set; }
-        [PwMember]
+        [PwMember(order: 3)]
         public float Float { get; set; }
-        [PwMember]
+        [PwMember(order: 4)]
         public byte Byte;
-        [PwMember]
+        [PwMember(order: 5)]
         public short Short;
-        [PwMember]
+        [PwMember(order: 6)]
         public long Long;
-        [PwMember]
+        [PwMember(order: 7)]
         public double Double;
         public int Hidden;
-        [PwMember]
+        [PwMember(order: 8)]
         public Fuga Fuga { get; set; }
+        [PwMember(order: 9)]
+        public List<int> IntArray { get; set; }
+        [PwMember(order: 10)]
+        public List<Fuga> FugaArray { get; set; }
 
         public override string? ToString()
         {

@@ -12,10 +12,10 @@ using Romanesco.Common.Utility;
 
 namespace Romanesco.Model.States
 {
-    public class ArrayState : IFieldState
+    public class ListState : IFieldState
     {
         private readonly Subject<Unit> onContentsChanged = new Subject<Unit>();
-        private readonly ReactiveCollection<IFieldState> elementsMutable;
+        private readonly ReactiveCollection<(IFieldState state, IDisposable disposable)> elementsMutable;
         private readonly Type elementType;
         private readonly StateInterpretFunc interpret;
 
@@ -29,21 +29,21 @@ namespace Romanesco.Model.States
 
         public ValueSettability Settability { get; }
 
-        public ReactiveProperty<Array> ArrayContent { get; } = new ReactiveProperty<Array>();
+        public ReactiveProperty<IList> ArrayContent { get; } = new ReactiveProperty<IList>();
 
         public ReadOnlyReactiveCollection<IFieldState> Elements { get; }
 
-        public ArrayState(ValueSettability settability, StateInterpretFunc interpret)
+        public ListState(ValueSettability settability, StateInterpretFunc interpret)
         {
-            elementsMutable = new ReactiveCollection<IFieldState>();
-            Elements = elementsMutable.ToReadOnlyReactiveCollection();
+            elementsMutable = new ReactiveCollection<(IFieldState state, IDisposable disposable)>();
+            Elements = elementsMutable.ToReadOnlyReactiveCollection(x => x.state);
             Settability = settability;
             this.interpret = interpret;
             Title.Value = settability.MemberName;
-            FormattedString = onContentsChanged.Select(_ => $"Length = {Elements.Count}").ToReactiveProperty();
+            FormattedString = onContentsChanged.Select(_ => $"Count = {elementsMutable.Count}").ToReactiveProperty("Count = 0");
 
-            elementType = Settability.Type.GetElementType();
-            ArrayContent.Value = Array.CreateInstance(elementType, 0);
+            elementType = Settability.Type.GetGenericArguments()[0];
+            ArrayContent.Value = Activator.CreateInstance(settability.Type) as IList;
             Content = ArrayContent.Select(x => (object)x).ToReactiveProperty();
         }
 
@@ -54,23 +54,35 @@ namespace Romanesco.Model.States
                 $"Element of {Title.Value}",
                 (subject, value, index) =>
                 {
-                    var array = subject as Array;
-                    array.SetValue(value, (int)index[0]);
+                    var array = subject as IList;
+                    array[(int)index[0]] = value;
                 }));
 
-            state.Content.Skip(1).Where(value => value != null)
+            var disposable = state.Content
+                .Skip(1)
+                .Where(value => value != null)
                 .Subscribe(value =>
             {
-                var index = elementsMutable.IndexOf(state);
+                var index = elementsMutable.IndexOf(x => x.state == state);
                 state.Settability?.SetValue(ArrayContent.Value, value, new object[] { index });
                 onContentsChanged.OnNext(Unit.Default);
             });
-            elementsMutable.Add(state);
+            elementsMutable.Add((state, disposable));
             onContentsChanged.OnNext(Unit.Default);
 
-            ArrayContent.Value = elementsMutable.Select(x => x.Content.Value).ToArray();
+            ArrayContent.Value = elementsMutable.Select(x => x.state.Content.Value).ToList();
 
             return state;
+        }
+
+        public void RemoveAt(int index)
+        {
+            var entry = elementsMutable[index];
+            entry.disposable.Dispose();
+            elementsMutable.RemoveAt(index);
+            onContentsChanged.OnNext(Unit.Default);
+
+            ArrayContent.Value = elementsMutable.Select(x => x.state.Content.Value).ToList();
         }
     }
 }

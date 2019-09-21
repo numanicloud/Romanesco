@@ -33,7 +33,7 @@ namespace Romanesco.Model.Factories
                          let attr = GetMemberAttributeOrDefault(f)
                          where attr != null
                          select (state: interpret(new ValueSettability(f)), attr);
-            var members = properties.Concat(fields);
+            var members = properties.Concat(fields).OrderBy(x => x.attr.Order);
 
             foreach (var m in members)
             {

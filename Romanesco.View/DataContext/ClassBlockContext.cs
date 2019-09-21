@@ -10,12 +10,12 @@ namespace Romanesco.View.DataContext
 {
     public class ClassBlockContext
     {
-        public object[] ChildViews { get; }
+        public StateViewContext[] ChildViews { get; }
         public ReactiveProperty<UserControl> ClosedUpView { get; set; }
         public ClassViewModel ViewModel { get; set; }
         public ReactiveProperty<string> Title => ViewModel.Title;
 
-        public ClassBlockContext(ClassViewModel viewModel, object[] childViews)
+        public ClassBlockContext(ClassViewModel viewModel, StateViewContext[] childViews)
         {
             ViewModel = viewModel;
             ChildViews = childViews;

@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace Romanesco.View.View
 {
     /// <summary>
-    /// ClassView.xaml の相互作用ロジック
+    /// ArrayBlockView.xaml の相互作用ロジック
     /// </summary>
-    public partial class ClassView : UserControl
+    public partial class ListBlockView : UserControl
     {
-        public ClassView()
+        public ListBlockView()
         {
             InitializeComponent();
         }

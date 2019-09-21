@@ -22,7 +22,7 @@ namespace Romanesco.View.Factories
                     field.ViewModel.ShowDetail.Subscribe(_ => context.ClosedUpView.Value = field.BlockControl);
                 }
 
-                var blockControl = new View.ClassView()
+                var blockControl = new View.ClassBlockView()
                 {
                     DataContext = context,
                 };
