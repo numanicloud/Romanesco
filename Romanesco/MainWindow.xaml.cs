@@ -26,10 +26,12 @@ namespace Romanesco {
         public float Y { get; set; }
         [PwMember]
         public float Z { get; set; }
+        [PwMember]
+        public List<int> IntList { get; set; } = new List<int>();
 
         public override string? ToString()
         {
-            return $"Fuga:({X}, {Y}, {Z})";
+            return $"Fuga:({X}, {Y}, {Z}, List={IntList.Count})";
         }
     }
 
@@ -55,13 +57,11 @@ namespace Romanesco {
         [PwMember(order: 8)]
         public Fuga Fuga { get; set; }
         [PwMember(order: 9)]
-        public List<int> IntArray { get; set; }
-        [PwMember(order: 10)]
-        public List<Fuga> FugaArray { get; set; }
+        public List<Fuga> FugaList { get; set; } = new List<Fuga>();
 
         public override string? ToString()
         {
-            return $"Integer = {Integer}";
+            return $"Fuga x{FugaList.Count}";
         }
     }
 
@@ -87,6 +87,10 @@ namespace Romanesco {
             var state = stateInterpreter.InterpretAsState(hogeProperty);
             var viewModel = viewModelInterpreter.InterpretAsViewModel(state);
             var view = viewInterpreter.InterpretAsView(viewModel);
+            view.OnError.Subscribe(ex =>
+            {
+                throw ex;
+            });
 
             DataContext = new { Root = view };
         }

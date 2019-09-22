@@ -6,6 +6,7 @@ using Romanesco.ViewModel.States;
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 
 namespace Romanesco.View.Factories
@@ -17,18 +18,36 @@ namespace Romanesco.View.Factories
             if (viewModel is ListViewModel array)
             {
                 var context = new ArrayContext(array);
+                var onError = new Subject<Exception>();
+
                 array.AddCommand.Subscribe(_ =>
                 {
-                    var vm = array.AddNewElement();
-                    var view = interpretRecursively(vm);
-                    context.Elements.Add(view);
+                    try
+                    {
+                        var vm = array.AddNewElement();
+                        var view = interpretRecursively(vm);
+                        context.Elements.Add(view);
+                    }
+                    catch (Exception ex)
+                    {
+                        onError.OnNext(ContentAccessException.GetListError(ex));
+                    }
                 });
+
                 array.RemoveCommand.Where(i => i < array.Elements.Count)
                     .Subscribe(index =>
                 {
-                    array.RemoveAt(index);
-                    array.Elements.RemoveAt(index);
+                    try
+                    {
+                        array.RemoveAt(index);
+                        array.Elements.RemoveAt(index);
+                    }
+                    catch (Exception ex)
+                    {
+                        onError.OnNext(ContentAccessException.GetListError(ex));
+                    }
                 });
+
                 context.SelectedIndex.Where(i => i < array.Elements.Count)
                     .Subscribe(index =>
                 {
@@ -44,7 +63,9 @@ namespace Romanesco.View.Factories
                     DataContext = context,
                 };
 
-                return new StateViewContext(inlineControl, blockControl, array);
+                var view = new StateViewContext(inlineControl, blockControl, array);
+                view.OnError = array.OnError.Merge(onError);
+                return view;
             }
             return null;
         }

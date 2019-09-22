@@ -10,5 +10,6 @@ namespace Romanesco.Common {
         ReactiveProperty<object> Content { get; }
         ReactiveProperty<string> FormattedString { get; }
         IObservable<Unit> ShowDetail { get; }
+        IObservable<Exception> OnError { get; }
     }
 }

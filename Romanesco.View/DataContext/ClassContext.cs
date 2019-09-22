@@ -8,14 +8,14 @@ using System.Windows.Controls;
 
 namespace Romanesco.View.DataContext
 {
-    public class ClassBlockContext
+    public class ClassContext
     {
         public StateViewContext[] ChildViews { get; }
         public ReactiveProperty<UserControl> ClosedUpView { get; set; }
         public ClassViewModel ViewModel { get; set; }
         public ReactiveProperty<string> Title => ViewModel.Title;
 
-        public ClassBlockContext(ClassViewModel viewModel, StateViewContext[] childViews)
+        public ClassContext(ClassViewModel viewModel, StateViewContext[] childViews)
         {
             ViewModel = viewModel;
             ChildViews = childViews;

@@ -11,7 +11,7 @@
         <ResourceDictionary Source="Import.xaml"/>
     </UserControl.Resources>
 
-    <ContentControl Template="{StaticResource TitledField}">
+    <ContentControl Template="{StaticResource ResourceKey=TitledField}">
         <StackPanel Orientation="Vertical" Margin="3,8,3,3">
             <TextBlock Text="{Binding ViewModel.FormattedString.Value}"/>
             <Button Content="編集" Command="{Binding ViewModel.EditCommand}" HorizontalAlignment="Left"/>

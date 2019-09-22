@@ -25,14 +25,13 @@ namespace Romanesco.ViewModel.States
         public ReactiveCommand AddCommand { get; } = new ReactiveCommand();
         public ReactiveCommand<int> RemoveCommand { get; } = new ReactiveCommand<int>();
         public ReactiveCommand EditCommand { get; } = new ReactiveCommand();
+        public IObservable<Exception> OnError => state.OnError;
 
         public ListViewModel(ListState state, ViewModelInterpretFunc interpreter)
         {
             this.state = state;
             this.interpreter = interpreter;
 
-            AddCommand.Subscribe(x => AddNewElement());
-            RemoveCommand.Subscribe(index => RemoveAt(index));
             EditCommand.Subscribe(x => showDetailSubject.OnNext(Unit.Default));
         }
 

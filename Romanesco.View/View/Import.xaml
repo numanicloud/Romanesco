@@ -6,11 +6,7 @@
         <ResourceDictionary Source="pack://application:,,,/Romanesco.Styles;component/View/EditorStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <ControlTemplate x:Key="TitledField">
-        <ContentControl Template="{DynamicResource {ComponentResourceKey ResourceId=TitledField, TypeInTargetAssembly={x:Type style:EditorStyles}}}"
-                        Focusable="False">
-            <ContentPresenter Focusable="False"/>
-        </ContentControl>
-    </ControlTemplate>
-    
+    <DynamicResource x:Key="TitledField"
+                     ResourceKey="{ComponentResourceKey ResourceId=TitledField, TypeInTargetAssembly={x:Type style:EditorStyles}}"/>
+
 </ResourceDictionary>

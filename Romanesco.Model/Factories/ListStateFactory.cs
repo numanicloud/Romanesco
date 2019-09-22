@@ -11,7 +11,8 @@ namespace Romanesco.Model.Factories
     {
         public IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret)
         {
-            if (settability.Type == typeof(List<>))
+            if (settability.Type.IsGenericType
+                && settability.Type.GetGenericTypeDefinition() == typeof(List<>))
             {
                 return new ListState(settability, interpret);
             }

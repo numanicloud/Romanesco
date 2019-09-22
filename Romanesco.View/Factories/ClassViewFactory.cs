@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using Romanesco.Common;
 using Romanesco.Common.Utility;
@@ -16,7 +17,7 @@ namespace Romanesco.View.Factories
             if (viewModel is ClassViewModel @class)
             {
                 var children = @class.Fields.Select(x => interpretRecursively(x)).ToArray();
-                var context = new ClassBlockContext(@class, children);
+                var context = new ClassContext(@class, children);
                 foreach (var field in children)
                 {
                     field.ViewModel.ShowDetail.Subscribe(_ => context.ClosedUpView.Value = field.BlockControl);

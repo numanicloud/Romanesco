@@ -10,12 +10,14 @@ namespace Romanesco.Common.Utility
         public UserControl InlineControl { get; }
         public UserControl BlockControl { get; }
         public IStateViewModel ViewModel { get; set; }
+        public IObservable<Exception> OnError { get; set; }
 
         public StateViewContext(UserControl inlineControl, UserControl blockControl, IStateViewModel viewModel)
         {
             InlineControl = inlineControl;
             BlockControl = blockControl;
             ViewModel = viewModel;
+            OnError = ViewModel.OnError;
         }
     }
 }

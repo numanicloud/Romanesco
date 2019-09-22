@@ -19,6 +19,8 @@ namespace Romanesco.ViewModel {
 
         public IObservable<Unit> ShowDetail { get; }
 
+        public IObservable<Exception> OnError => state.OnError;
+
         public NoneViewModel(NoneState state) {
             this.state = state;
             Title = state.Title;

@@ -5,10 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    
-    <ScrollViewer>
-        <StackPanel Orientation="Vertical" Grid.IsSharedSizeScope="True">
-            <UserControl Content="{Binding Path=Root.BlockControl}"/>
-        </StackPanel>
-    </ScrollViewer>
+
+    <Grid VerticalAlignment="Stretch">
+        <UserControl Content="{Binding Path=Root.BlockControl}"/>
+    </Grid>
 </Window>

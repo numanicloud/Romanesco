@@ -21,6 +21,8 @@ namespace Romanesco.Common.Utility
 
         public IObservable<Unit> ShowDetail { get; }
 
+        public IObservable<Exception> OnError => State.OnError;
+
         public PrimitiveTypeViewModel(IFieldState state, ReactiveProperty<T> primitiveContent)
         {
             State = state;

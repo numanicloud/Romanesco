@@ -20,6 +20,7 @@ namespace Romanesco.ViewModel.States
         public IStateViewModel[] Fields { get; }
         public ReactiveCommand EditCommand { get; }
         public IObservable<Unit> ShowDetail => showDetailSubject;
+        public IObservable<Exception> OnError => state.OnError;
 
         public ClassViewModel(ClassState state, IStateViewModel[] fields)
         {

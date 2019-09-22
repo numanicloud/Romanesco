@@ -12,15 +12,15 @@ namespace Romanesco.View.DataContext
 {
     public class ArrayContext
     {
-        public ListViewModel ViewModel { get; set; }
-        public ReactiveCollection<StateViewContext> Elements { get; }
-        public ReactiveProperty<int> SelectedIndex { get; set; } = new ReactiveProperty<int>();
-        public ReactiveProperty<UserControl> SelectedControl { get; set; }
+        public ListViewModel ViewModel { get; }
+        public ReactiveCollection<StateViewContext> Elements { get; } = new ReactiveCollection<StateViewContext>();
+        public ReactiveProperty<int> SelectedIndex { get; } = new ReactiveProperty<int>();
+        public ReactiveProperty<UserControl> SelectedControl { get; } = new ReactiveProperty<UserControl>();
+        public ReactiveProperty<string> Title => ViewModel.Title;
 
         public ArrayContext(ListViewModel viewModel)
         {
             ViewModel = viewModel;
-            Elements = new ReactiveCollection<StateViewContext>();
         }
     }
 }

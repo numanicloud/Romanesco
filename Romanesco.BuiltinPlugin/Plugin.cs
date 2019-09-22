@@ -7,8 +7,8 @@ namespace Romanesco.BuiltinPlugin {
     public class Plugin : IPluginFacade {
         public IEnumerable<IStateFactory> GetStateFactories() {
             yield return new Model.Factories.PrimitiveStateFactory();
-            yield return new Model.Factories.ClassStateFactory();
             yield return new Model.Factories.ListStateFactory();
+            yield return new Model.Factories.ClassStateFactory();
         }
 
         public IEnumerable<IStateViewModelFactory> GetStateViewModelFactories() {
