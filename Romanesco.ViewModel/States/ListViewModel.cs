@@ -22,6 +22,7 @@ namespace Romanesco.ViewModel.States
         public ReactiveProperty<string> FormattedString => state.FormattedString;
         public IObservable<Unit> ShowDetail => showDetailSubject;
         public ReactiveCollection<IStateViewModel> Elements { get; } = new ReactiveCollection<IStateViewModel>();
+        public Type ElementType => state.ElementType;
         public ReactiveCommand AddCommand { get; } = new ReactiveCommand();
         public ReactiveCommand<int> RemoveCommand { get; } = new ReactiveCommand<int>();
         public ReactiveCommand EditCommand { get; } = new ReactiveCommand();

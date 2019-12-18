@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
+using System.Windows.Controls;
 
 namespace Romanesco.View.Factories
 {
@@ -17,7 +18,7 @@ namespace Romanesco.View.Factories
         {
             if (viewModel is ListViewModel array)
             {
-                var context = new ArrayContext(array);
+                var context = new ListContext(array);
                 var onError = new Subject<Exception>();
 
                 array.AddCommand.Subscribe(_ =>
@@ -54,10 +55,7 @@ namespace Romanesco.View.Factories
                     context.SelectedControl.Value = context.Elements[index].BlockControl;
                 });
 
-                var blockControl = new ListBlockView()
-                {
-                    DataContext = context,
-                };
+                var blockControl = GetBlockControl(array.ElementType, context);
                 var inlineControl = new ListInlineView()
                 {
                     DataContext = context,
@@ -68,6 +66,24 @@ namespace Romanesco.View.Factories
                 return view;
             }
             return null;
+        }
+
+        private UserControl GetBlockControl(Type elementType, object dataContext)
+        {
+            if (elementType == typeof(int))
+            {
+                return new PrimitiveListBlockView()
+                {
+                    DataContext = dataContext
+                };
+            }
+            else
+            {
+                return new ListBlockView()
+                {
+                    DataContext = dataContext
+                };
+            }
         }
     }
 }

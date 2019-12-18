@@ -21,6 +21,7 @@ namespace Romanesco.Model.States
         public ReactiveProperty<object> Content { get; } = new ReactiveProperty<object>();
         public ReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
         public Type Type => Settability.Type;
+        public Type ElementType => elementType;
         public ValueSettability Settability { get; }
         public ReactiveProperty<IList> ArrayContent { get; } = new ReactiveProperty<IList>();
         public ReadOnlyReactiveCollection<IFieldState> Elements { get; }

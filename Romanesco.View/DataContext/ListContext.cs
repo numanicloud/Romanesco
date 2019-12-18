@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 namespace Romanesco.View.DataContext
 {
-    public class ArrayContext
+    public class ListContext
     {
         public ListViewModel ViewModel { get; }
         public ReactiveCollection<StateViewContext> Elements { get; } = new ReactiveCollection<StateViewContext>();
@@ -18,7 +18,7 @@ namespace Romanesco.View.DataContext
         public ReactiveProperty<UserControl> SelectedControl { get; } = new ReactiveProperty<UserControl>();
         public ReactiveProperty<string> Title => ViewModel.Title;
 
-        public ArrayContext(ListViewModel viewModel)
+        public ListContext(ListViewModel viewModel)
         {
             ViewModel = viewModel;
         }
