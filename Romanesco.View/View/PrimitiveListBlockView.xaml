@@ -10,33 +10,31 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="26"/>
         </Grid.RowDefinitions>
 
-        <ListView Grid.Row="0"
-                  ItemsSource="{Binding Elements}"
-                  VerticalAlignment="Stretch" x:Name="items">
-            <ListView.ItemsPanel>
+        <ItemsControl Grid.Row="0"
+                      ItemsSource="{Binding Elements}">
+            <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Vertical"/>
                 </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type model:IntState}">
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="16"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Text="{Binding PrimitiveContent.Value}" Width="48" Grid.Column="0"/>
+                        <UserControl Content="{Binding InlineControl}" Width="90" Grid.Column="0"/>
                         <Button Content="×" Grid.Column="1" Click="Button_Click"/>
                     </Grid>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-        <Button Content="追加" Width="48" Grid.Row="1" HorizontalAlignment="Left" Command="{Binding AddCommand}"/>
+        <Button Content="追加" Width="48" Grid.Row="1" HorizontalAlignment="Left" Command="{Binding ViewModel.AddCommand}"/>
     </Grid>
 </UserControl>

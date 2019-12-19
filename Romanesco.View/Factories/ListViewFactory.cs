@@ -4,10 +4,8 @@ using Romanesco.View.DataContext;
 using Romanesco.View.View;
 using Romanesco.ViewModel.States;
 using System;
-using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
 using System.Windows.Controls;
 
 namespace Romanesco.View.Factories
@@ -41,7 +39,7 @@ namespace Romanesco.View.Factories
                     try
                     {
                         array.RemoveAt(index);
-                        array.Elements.RemoveAt(index);
+                        context.Elements.RemoveAt(index);
                     }
                     catch (Exception ex)
                     {
@@ -49,10 +47,24 @@ namespace Romanesco.View.Factories
                     }
                 });
 
-                context.SelectedIndex.Where(i => i < array.Elements.Count)
+                context.SelectedIndex.Where(i => i < context.Elements.Count)
                     .Subscribe(index =>
                 {
-                    context.SelectedControl.Value = context.Elements[index].BlockControl;
+                    try
+                    {
+                        if (index >= 0)
+                        {
+                            context.SelectedControl.Value = context.Elements[index].BlockControl;
+                        }
+                        else
+                        {
+                            context.SelectedControl.Value = null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        onError.OnNext(ContentAccessException.GetListError(ex));
+                    }
                 });
 
                 var blockControl = GetBlockControl(array.ElementType, context);

@@ -7,6 +7,9 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Grid VerticalAlignment="Stretch">
-        <UserControl Content="{Binding Path=Root.BlockControl}"/>
+        <ScrollViewer HorizontalScrollBarVisibility="Visible"
+                      VerticalScrollBarVisibility="Disabled">
+            <UserControl Content="{Binding Path=Root.BlockControl}"/>
+        </ScrollViewer>
     </Grid>
 </Window>

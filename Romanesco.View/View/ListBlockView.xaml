@@ -41,7 +41,7 @@
             <Button Content="追加" Grid.Column="0" Grid.Row="1" Margin="2"
                     Command="{Binding ViewModel.AddCommand}"/>
             <Button Content="削除" Grid.Column="1" Grid.Row="1" Margin="2"
-                    Command="{Binding ViewModel.AddCommand}"
+                    Command="{Binding ViewModel.RemoveCommand}"
                     CommandParameter="{Binding SelectedIndex.Value}"/>
         </Grid>
 

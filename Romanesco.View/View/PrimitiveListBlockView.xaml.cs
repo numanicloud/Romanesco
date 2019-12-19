@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Romanesco.Common.Utility;
+using Romanesco.View.DataContext;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -21,12 +23,16 @@ namespace Romanesco.View.View
         public PrimitiveListBlockView()
         {
             InitializeComponent();
-            Console.WriteLine("");
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
+            if (DataContext is ListContext listContext)
+            {
+                var button = (Button)sender;
+                var index = listContext.Elements.IndexOf((StateViewContext)button.DataContext);
+                listContext.ViewModel.RemoveCommand.Execute(index);
+            }
         }
     }
 }

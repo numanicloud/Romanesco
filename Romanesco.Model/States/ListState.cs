@@ -48,7 +48,7 @@ namespace Romanesco.Model.States
         {
             var state = interpret(new ValueSettability(
                 elementType,
-                $"Element of {Title.Value}",
+                $"{elementsMutable.Count}",
                 (subject, value, index) =>
             {
                 var array = subject as IList;

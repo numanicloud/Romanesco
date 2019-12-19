@@ -21,6 +21,7 @@ namespace Romanesco.View.DataContext
         public ListContext(ListViewModel viewModel)
         {
             ViewModel = viewModel;
+            SelectedIndex.Value = -1;
         }
     }
 }
