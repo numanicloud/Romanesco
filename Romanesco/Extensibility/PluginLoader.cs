@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Linq;
 using Romanesco.Common;
+using System.Diagnostics;
 
 namespace Romanesco.Extensibility {
     class PluginLoader {
@@ -20,19 +21,13 @@ namespace Romanesco.Extensibility {
 
             var directories = Directory.EnumerateDirectories(dirPath);
             foreach (var dir in directories) {
-                var settingPath = Path.Combine(dir, "Plugin.txt");
-                if (!File.Exists(settingPath)) {
+                var assemblyPath = GetEntryPointAssemblyPath(dir);
+                if (assemblyPath == null) {
                     continue;
                 }
 
-                string assemblyPath;  // Relative
-                using (var file = File.OpenRead(settingPath)) {
-                    using (var reader = new StreamReader(file)) {
-                        assemblyPath = reader.ReadLine();
-                    }
-                }
+                var asm = LoadPluginAssembly(Path.Combine(dir, assemblyPath));
 
-                var asm = Assembly.LoadFrom(Path.Combine(dir, assemblyPath));
                 var type = asm.GetTypes().Where(x => typeof(IPluginFacade).IsAssignableFrom(x))
                     .Where(x => !x.IsInterface && !x.IsAbstract)
                     .FirstOrDefault();
@@ -46,7 +41,39 @@ namespace Romanesco.Extensibility {
                 viewFactories.AddRange(facade.GetViewFactories());
             }
 
+            Debug.Print("Loaded assemblies:");
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Debug.Print(asm.FullName);
+            }
+
             return new PluginExtentions(stateFactories, stateViewModelFactories, viewFactories);
+        }
+
+        private Assembly LoadPluginAssembly(string assemblyPath)
+        {
+            return Assembly.LoadFrom(assemblyPath);
+        }
+
+        private Assembly LoadPluginAssemblyWithContext(string assemblyPath)
+        {
+            PluginLoadContext loadContext = new PluginLoadContext(assemblyPath);
+            var name = new AssemblyName(Path.GetFileNameWithoutExtension(assemblyPath));
+            return loadContext.LoadFromAssemblyName(name);
+        }
+
+        private string GetEntryPointAssemblyPath(string dirPath)
+        {
+            var settingPath = Path.Combine(dirPath, "Plugin.txt");
+            if (!File.Exists(settingPath)) {
+                return null;
+            }
+
+            using (var file = File.OpenRead(settingPath)) {
+                using (var reader = new StreamReader(file)) {
+                    return reader.ReadLine();
+                }
+            }
         }
     }
 }

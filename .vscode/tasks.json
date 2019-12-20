@@ -7,8 +7,8 @@
             "label": "build-all",
             "group": "build",
             "dependsOn": [
-                "build-plugin",
                 "build-app",
+                "build-plugin",
             ],
             "presentation": {
                 "reveal": "silent",
