@@ -11,13 +11,13 @@
         <ResourceDictionary Source="pack://application:,,,/Romanesco.Styles;component/View/EditorStyles.xaml"/>
     </UserControl.Resources>
     
-    <Grid>
+    <Grid Focusable="False">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Focusable="False">
             <ItemsControl ItemsSource="{Binding ChildViews}" Grid.IsSharedSizeScope="True" Margin="6">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>

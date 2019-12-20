@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -18,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj" />
-    <ProjectReference Include="..\Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj" />
     <ProjectReference Include="..\Romanesco.Common\Romanesco.Common.csproj" />
     <ProjectReference Include="..\Romanesco.Styles\Romanesco.Styles.csproj" />
   </ItemGroup>

@@ -13,6 +13,11 @@ namespace Romanesco.Extensibility {
             List<IStateViewModelFactory> stateViewModelFactories = new List<IStateViewModelFactory>();
             List<IViewFactory> viewFactories = new List<IViewFactory>();
 
+            if (Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+
             var directories = Directory.EnumerateDirectories(dirPath);
             foreach (var dir in directories) {
                 var settingPath = Path.Combine(dir, "Plugin.txt");

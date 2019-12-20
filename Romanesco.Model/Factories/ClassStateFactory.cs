@@ -14,9 +14,9 @@ namespace Romanesco.Model.Factories
     {
         public IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret)
         {
-            PwMemberAttribute GetMemberAttributeOrDefault(MemberInfo member)
+            EditorMemberAttribute GetMemberAttributeOrDefault(MemberInfo member)
             {
-                return member.GetCustomAttribute(typeof(PwMemberAttribute)) as PwMemberAttribute;
+                return member.GetCustomAttribute(typeof(EditorMemberAttribute)) as EditorMemberAttribute;
             }
 
             var type = settability.Type;

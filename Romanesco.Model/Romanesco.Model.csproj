@@ -11,8 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj" />
-    <ProjectReference Include="..\Romanesco.Common\Romanesco.Common.csproj" />
+    <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Romanesco.Common\Romanesco.Common.csproj">
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

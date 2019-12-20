@@ -44,18 +44,7 @@ Plugin.dll
 
 コアのプロジェクトで `ReactiveProperty` を使用しているため、
 プラグインを開発するプロジェクトでも `ReactiveProperty` パッケージを使用する必要があります。
-
-* プラグインにはエントリポイントがあり、ここでプラグインの内容を登録する。
-* プラグインのエントリポイントとして、`IPluginFacade` を実装したクラスが必要である。
-* Modelを実装するためには、`IFieldState` インターフェースを実装する。
-* `IStateFactory` を実装し、Modelを生成できるようにする必要がある。
-* `IPluginFacade` の実装を通して、`IStateFactory` の実装を取得できるようにする必要がある。
-* ViewModelを実装するためには、`IStateViewModel` インターフェースを実装する。
-* `IStateViewModelFactory` を実装し、ViewModelを生成できるようにする必要がある。
-* `IPluginFacade` の実装を通して、`IStateViewModelFactory` の実装を取得できるようにする必要がある。
-* Viewを実装するためには、`UserControl` のサブクラスを自作する。
-* `IViewFactory` を実装し、Viewを生成できるようにする必要がある。
-* `IPluginFacade` の実装を通して、`IViewFactory` の実装を取得できるようにする必要がある。
+NuGetを通じてインストールしてください。
 
 ## UIの構築過程
 

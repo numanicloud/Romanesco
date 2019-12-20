@@ -8,7 +8,7 @@
 
     <ControlTemplate x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:EditorStyles}, ResourceId=TitledField}"
                      TargetType="ContentControl">
-        <Grid MinHeight="26" Margin="0,0,20,0">
+        <Grid MinHeight="26" Margin="0,0,20,0" Focusable="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" SharedSizeGroup="NameColumn"/>
                 <ColumnDefinition Width="Auto" SharedSizeGroup="ColonColumn"/>
@@ -19,5 +19,25 @@
             <ContentPresenter Focusable="False" Grid.Column="2" VerticalAlignment="Center"/>
         </Grid>
     </ControlTemplate>
+
+    <Style TargetType="Grid">
+        <Setter Property="Focusable" Value="False"/>
+    </Style>
+
+    <Style TargetType="ScrollViewer">
+        <Setter Property="Focusable" Value="False"/>
+    </Style>
+    
+    <Style TargetType="UserControl">
+        <Setter Property="Focusable" Value="False"/>
+    </Style>
+    
+    <Style TargetType="ContentControl">
+        <Setter Property="Focusable" Value="False"/>
+    </Style>
+    
+    <Style TargetType="ItemsControl">
+        <Setter Property="Focusable" Value="False"/>
+    </Style>
     
 </ResourceDictionary>

@@ -20,13 +20,13 @@ using Romanesco.Annotations;
 namespace Romanesco {
     public class Fuga
     {
-        [PwMember]
+        [EditorMember]
         public float X { get; set; }
-        [PwMember]
+        [EditorMember]
         public float Y { get; set; }
-        [PwMember]
+        [EditorMember]
         public float Z { get; set; }
-        [PwMember]
+        [EditorMember]
         public List<int> IntList { get; set; } = new List<int>();
 
         public override string? ToString()
@@ -37,26 +37,26 @@ namespace Romanesco {
 
     public class Hoge
     {
-        [PwMember(order: 0)]
+        [EditorMember(order: 0)]
         public int Integer { get; set; }
-        [PwMember(order: 1)]
+        [EditorMember(order: 1)]
         public bool Boolean { get; set; }
-        [PwMember(order: 2)]
+        [EditorMember(order: 2)]
         public string String { get; set; }
-        [PwMember(order: 3)]
+        [EditorMember(order: 3)]
         public float Float { get; set; }
-        [PwMember(order: 4)]
+        [EditorMember(order: 4)]
         public byte Byte;
-        [PwMember(order: 5)]
+        [EditorMember(order: 5)]
         public short Short;
-        [PwMember(order: 6)]
+        [EditorMember(order: 6)]
         public long Long;
-        [PwMember(order: 7)]
+        [EditorMember(order: 7)]
         public double Double;
         public int Hidden;
-        [PwMember(order: 8)]
+        [EditorMember(order: 8)]
         public Fuga Fuga { get; set; }
-        [PwMember(order: 9)]
+        [EditorMember(order: 9)]
         public List<Fuga> FugaList { get; set; } = new List<Fuga>();
 
         public override string? ToString()

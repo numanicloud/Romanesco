@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Romanesco.Annotations
 {
-    public class PwMemberAttribute : Attribute
+    public class EditorMemberAttribute : Attribute
     {
-        public PwMemberAttribute(string title = null, int order = int.MaxValue)
+        public EditorMemberAttribute(string title = null, int order = int.MaxValue)
         {
             Title = title;
             Order = order;

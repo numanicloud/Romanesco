@@ -4,7 +4,8 @@ body
 {
 	font-family: "Arial", "メイリオ";
 	line-height: 1.5em;
-    background-color: #fff;
+	background-color: #fff;
+	color: #333;
 }
 
 *::selection
