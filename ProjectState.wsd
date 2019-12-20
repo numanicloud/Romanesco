@@ -1,0 +1,12 @@
+@startuml
+
+class Clean
+
+Clean <-- Dirty : save/overwrite
+Dirty <-- Clean : edit/settings
+New <-- Empty : new
+Clean <-- Empty : load
+Clean <-- New : save/overwrite
+Dirty <-- New : edit/settings
+
+@enduml

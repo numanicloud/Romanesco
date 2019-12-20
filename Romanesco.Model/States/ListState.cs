@@ -78,6 +78,11 @@ namespace Romanesco.Model.States
             elementsMutable.RemoveAt(index);
             ArrayContent.Value.RemoveAt(index);
             onContentsChanged.OnNext(Unit.Default);
+
+            for (int i = index; i < elementsMutable.Count; i++)
+            {
+                elementsMutable[i].state.Title.Value = i.ToString();
+            }
         }
     }
 }

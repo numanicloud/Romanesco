@@ -4,16 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Romanesco.View.View"
-             mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="180">
+             xmlns:style="clr-namespace:Romanesco.Styles.View;assembly=Romanesco.Styles"
+             mc:Ignorable="d">
 
     <UserControl.Resources>
-        <ResourceDictionary Source="Import.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Romanesco.Styles;component/View/EditorStyles.xaml"/>
     </UserControl.Resources>
 
-    <ContentControl Template="{StaticResource ResourceKey=TitledField}">
-        <StackPanel Orientation="Vertical" Margin="3,8,3,3">
-            <TextBlock Text="{Binding ViewModel.FormattedString.Value}"/>
+    <ContentControl Template="{DynamicResource {ComponentResourceKey ResourceId=TitledField, TypeInTargetAssembly={x:Type style:EditorStyles}}}">
+        <StackPanel Orientation="Vertical" Margin="3,5,3,3">
+            <TextBlock Text="{Binding ViewModel.FormattedString.Value}" Margin="0,0,0,4"/>
             <Button Content="編集" Command="{Binding ViewModel.EditCommand}" HorizontalAlignment="Left"/>
         </StackPanel>
     </ContentControl>

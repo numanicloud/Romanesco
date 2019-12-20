@@ -35,7 +35,7 @@ namespace Romanesco.Common
             {
                 try
                 {
-                    return x.ToString();
+                    return SelectFormattedString(x);
                 }
                 catch (Exception ex)
                 {
@@ -45,6 +45,11 @@ namespace Romanesco.Common
             }).ToReactiveProperty();
             Content = PrimitiveContent.Select(x => (object)x).ToReactiveProperty();
             Settability = settability;
+        }
+
+        protected virtual string SelectFormattedString(T value)
+        {
+            return value.ToString();
         }
     }
 }

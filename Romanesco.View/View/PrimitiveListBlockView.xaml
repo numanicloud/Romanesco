@@ -5,36 +5,42 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Romanesco.View.View"
              xmlns:model="clr-namespace:Romanesco.Model.States;assembly=Romanesco.Model"
+             xmlns:style="clr-namespace:Romanesco.Styles.View;assembly=Romanesco.Styles"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="26"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
 
-        <ItemsControl Grid.Row="0"
-                      ItemsSource="{Binding Elements}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="16"/>
-                        </Grid.ColumnDefinitions>
-                        <UserControl Content="{Binding InlineControl}" Width="90" Grid.Column="0"/>
-                        <Button Content="×" Grid.Column="1" Click="Button_Click"/>
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <style:PaneTitleTip DataContext="{Binding Title.Value}"/>
 
-        <Button Content="追加" Width="48" Grid.Row="1" HorizontalAlignment="Left" Command="{Binding ViewModel.AddCommand}"/>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="8,0,8,0">
+            <ItemsControl ItemsSource="{Binding Elements}" Grid.IsSharedSizeScope="True">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <UserControl Content="{Binding InlineControl}" MinWidth="90" Grid.Column="0"/>
+                            <Button Content="×" Grid.Column="1" Click="Button_Click" Height="19" Width="19"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Button Content="追加" Width="64" Grid.Row="2" HorizontalAlignment="Left"
+                Command="{Binding ViewModel.AddCommand}" Margin="8,2,8,2"/>
     </Grid>
 </UserControl>

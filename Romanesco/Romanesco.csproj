@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj" />
     <ProjectReference Include="..\Romanesco.Common\Romanesco.Common.csproj" />
     <ProjectReference Include="..\Romanesco.Styles\Romanesco.Styles.csproj" />
+    <ProjectReference Include="..\Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj" />
   </ItemGroup>
 
   <ItemGroup>

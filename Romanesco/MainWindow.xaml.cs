@@ -21,6 +21,8 @@ namespace Romanesco {
     public class Fuga
     {
         [EditorMember]
+        public int Id { get; set; }
+        [EditorMember]
         public float X { get; set; }
         [EditorMember]
         public float Y { get; set; }
@@ -57,7 +59,11 @@ namespace Romanesco {
         [EditorMember(order: 8)]
         public Fuga Fuga { get; set; }
         [EditorMember(order: 9)]
+        [EditorMaster("Fugas", "Id")]
         public List<Fuga> FugaList { get; set; } = new List<Fuga>();
+        [EditorMember(order: 10)]
+        [EditorChoiceOfMaster("Fugas")]
+        public int FugaRef { get; set; }
 
         public override string? ToString()
         {

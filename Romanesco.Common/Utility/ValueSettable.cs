@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -14,6 +15,7 @@ namespace Romanesco.Common.Utility
 
         public Type Type { get; }
         public string MemberName { get; }
+        public Attribute[] Attributes { get; set; }
 
         /// <summary>
         /// プロパティをラップし、他の要素と同様に <see cref="ValueSettability"/> として扱えるようにします。
@@ -24,6 +26,7 @@ namespace Romanesco.Common.Utility
             setter = (subject, value, index) => property.SetValue(subject, value, index);
             Type = property.PropertyType;
             MemberName = property.Name;
+            Attributes = property.GetCustomAttributes().ToArray();
         }
 
         /// <summary>
@@ -35,6 +38,7 @@ namespace Romanesco.Common.Utility
             setter = (subject, value, index) => field.SetValue(subject, value);
             Type = field.FieldType;
             MemberName = field.Name;
+            Attributes = field.GetCustomAttributes().ToArray();
         }
 
         /// <summary>
@@ -53,6 +57,7 @@ namespace Romanesco.Common.Utility
             this.setter = setter;
             Type = type;
             MemberName = memberName;
+            Attributes = new Attribute[0];
         }
 
         /// <summary>

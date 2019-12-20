@@ -11,8 +11,8 @@
     </UserControl.Resources>
 
     <ContentControl Template="{DynamicResource {ComponentResourceKey ResourceId=TitledField, TypeInTargetAssembly={x:Type style:EditorStyles}}}">
-        <StackPanel Orientation="Vertical" Margin="3,8,3,3">
-            <TextBlock Text="{Binding ViewModel.FormattedString.Value}"/>
+        <StackPanel Orientation="Vertical" Margin="3,5,3,3">
+            <TextBlock Text="{Binding ViewModel.FormattedString.Value}" Margin="0,0,0,4"/>
             <Button Content="編集" Command="{Binding ViewModel.EditCommand}" HorizontalAlignment="Left"/>
         </StackPanel>
     </ContentControl>
