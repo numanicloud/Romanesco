@@ -26,8 +26,8 @@
 
             <style:PaneTitleTip DataContext="{Binding Title.Value}"/>
 
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="8,0,8,0">
-                <ItemsControl ItemsSource="{Binding ChildViews}" Grid.IsSharedSizeScope="True" Margin="6">
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="8,0,0,2">
+                <ItemsControl ItemsSource="{Binding ChildViews}" Grid.IsSharedSizeScope="True" Margin="0,0,8,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <UserControl Content="{Binding InlineControl}"/>

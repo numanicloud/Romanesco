@@ -64,6 +64,8 @@ namespace Romanesco {
         [EditorMember(order: 10)]
         [EditorChoiceOfMaster("Fugas")]
         public int FugaRef { get; set; }
+        [EditorMember(order: 11)]
+        public FooBar EnumValue { get; set; }
 
         public override string? ToString()
         {
@@ -74,6 +76,11 @@ namespace Romanesco {
     public class Project
     {
         public Hoge Hoge { get; set; }
+    }
+
+    public enum FooBar
+    {
+        Foo, Bar, Fizz, Buzz
     }
 
     /// <summary>
