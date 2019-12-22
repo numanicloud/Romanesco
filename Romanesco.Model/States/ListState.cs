@@ -1,6 +1,7 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common;
 using Romanesco.Common.Utility;
+using Romanesco.Model.Infrastructure;
 using System;
 using System.Collections;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Romanesco.Model.States
         private readonly ReactiveCollection<(IFieldState state, IDisposable disposable)> elementsMutable;
         private readonly Type elementType;
         private readonly StateInterpretFunc interpret;
+        private readonly CommandHistory history;
 
         public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
         public ReactiveProperty<object> Content { get; } = new ReactiveProperty<object>();
@@ -27,12 +29,13 @@ namespace Romanesco.Model.States
         public ReadOnlyReactiveCollection<IFieldState> Elements { get; }
         public IObservable<Exception> OnError => Observable.Never<Exception>();
 
-        public ListState(ValueSettability settability, StateInterpretFunc interpret)
+        public ListState(ValueSettability settability, StateInterpretFunc interpret, CommandHistory history)
         {
             elementsMutable = new ReactiveCollection<(IFieldState state, IDisposable disposable)>();
             Elements = elementsMutable.ToReadOnlyReactiveCollection(x => x.state);
             Settability = settability;
             this.interpret = interpret;
+            this.history = history;
             Title.Value = settability.MemberName;
             FormattedString = onContentsChanged.Select(_ => $"Count = {elementsMutable.Count}")
                 .ToReactiveProperty("Count = 0");
@@ -46,34 +49,56 @@ namespace Romanesco.Model.States
 
         public IFieldState AddNewElement()
         {
+            var index = elementsMutable.Count;
             var state = interpret(new ValueSettability(
                 elementType,
-                $"{elementsMutable.Count}",
+                $"{index}",
                 (subject, value, index) =>
-            {
-                var array = subject as IList;
-                array[(int)index[0]] = value;
-            }));
-
-            var disposable = state.Content
-                .Skip(1)
-                .Where(value => value != null)
-                .Subscribe(value =>
-            {
-                var index = elementsMutable.IndexOf(x => x.state == state);
-                state.Settability?.SetValue(ArrayContent.Value, value, new object[] { index });
-                onContentsChanged.OnNext(Unit.Default);
-            });
+                {
+                    var array = subject as IList;
+                    array[(int)index[0]] = value;
+                }));
+            IDisposable disposable = SubscribeElementState(state);
 
             elementsMutable.Add((state, disposable));
             ArrayContent.Value.Add(state.Content.Value);
             onContentsChanged.OnNext(Unit.Default);
 
+            if (!history.IsOperating)
+            {
+                var memento = new AddElementToListCommandMemento(this, state, index);
+                history.PushMemento(memento);
+            }
+
             return state;
+        }
+
+        private IDisposable SubscribeElementState(IFieldState state)
+        {
+            return state.Content
+                .Skip(1)
+                .Where(value => value != null)
+                .Subscribe(value =>
+                {
+                    var index = elementsMutable.IndexOf(x => x.state == state);
+                    state.Settability?.SetValue(ArrayContent.Value, value, new object[] { index });
+                    onContentsChanged.OnNext(Unit.Default);
+                });
+        }
+
+        public void Insert(IFieldState state, int index)
+        {
+            var disposable = SubscribeElementState(state);
+
+            elementsMutable.Insert(index, (state, disposable));
+            ArrayContent.Value.Insert(index, state.Content.Value);
+            onContentsChanged.OnNext(Unit.Default);
         }
 
         public void RemoveAt(int index)
         {
+            var state = elementsMutable[index].state;
+
             elementsMutable[index].disposable.Dispose();
             elementsMutable.RemoveAt(index);
             ArrayContent.Value.RemoveAt(index);
@@ -82,6 +107,12 @@ namespace Romanesco.Model.States
             for (int i = index; i < elementsMutable.Count; i++)
             {
                 elementsMutable[i].state.Title.Value = i.ToString();
+            }
+
+            if (!history.IsOperating)
+            {
+                var memento = new RemoveElementToListCommandMemento(this, state, index);
+                history.PushMemento(memento);
             }
         }
     }

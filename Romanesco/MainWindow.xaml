@@ -7,7 +7,17 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Grid VerticalAlignment="Stretch">
-        <ScrollViewer HorizontalScrollBarVisibility="Visible"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <Menu>
+            <MenuItem Header="Undo" Command="{Binding Undo}"/>
+            <MenuItem Header="Redo" Command="{Binding Redo}"/>
+        </Menu>
+        
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Disabled">
             <UserControl Content="{Binding Path=Root.BlockControl}"/>
         </ScrollViewer>

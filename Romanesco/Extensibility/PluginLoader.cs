@@ -6,10 +6,21 @@ using System.Reflection;
 using System.Linq;
 using Romanesco.Common;
 using System.Diagnostics;
+using Romanesco.Common.Utility;
 
-namespace Romanesco.Extensibility {
-    class PluginLoader {
-        public PluginExtentions Load(string dirPath) {
+namespace Romanesco.Extensibility
+{
+    class PluginLoader
+    {
+        private readonly ProjectContext projectContext;
+
+        public PluginLoader(ProjectContext projectContext)
+        {
+            this.projectContext = projectContext;
+        }
+
+        public PluginExtentions Load(string dirPath)
+        {
             List<IStateFactory> stateFactories = new List<IStateFactory>();
             List<IStateViewModelFactory> stateViewModelFactories = new List<IStateViewModelFactory>();
             List<IViewFactory> viewFactories = new List<IViewFactory>();
@@ -20,9 +31,11 @@ namespace Romanesco.Extensibility {
             }
 
             var directories = Directory.EnumerateDirectories(dirPath);
-            foreach (var dir in directories) {
+            foreach (var dir in directories)
+            {
                 var assemblyPath = GetEntryPointAssemblyPath(dir);
-                if (assemblyPath == null) {
+                if (assemblyPath == null)
+                {
                     continue;
                 }
 
@@ -31,11 +44,13 @@ namespace Romanesco.Extensibility {
                 var type = asm.GetTypes().Where(x => typeof(IPluginFacade).IsAssignableFrom(x))
                     .Where(x => !x.IsInterface && !x.IsAbstract)
                     .FirstOrDefault();
-                if (type == null) {
+                if (type == null)
+                {
                     continue;
                 }
 
                 var facade = Activator.CreateInstance(type) as IPluginFacade;
+                facade.LoadContext(projectContext);
                 stateFactories.AddRange(facade.GetStateFactories());
                 stateViewModelFactories.AddRange(facade.GetStateViewModelFactories());
                 viewFactories.AddRange(facade.GetViewFactories());

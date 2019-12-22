@@ -9,11 +9,18 @@ namespace Romanesco.Model.Factories
 {
     public class EnumStateFactory : Common.IStateFactory
     {
+        private readonly CommandHistory history;
+
+        public EnumStateFactory(CommandHistory history)
+        {
+            this.history = history;
+        }
+
         public IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret)
         {
             if (settability.Type.IsEnum)
             {
-                return new EnumState(settability);
+                return new EnumState(settability, history);
             }
             return null;
         }

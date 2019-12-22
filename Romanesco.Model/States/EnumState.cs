@@ -28,7 +28,7 @@ namespace Romanesco.Model.States
 
         public object[] Choices { get; }
 
-        public EnumState(ValueSettability settability)
+        public EnumState(ValueSettability settability, CommandHistory history)
         {
             Type = settability.Type;
             Title.Value = settability.MemberName;
@@ -51,6 +51,11 @@ namespace Romanesco.Model.States
             {
                 Content.Value = Choices[0];
             }
+
+            Content.Zip(Content.Skip(1), (a, b) => (a, b))
+                .Where(_ => !history.IsOperating)
+                .Select(t => new ContentEditCommandMemento(x => Content.Value = x, t.a, t.b))
+                .Subscribe(history.PushMemento);
         }
     }
 }

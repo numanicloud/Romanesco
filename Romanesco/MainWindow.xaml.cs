@@ -16,96 +16,23 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Romanesco.Annotations;
+using Romanesco.View;
 
-namespace Romanesco {
-    public class Fuga
-    {
-        [EditorMember]
-        public int Id { get; set; }
-        [EditorMember]
-        public float X { get; set; }
-        [EditorMember]
-        public float Y { get; set; }
-        [EditorMember]
-        public float Z { get; set; }
-        [EditorMember]
-        public List<int> IntList { get; set; } = new List<int>();
-
-        public override string? ToString()
-        {
-            return $"Fuga:({X}, {Y}, {Z}, List={IntList.Count})";
-        }
-    }
-
-    public class Hoge
-    {
-        [EditorMember(order: 0)]
-        public int Integer { get; set; }
-        [EditorMember(order: 1)]
-        public bool Boolean { get; set; }
-        [EditorMember(order: 2)]
-        public string String { get; set; }
-        [EditorMember(order: 3)]
-        public float Float { get; set; }
-        [EditorMember(order: 4)]
-        public byte Byte;
-        [EditorMember(order: 5)]
-        public short Short;
-        [EditorMember(order: 6)]
-        public long Long;
-        [EditorMember(order: 7)]
-        public double Double;
-        public int Hidden;
-        [EditorMember(order: 8)]
-        public Fuga Fuga { get; set; }
-        [EditorMember(order: 9)]
-        [EditorMaster("Fugas", "Id")]
-        public List<Fuga> FugaList { get; set; } = new List<Fuga>();
-        [EditorMember(order: 10)]
-        [EditorChoiceOfMaster("Fugas")]
-        public int FugaRef { get; set; }
-        [EditorMember(order: 11)]
-        public FooBar EnumValue { get; set; }
-
-        public override string? ToString()
-        {
-            return $"Fuga x{FugaList.Count}";
-        }
-    }
-
-    public class Project
-    {
-        public Hoge Hoge { get; set; }
-    }
-
-    public enum FooBar
-    {
-        Foo, Bar, Fizz, Buzz
-    }
-
+namespace Romanesco
+{
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
-        public MainWindow() {
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
             InitializeComponent();
 
-            var loader = new PluginLoader();
-            var extensions = loader.Load("Plugins");
-            var stateInterpreter = new ObjectInterpreter(extensions.StateFactories);
-            var viewModelInterpreter = new ViewModel.ViewModelInterpreter(extensions.StateViewModelFactories);
-            var viewInterpreter = new View.ViewInterpreter(extensions.ViewFactories);
+            var context = new EditorDataContext();
+            context.Initialize();
 
-            var hogeProperty = typeof(Project).GetProperty("Hoge");
-            var state = stateInterpreter.InterpretAsState(hogeProperty);
-            var viewModel = viewModelInterpreter.InterpretAsViewModel(state);
-            var view = viewInterpreter.InterpretAsView(viewModel);
-            view.OnError.Subscribe(ex =>
-            {
-                throw ex;
-            });
-
-            DataContext = new { Root = view };
+            DataContext = context;
         }
     }
 }

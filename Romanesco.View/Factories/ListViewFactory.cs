@@ -16,16 +16,14 @@ namespace Romanesco.View.Factories
         {
             if (viewModel is ListViewModel array)
             {
-                var context = new ListContext(array);
+                var context = new ListContext(array, interpretRecursively);
                 var onError = new Subject<Exception>();
 
                 array.AddCommand.Subscribe(_ =>
                 {
                     try
                     {
-                        var vm = array.AddNewElement();
-                        var view = interpretRecursively(vm);
-                        context.Elements.Add(view);
+                        array.AddNewElement();
                     }
                     catch (Exception ex)
                     {
@@ -39,7 +37,6 @@ namespace Romanesco.View.Factories
                     try
                     {
                         array.RemoveAt(index);
-                        context.Elements.RemoveAt(index);
                     }
                     catch (Exception ex)
                     {

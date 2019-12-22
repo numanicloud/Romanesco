@@ -1,0 +1,33 @@
+@startuml
+
+class Project
+interface ILoadService
+interface IExportService
+interface ISaveService
+interface ICreateService
+
+EditorViewModel o-- Editor
+Editor o-- ILoadService
+Editor o-- IExportService
+Editor o-- ISaveService
+Editor o-- ICreateService
+IExportService o-- Serializer
+
+Editor o-- EditorState
+EditorState <|-- Empty
+EditorState <|-- New
+EditorState <|-- Clean
+EditorState <|-- Dirty
+EditorState <|-- SettingsBroken
+New o-- Project
+Clean o-- Project
+Dirty o-- Project
+SettingsBroken o-- Project
+
+Project o-- ProjectSettings
+Project o-- DependencyManager
+Project o-- StateRoot
+
+EditorViewModel o-- StateRootViewModel
+
+@enduml

@@ -22,7 +22,7 @@ namespace Romanesco.Common
         public ValueSettability Settability { get; }
         public IObservable<Exception> OnError => onErrorSubject;
 
-        public PrimitiveTypeState(ValueSettability settability)
+        public PrimitiveTypeState(ValueSettability settability, CommandHistory history)
         {
             if (settability.Type != Type)
             {
@@ -45,6 +45,11 @@ namespace Romanesco.Common
             }).ToReactiveProperty();
             Content = PrimitiveContent.Select(x => (object)x).ToReactiveProperty();
             Settability = settability;
+
+            PrimitiveContent.Zip(PrimitiveContent.Skip(1), (a, b) => (a, b))
+                .Where(_ => !history.IsOperating)
+                .Select(t => new ContentEditCommandMemento(x => PrimitiveContent.Value = (T)x, t.a, t.b))
+                .Subscribe(history.PushMemento);
         }
 
         protected virtual string SelectFormattedString(T value)

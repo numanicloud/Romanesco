@@ -12,6 +12,7 @@
     </UserControl.Resources>
 
     <ContentControl Template="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type style:EditorStyles}, ResourceId=TitledField}}">
-        <TextBox Text="{Binding PrimitiveContent.Value}" HorizontalAlignment="Left"/>
+        <TextBox Text="{Binding PrimitiveContent.Value, Mode=TwoWay}"
+                 HorizontalAlignment="Left"/>
     </ContentControl>
 </UserControl>

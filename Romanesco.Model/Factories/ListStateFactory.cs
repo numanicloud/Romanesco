@@ -13,10 +13,12 @@ namespace Romanesco.Model.Factories
     public class ListStateFactory : IStateFactory
     {
         private readonly MasterListContext context;
+        private readonly CommandHistory history;
 
-        public ListStateFactory(MasterListContext context)
+        public ListStateFactory(MasterListContext context, CommandHistory history)
         {
             this.context = context;
+            this.history = history;
         }
 
         public IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret)
@@ -24,7 +26,7 @@ namespace Romanesco.Model.Factories
             if (settability.Type.IsGenericType
                 && settability.Type.GetGenericTypeDefinition() == typeof(List<>))
             {
-                var list = new ListState(settability, interpret);
+                var list = new ListState(settability, interpret, history);
                 var attr = settability.Attributes.OfType<EditorMasterAttribute>().FirstOrDefault();
                 if (attr != null)
                 {

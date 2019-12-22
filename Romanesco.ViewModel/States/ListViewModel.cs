@@ -21,7 +21,7 @@ namespace Romanesco.ViewModel.States
         public ReactiveProperty<IList> ArrayContent => state.ArrayContent;
         public ReactiveProperty<string> FormattedString => state.FormattedString;
         public IObservable<Unit> ShowDetail => showDetailSubject;
-        public ReactiveCollection<IStateViewModel> Elements { get; } = new ReactiveCollection<IStateViewModel>();
+        public ReadOnlyReactiveCollection<IStateViewModel> Elements { get; }
         public Type ElementType => state.ElementType;
         public ReactiveCommand AddCommand { get; } = new ReactiveCommand();
         public ReactiveCommand<int> RemoveCommand { get; } = new ReactiveCommand<int>();
@@ -34,20 +34,18 @@ namespace Romanesco.ViewModel.States
             this.interpreter = interpreter;
 
             EditCommand.Subscribe(x => showDetailSubject.OnNext(Unit.Default));
+
+            Elements = state.Elements.ToReadOnlyReactiveCollection(state => interpreter(state));
         }
 
-        public IStateViewModel AddNewElement()
+        public void AddNewElement()
         {
-            var element = state.AddNewElement();
-            var viewModel = interpreter(element);
-            Elements.Add(viewModel);
-            return viewModel;
+            state.AddNewElement();
         }
 
         public void RemoveAt(int index)
         {
             state.RemoveAt(index);
-            Elements.RemoveAt(index);
         }
     }
 }

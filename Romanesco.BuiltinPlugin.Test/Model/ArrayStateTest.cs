@@ -20,7 +20,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         public void 新規要素を追加するとStateが増える()
         {
             var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s));
+            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
 
@@ -32,7 +32,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         public void 新規要素を追加すると実配列の要素が増える()
         {
             var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s));
+            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
 
@@ -46,7 +46,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         public void 新規要素の値を書き換えると実配列の中身が書き換わる()
         {
             var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s));
+            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
             var notified = 0;
 
             var element = state.AddNewElement() as IntState;
@@ -64,7 +64,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         public void 新規要素を追加すると文字列形式が変化する()
         {
             var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s));
+            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
 
@@ -75,7 +75,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         public void 要素を削除するとStateの要素数が減る()
         {
             var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s));
+            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
             state.RemoveAt(0);
@@ -87,7 +87,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         public void 要素を削除すると実配列の要素数が減る()
         {
             var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s));
+            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
             state.RemoveAt(0);

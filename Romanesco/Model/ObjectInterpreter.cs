@@ -3,6 +3,7 @@ using Romanesco.Common.Utility;
 using Romanesco.Model.States;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -10,12 +11,12 @@ namespace Romanesco.Model
 {
     public class ObjectInterpreter
     {
+        public IStateFactory[] Factories { get; }
+
         public ObjectInterpreter(IStateFactory[] factories)
         {
             Factories = factories;
         }
-
-        public IStateFactory[] Factories { get; }
 
         public IFieldState InterpretAsState(PropertyInfo property)
         {
