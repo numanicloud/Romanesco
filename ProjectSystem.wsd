@@ -1,17 +1,43 @@
 @startuml
 
 class Project
+
+class EditorViewModel
+{
+    + CreateCommand
+    + ExportCommand
+    + LoadCommand
+    + SaveCommand
+    + UndoCommand
+    + RedoComamnd
+}
+
+class Editor
+{
+    + Create()
+    + Export()
+    + Load()
+    + Save()
+    + Undo()
+    + Redo()
+}
+
 interface ILoadService
 interface IExportService
 interface ISaveService
 interface ICreateService
 
 EditorViewModel o-- Editor
-Editor o-- ILoadService
-Editor o-- IExportService
-Editor o-- ISaveService
-Editor o-- ICreateService
+EditorViewModel o-- ProjectViewModel
+EditorState o-- ILoadService
+EditorState o-- IExportService
+EditorState o-- ISaveService
+EditorState o-- ICreateService
 IExportService o-- Serializer
+Project o-- CommandHistory
+
+ProjectData <-- ISaveService
+ProjectData <-- ILoadService
 
 Editor o-- EditorState
 EditorState <|-- Empty

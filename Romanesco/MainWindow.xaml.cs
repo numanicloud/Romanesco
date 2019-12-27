@@ -29,7 +29,7 @@ namespace Romanesco
         {
             InitializeComponent();
 
-            var context = new EditorDataContext();
+            var context = new EditorViewModel();
             context.Initialize();
 
             DataContext = context;

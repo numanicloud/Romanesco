@@ -8,11 +8,15 @@ using System.Windows.Controls;
 
 namespace Romanesco.View
 {
-    class EditorDataContext
+    class EditorViewModel
     {
         public ProjectContext ProjectContext { get; set; }
         public StateViewContext Root { get; set; }
 
+        public ReactiveCommand CreateCommand { get; set; } = new ReactiveCommand();
+        public ReactiveCommand ExportCommand { get; set; } = new ReactiveCommand();
+        public ReactiveCommand OpenCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand SaveCommand { get; set; } = new ReactiveCommand();
         public ReactiveCommand Undo { get; } = new ReactiveCommand();
         public ReactiveCommand Redo { get; } = new ReactiveCommand();
 
