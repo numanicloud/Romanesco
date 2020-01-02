@@ -52,7 +52,7 @@ Undo/Redo を実際に実行するために必要。Stateたちに行き渡ら�
 * EmptyState
 * ILoadServiceの実装
 * ISaveServiceの実装
-* 仮のプロジェクト型を与える機能
+* 仮のプロジェクト型を与える機能(IProjectSettingProviderの仮実装)
 
 ## Gen 3
 
@@ -62,12 +62,18 @@ Undo/Redo を実際に実行するために必要。Stateたちに行き渡ら�
 
 ## Gen 4
 
+* EditorProjectAttribute
 * ProjectSettings
 
 ## Gen 5
 
-* DependencyManager
+* デフォルトのシリアライズ/デシリアライズ
+* ユーザー定義のシリアライズ/デシリアライズ
 
 ## Gen 6
+
+* DependencyManager
+
+## Gen 7
 
 * エラー処理の取り残し

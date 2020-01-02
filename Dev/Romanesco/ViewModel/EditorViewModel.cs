@@ -26,8 +26,8 @@ namespace Romanesco.View
             CreateCommand.Subscribe(() => Editor.Create());
             ExportCommand.Subscribe(() => Editor.Export());
             OpenCommand.Subscribe(() => Editor.Open());
-            SaveCommand.Subscribe(() => Editor.Save());
-            SaveAsCommand.Subscribe(() => Editor.SaveAs());
+            SaveCommand.Subscribe(() => Editor.SaveAsync().Wait());
+            SaveAsCommand.Subscribe(() => Editor.SaveAsAsync().Wait());
             Undo.Subscribe(() => Editor.Undo());
             Redo.Subscribe(() => Editor.Redo());
         }

@@ -7,3 +7,4 @@ bin/
 !/Dev/bin/Resources/
 packages/
 obj/
+/Documents/out/

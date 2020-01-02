@@ -1,7 +1,4 @@
-﻿using Romanesco.Common.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Romanesco.Model.ProjectComponents;
 
 namespace Romanesco.Model.Services
 {
@@ -16,12 +13,12 @@ namespace Romanesco.Model.Services
 
         public void Redo()
         {
-            project.Context.CommandHistory.Redo();
+            //project.Context.CommandHistory.Redo();
         }
 
         public void Undo()
         {
-            project.Context.CommandHistory.Undo();
+            //project.Context.CommandHistory.Undo();
         }
     }
 }

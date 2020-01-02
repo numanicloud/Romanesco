@@ -1,8 +1,5 @@
-﻿using Romanesco.Common.Entities;
+﻿using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Romanesco.Model.EditorState
 {

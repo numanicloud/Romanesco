@@ -13,9 +13,10 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
-        <Menu>
+        <Menu DataContext="{Binding Editor}">
             <MenuItem Header="Undo" Command="{Binding Undo}"/>
             <MenuItem Header="Redo" Command="{Binding Redo}"/>
+            <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
         </Menu>
 
         <view:StateRootView Grid.Row="1" DataContext="{Binding Root.Value}"/>
