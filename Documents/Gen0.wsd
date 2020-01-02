@@ -1,0 +1,49 @@
+@startuml
+
+class Project
+
+class EditorViewModel
+{
+    + CreateCommand
+    + ExportCommand
+    + LoadCommand
+    + SaveCommand
+    + UndoCommand
+    + RedoComamnd
+}
+
+class Editor
+{
+    + Create()
+    + Export()
+    + Load()
+    + Save()
+    + Undo()
+    + Redo()
+}
+
+class EditorState
+{
+    + GetImportService()
+    + GetExportService()
+    + GetHistoryService()
+}
+
+interface ILoadService
+interface ISaveService
+interface IHistoryService
+
+MainDataContext o-- EditorViewModel
+MainDataContext o-- RootViewContext
+EditorViewModel o-- Editor
+
+Editor o-- EditorState
+EditorState <|-- Dirty
+Dirty o-- Project
+ILoadService <-- EditorState
+ISaveService <-- EditorState
+IHistoryService <-- EditorState
+
+Project o-- StateRoot
+
+@enduml
