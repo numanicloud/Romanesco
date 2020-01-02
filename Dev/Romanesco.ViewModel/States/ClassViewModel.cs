@@ -14,9 +14,8 @@ namespace Romanesco.ViewModel.States
         private readonly ClassState state;
         private readonly Subject<Unit> showDetailSubject = new Subject<Unit>();
 
-        public ReactiveProperty<string> Title => state.Title;
-        public ReactiveProperty<object> Content => state.Content;
-        public ReactiveProperty<string> FormattedString => state.FormattedString;
+        public IReadOnlyReactiveProperty<string> Title => state.Title;
+        public IReadOnlyReactiveProperty<string> FormattedString => state.FormattedString;
         public IStateViewModel[] Fields { get; }
         public ReactiveCommand EditCommand { get; }
         public IObservable<Unit> ShowDetail => showDetailSubject;

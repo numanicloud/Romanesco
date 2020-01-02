@@ -15,12 +15,12 @@ namespace Romanesco.Common
         /// 編集用のUIを説明するラベルのためのテキスト。
         /// </summary>
         /// <remarks>基本的にドメイン モデルにリダイレクトします。</remarks>
-        ReactiveProperty<string> Title { get; }
+        IReadOnlyReactiveProperty<string> Title { get; }
         /// <summary>
         /// 編集用のUIに表示し、実際に編集される入力値。
         /// </summary>
         /// <remarks>基本的にドメイン モデルにリダイレクトします。</remarks>
-        ReactiveProperty<object> Content { get; }
+        //ReactiveProperty<object> Content { get; }
         /// <summary>
         /// 入力値を説明する文字列形式。
         /// </summary>
@@ -29,7 +29,7 @@ namespace Romanesco.Common
         /// その概略として表示される文字列です。
         /// 基本的にドメイン モデルにリダイレクトします。
         /// </remarks>
-        ReactiveProperty<string> FormattedString { get; }
+        IReadOnlyReactiveProperty<string> FormattedString { get; }
         /// <summary>
         /// このオブジェクトの詳細を表示する操作が行われた際に、このストリームに通知します。
         /// </summary>

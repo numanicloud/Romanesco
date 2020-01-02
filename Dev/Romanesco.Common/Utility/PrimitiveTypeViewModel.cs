@@ -9,11 +9,9 @@ namespace Romanesco.Common.Utility
 {
     public class PrimitiveTypeViewModel<T> : IStateViewModel
     {
-        public ReactiveProperty<string> Title { get; }
+        public IReadOnlyReactiveProperty<string> Title { get; }
 
-        public ReactiveProperty<object> Content { get; }
-
-        public ReactiveProperty<string> FormattedString { get; }
+        public IReadOnlyReactiveProperty<string> FormattedString { get; }
 
         public IFieldState State { get; }
 
@@ -28,7 +26,6 @@ namespace Romanesco.Common.Utility
             State = state;
             PrimitiveContent = primitiveContent;
             Title = state.Title;
-            Content = state.Content;
             FormattedString = state.FormattedString;
             ShowDetail = Observable.Never<Unit>();
         }

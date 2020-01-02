@@ -16,7 +16,7 @@ namespace Romanesco.Model.Factories
         {
             EditorMemberAttribute GetMemberAttributeOrDefault(MemberInfo member)
             {
-                return member.GetCustomAttribute(typeof(EditorMemberAttribute)) as EditorMemberAttribute;
+                return member.GetCustomAttribute<EditorMemberAttribute>();
             }
 
             var type = settability.Type;
@@ -25,23 +25,17 @@ namespace Romanesco.Model.Factories
                 return null;
             }
 
+            settability.SetValue(Activator.CreateInstance(type));
+
             var properties = from p in type.GetProperties()
                              let attr = GetMemberAttributeOrDefault(p)
                              where attr != null
-                             select (state: interpret(new ValueSettability(p)), attr);
+                             select (state: interpret(new ValueSettability(settability.GetValue(), p)), attr);
             var fields = from f in type.GetFields()
                          let attr = GetMemberAttributeOrDefault(f)
                          where attr != null
-                         select (state: interpret(new ValueSettability(f)), attr);
+                         select (state: interpret(new ValueSettability(settability.GetValue(), f)), attr);
             var members = properties.Concat(fields).OrderBy(x => x.attr.Order).ToArray();
-
-            foreach (var m in members)
-            {
-                if (m.attr.Title != null)
-                {
-                    m.state.Title.Value = m.attr.Title;
-                }
-            }
 
             var memberStates = members.Select(x => x.state).ToArray();
             return new ClassState(settability, memberStates);

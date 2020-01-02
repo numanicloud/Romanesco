@@ -16,7 +16,7 @@ namespace Romanesco.View.DataContext
         public ReadOnlyReactiveCollection<StateViewContext> Elements { get; }
         public ReactiveProperty<int> SelectedIndex { get; } = new ReactiveProperty<int>();
         public ReactiveProperty<UserControl> SelectedControl { get; } = new ReactiveProperty<UserControl>();
-        public ReactiveProperty<string> Title => ViewModel.Title;
+        public IReadOnlyReactiveProperty<string> Title => ViewModel.Title;
 
         public ListContext(ListViewModel viewModel, ViewInterpretFunc interpreter)
         {

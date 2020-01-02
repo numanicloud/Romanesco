@@ -66,15 +66,16 @@ namespace Romanesco.Model
             Services.IProjectSettingProvider settingProvider)
         {
             var settings = settingProvider.GetSettings();
+            var instance = Activator.CreateInstance(settings.ProjectType);
 
             var interpreter = new ObjectInterpreter(factories);
             var properties = settings.ProjectType.GetProperties()
                 .Where(p => p.GetCustomAttribute<EditorMemberAttribute>() != null)
-                .Select(p => interpreter.InterpretAsState(p))
+                .Select(p => interpreter.InterpretAsState(instance, p))
                 .ToArray();
             var fields = settings.ProjectType.GetFields()
                 .Where(f => f.GetCustomAttribute<EditorMemberAttribute>() != null)
-                .Select(f => interpreter.InterpretAsState(f))
+                .Select(f => interpreter.InterpretAsState(instance, f))
                 .ToArray();
 
             var stateRoot = new StateRoot()

@@ -18,14 +18,14 @@ namespace Romanesco.Model
             Factories = factories;
         }
 
-        public IFieldState InterpretAsState(PropertyInfo property)
+        public IFieldState InterpretAsState(object projectObject, PropertyInfo property)
         {
-            return InterpretAsState(new ValueSettability(property));
+            return InterpretAsState(new ValueSettability(projectObject, property));
         }
 
-        public IFieldState InterpretAsState(FieldInfo field)
+        public IFieldState InterpretAsState(object projectObject, FieldInfo field)
         {
-            return InterpretAsState(new ValueSettability(field));
+            return InterpretAsState(new ValueSettability(projectObject, field));
         }
 
         private IFieldState InterpretAsState(ValueSettability settability)

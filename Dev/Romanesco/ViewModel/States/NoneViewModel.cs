@@ -7,26 +7,23 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 
-namespace Romanesco.ViewModel {
-    public class NoneViewModel : IStateViewModel {
+namespace Romanesco.ViewModel
+{
+    public class NoneViewModel : IStateViewModel
+    {
         private readonly NoneState state;
 
-        public ReactiveProperty<string> Title { get; }
+        public IReadOnlyReactiveProperty<string> Title => state.Title;
 
-        public ReactiveProperty<object> Content { get; }
+        public IReadOnlyReactiveProperty<string> FormattedString => state.FormattedString;
 
-        public ReactiveProperty<string> FormattedString { get; }
-
-        public IObservable<Unit> ShowDetail { get; }
+        public IObservable<Unit> ShowDetail => Observable.Never<Unit>();
 
         public IObservable<Exception> OnError => state.OnError;
 
-        public NoneViewModel(NoneState state) {
+        public NoneViewModel(NoneState state)
+        {
             this.state = state;
-            Title = state.Title;
-            Content = state.Content;
-            FormattedString = state.FormattedString;
-            ShowDetail = Observable.Never<Unit>();
         }
     }
 }

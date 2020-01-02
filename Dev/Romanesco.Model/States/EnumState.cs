@@ -18,7 +18,7 @@ namespace Romanesco.Model.States
 
         public ReactiveProperty<object> Content { get; } = new ReactiveProperty<object>();
 
-        public ReactiveProperty<string> FormattedString { get; }
+        public IReadOnlyReactiveProperty<string> FormattedString { get; }
 
         public Type Type { get; }
 
@@ -28,13 +28,17 @@ namespace Romanesco.Model.States
 
         public object[] Choices { get; }
 
+        public IObservable<Unit> OnEdited => Settability.OnValueChanged.Select(x => Unit.Default);
+
         public EnumState(ValueSettability settability, CommandHistory history)
         {
+            Title = new ReactiveProperty<string>(settability.MemberName);
             Type = settability.Type;
-            Title.Value = settability.MemberName;
             Settability = settability;
 
-            FormattedString = Content.Select(x => x.ToString()).ToReactiveProperty();
+            FormattedString = settability.OnValueChanged
+                .Select(x => x.ToString())
+                .ToReactiveProperty();
 
             var values = new List<object>();
             foreach (var value in Enum.GetValues(Type))
@@ -49,12 +53,12 @@ namespace Romanesco.Model.States
             }
             else
             {
-                Content.Value = Choices[0];
+                Settability.SetValue(Choices[0]);
             }
 
-            Content.Zip(Content.Skip(1), (a, b) => (a, b))
+            settability.OnValueChangedWithOldValue
                 .Where(_ => !history.IsOperating)
-                .Select(t => new ContentEditCommandMemento(x => Content.Value = x, t.a, t.b))
+                .Select(t => new ContentEditCommandMemento(x => Content.Value = x, t.old, t.value))
                 .Subscribe(history.PushMemento);
         }
     }

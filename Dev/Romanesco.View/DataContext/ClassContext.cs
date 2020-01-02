@@ -13,7 +13,7 @@ namespace Romanesco.View.DataContext
         public StateViewContext[] ChildViews { get; }
         public ReactiveProperty<UserControl> ClosedUpView { get; set; }
         public ClassViewModel ViewModel { get; set; }
-        public ReactiveProperty<string> Title => ViewModel.Title;
+        public IReadOnlyReactiveProperty<string> Title => ViewModel.Title;
 
         public ClassContext(ClassViewModel viewModel, StateViewContext[] childViews)
         {

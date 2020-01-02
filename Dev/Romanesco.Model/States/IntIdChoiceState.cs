@@ -3,6 +3,7 @@ using Romanesco.Common;
 using Romanesco.Common.Utility;
 using Romanesco.Model.Infrastructure;
 using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
@@ -12,17 +13,18 @@ namespace Romanesco.Model.States
     {
         private readonly Subject<Exception> onErrorSubject = new Subject<Exception>();
 
-        public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
-        public ReactiveProperty<object> Content { get; }
-        public ReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
+        public ReactiveProperty<string> Title { get; }
+        public IReadOnlyReactiveProperty<string> FormattedString { get; }
         public Type Type => typeof(int);
         public ValueSettability Settability { get; }
         public IObservable<Exception> OnError => onErrorSubject;
         public ReactiveProperty<MasterList> Master { get; } = new ReactiveProperty<MasterList>();
         public ReactiveProperty<IFieldState> SelectedItem { get; } = new ReactiveProperty<IFieldState>();
+        public IObservable<Unit> OnEdited => Settability.OnValueChanged.Select(x => Unit.Default);
 
         public IntIdChoiceState(ValueSettability settability, string masterName, MasterListContext context)
         {
+            Title = new ReactiveProperty<string>(settability.MemberName);
             Settability = settability;
 
             // IDisposableをハンドリングするべき。リスト内にこれがある場合、要素削除のときにリークするおそれがある
@@ -31,12 +33,11 @@ namespace Romanesco.Model.States
 
             UpdateChoices(masterName, context);
 
-            Title.Value = settability.MemberName;
             FormattedString = SelectedItem.Select(item =>
             {
                 try
                 {
-                    return item.ToString();
+                    return item?.ToString() ?? "<null>";
                 }
                 catch (Exception ex)
                 {
@@ -44,8 +45,6 @@ namespace Romanesco.Model.States
                     return "";
                 }
             }).ToReactiveProperty();
-            Content = SelectedItem.Select(item => Master.Value.GetId(item.Content.Value))
-                .ToReactiveProperty();
         }
 
         private void UpdateChoices(string masterName, MasterListContext context)

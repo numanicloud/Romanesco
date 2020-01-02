@@ -14,13 +14,13 @@ namespace Romanesco.Common
     {
         private readonly Subject<Exception> onErrorSubject = new Subject<Exception>();
 
-        public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
-        public ReactiveProperty<object> Content { get; }
-        public ReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
+        public ReactiveProperty<string> Title { get; }
+        public IReadOnlyReactiveProperty<string> FormattedString { get; }
         public Type Type => typeof(T);
         public ReactiveProperty<T> PrimitiveContent { get; } = new ReactiveProperty<T>();
         public ValueSettability Settability { get; }
         public IObservable<Exception> OnError => onErrorSubject;
+        public IObservable<Unit> OnEdited => Settability.OnValueChanged.Select(x => Unit.Default);
 
         public PrimitiveTypeState(ValueSettability settability, CommandHistory history)
         {
@@ -30,7 +30,9 @@ namespace Romanesco.Common
                     nameof(settability));
             }
 
-            Title.Value = settability.MemberName;
+            Settability = settability;
+            Title = new ReactiveProperty<string>(settability.MemberName);
+            
             FormattedString = PrimitiveContent.Select(x =>
             {
                 try
@@ -42,14 +44,14 @@ namespace Romanesco.Common
                     onErrorSubject.OnNext(ContentAccessException.GetFormattedStringError(ex));
                     return "";
                 }
-            }).ToReactiveProperty();
-            Content = PrimitiveContent.Select(x => (object)x).ToReactiveProperty();
-            Settability = settability;
+            }).ToReadOnlyReactiveProperty();
 
-            PrimitiveContent.Zip(PrimitiveContent.Skip(1), (a, b) => (a, b))
+            Settability.OnValueChangedWithOldValue
                 .Where(_ => !history.IsOperating)
-                .Select(t => new ContentEditCommandMemento(x => PrimitiveContent.Value = (T)x, t.a, t.b))
+                .Select(t => new ContentEditCommandMemento(x => PrimitiveContent.Value = (T)x, t.old, t.value))
                 .Subscribe(history.PushMemento);
+
+            PrimitiveContent.Subscribe(value => Settability.SetValue(value));
         }
 
         protected virtual string SelectFormattedString(T value)

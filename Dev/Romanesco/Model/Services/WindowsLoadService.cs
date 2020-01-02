@@ -19,12 +19,14 @@ namespace Romanesco.Model.Services
         public Project Create(ObjectInterpreter interpreter)
         {
             var settings = projectSettingProvider.GetSettings();
+            var instance = Activator.CreateInstance(settings.ProjectType);
+
             var properties = settings.ProjectType.GetProperties()
                 .Where(p => p.GetCustomAttribute<EditorMemberAttribute>() != null)
-                .Select(p => interpreter.InterpretAsState(p));
+                .Select(p => interpreter.InterpretAsState(instance, p));
             var fields = settings.ProjectType.GetFields()
                 .Where(f => f.GetCustomAttribute<EditorMemberAttribute>() != null)
-                .Select(f => interpreter.InterpretAsState(f));
+                .Select(f => interpreter.InterpretAsState(instance, f));
             var states = properties.Concat(fields).ToArray();
             var root = new StateRoot()
             {

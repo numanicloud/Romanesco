@@ -13,11 +13,9 @@ namespace Romanesco.ViewModel.States
     {
         private readonly IntIdChoiceState state;
 
-        public ReactiveProperty<string> Title => state.Title;
+        public IReadOnlyReactiveProperty<string> Title => state.Title;
 
-        public ReactiveProperty<object> Content => state.Content;
-
-        public ReactiveProperty<string> FormattedString => state.FormattedString;
+        public IReadOnlyReactiveProperty<string> FormattedString => state.FormattedString;
 
         public IObservable<Unit> ShowDetail => Observable.Never<Unit>();
 

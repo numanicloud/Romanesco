@@ -16,10 +16,8 @@ namespace Romanesco.ViewModel.States
         private readonly ViewModelInterpretFunc interpreter;
         private readonly Subject<Unit> showDetailSubject = new Subject<Unit>();
 
-        public ReactiveProperty<string> Title => state.Title;
-        public ReactiveProperty<object> Content => state.Content;
-        public ReactiveProperty<IList> ArrayContent => state.ArrayContent;
-        public ReactiveProperty<string> FormattedString => state.FormattedString;
+        public IReadOnlyReactiveProperty<string> Title => state.Title;
+        public IReadOnlyReactiveProperty<string> FormattedString => state.FormattedString;
         public IObservable<Unit> ShowDetail => showDetailSubject;
         public ReadOnlyReactiveCollection<IStateViewModel> Elements { get; }
         public Type ElementType => state.ElementType;

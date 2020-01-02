@@ -15,53 +15,54 @@ namespace Romanesco.Model.States
     {
         private readonly Subject<Unit> onContentsChanged = new Subject<Unit>();
         private readonly ReactiveCollection<(IFieldState state, IDisposable disposable)> elementsMutable;
-        private readonly Type elementType;
         private readonly StateInterpretFunc interpret;
         private readonly CommandHistory history;
+        private readonly IList listInstance;
 
-        public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
-        public ReactiveProperty<object> Content { get; } = new ReactiveProperty<object>();
-        public ReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
+        public ReactiveProperty<string> Title { get; }
+        public IReadOnlyReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
         public Type Type => Settability.Type;
-        public Type ElementType => elementType;
+        public Type ElementType { get; }
         public ValueSettability Settability { get; }
-        public ReactiveProperty<IList> ArrayContent { get; } = new ReactiveProperty<IList>();
         public ReadOnlyReactiveCollection<IFieldState> Elements { get; }
         public IObservable<Exception> OnError => Observable.Never<Exception>();
+        public IObservable<Unit> OnEdited => onContentsChanged;
 
         public ListState(ValueSettability settability, StateInterpretFunc interpret, CommandHistory history)
         {
+            Title = new ReactiveProperty<string>(settability.MemberName);
             elementsMutable = new ReactiveCollection<(IFieldState state, IDisposable disposable)>();
             Elements = elementsMutable.ToReadOnlyReactiveCollection(x => x.state);
             Settability = settability;
             this.interpret = interpret;
             this.history = history;
-            Title.Value = settability.MemberName;
+
+            ElementType = Settability.Type.GetGenericArguments()[0];
+            listInstance = Settability.GetValue() as IList;
+
             FormattedString = onContentsChanged.Select(_ => $"Count = {elementsMutable.Count}")
                 .ToReactiveProperty("Count = 0");
-
-            elementType = Settability.Type.GetGenericArguments()[0];
-            ArrayContent.Value = Activator.CreateInstance(settability.Type) as IList;
-            Content = onContentsChanged.Select(x => (object)ArrayContent.Value)
-                .ToReactiveProperty(ArrayContent.Value, ReactivePropertyMode.RaiseLatestValueOnSubscribe);
-            Content.Subscribe(_ => Console.WriteLine("Hoge"), ex => throw ex);
         }
 
         public IFieldState AddNewElement()
         {
             var index = elementsMutable.Count;
-            var state = interpret(new ValueSettability(
-                elementType,
-                $"{index}",
-                (subject, value, index) =>
-                {
-                    var array = subject as IList;
-                    array[(int)index[0]] = value;
-                }));
-            IDisposable disposable = SubscribeElementState(state);
+            listInstance.Add(GetDefaultValue());
 
+            var settability = new ValueSettability(
+                ElementType,
+                $"{index}",
+                (value, oldValue) =>
+                {
+                    var index = listInstance.IndexOf(oldValue);
+                    listInstance[index] = value;
+                },
+                listInstance[index]);
+            var state = interpret(settability);
+
+            var disposable = SubscribeElementState(state);
             elementsMutable.Add((state, disposable));
-            ArrayContent.Value.Add(state.Content.Value);
+
             onContentsChanged.OnNext(Unit.Default);
 
             if (!history.IsOperating)
@@ -73,26 +74,37 @@ namespace Romanesco.Model.States
             return state;
         }
 
+        private object GetDefaultValue()
+        {
+            if (ElementType.IsValueType)
+            {
+                return Activator.CreateInstance(ElementType);
+            }
+
+            return null;
+        }
+
         private IDisposable SubscribeElementState(IFieldState state)
         {
-            return state.Content
-                .Skip(1)
+            return state.OnEdited
                 .Where(value => value != null)
-                .Subscribe(value =>
-                {
-                    var index = elementsMutable.IndexOf(x => x.state == state);
-                    state.Settability?.SetValue(ArrayContent.Value, value, new object[] { index });
-                    onContentsChanged.OnNext(Unit.Default);
-                });
+                .Subscribe(value => onContentsChanged.OnNext(Unit.Default));
         }
 
         public void Insert(IFieldState state, int index)
         {
-            var disposable = SubscribeElementState(state);
+            listInstance.Insert(index, state.Settability.GetValue());
 
+            var disposable = SubscribeElementState(state);
             elementsMutable.Insert(index, (state, disposable));
-            ArrayContent.Value.Insert(index, state.Content.Value);
+
             onContentsChanged.OnNext(Unit.Default);
+
+            if (!history.IsOperating)
+            {
+                var memento = new AddElementToListCommandMemento(this, state, index);
+                history.PushMemento(memento);
+            }
         }
 
         public void RemoveAt(int index)
@@ -101,7 +113,7 @@ namespace Romanesco.Model.States
 
             elementsMutable[index].disposable.Dispose();
             elementsMutable.RemoveAt(index);
-            ArrayContent.Value.RemoveAt(index);
+            listInstance.RemoveAt(index);
             onContentsChanged.OnNext(Unit.Default);
 
             for (int i = index; i < elementsMutable.Count; i++)

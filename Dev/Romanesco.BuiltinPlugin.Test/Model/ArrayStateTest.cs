@@ -2,6 +2,7 @@
 using Romanesco.Common.Utility;
 using Romanesco.Model.States;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,8 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 新規要素を追加するとStateが増える()
         {
-            var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
+            var project = new Project();
+            var settability = new ValueSettability(project, typeof(Project).GetProperty("Array"));
             var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
@@ -31,12 +33,13 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 新規要素を追加すると実配列の要素が増える()
         {
-            var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
+            var project = new Project();
+            var settability = new ValueSettability(project, typeof(Project).GetProperty("Array"));
             var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
 
-            var array = state.ArrayContent.Value;
+            var array = state.Settability.GetValue() as IList;
             Assert.Single(array);
             Assert.IsType<int>(array[0]);
             Assert.Equal(0, array[0]);
@@ -45,17 +48,18 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 新規要素の値を書き換えると実配列の中身が書き換わる()
         {
-            var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
+            var project = new Project();
+            var settability = new ValueSettability(project, typeof(Project).GetProperty("Array"));
             var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
             var notified = 0;
 
             var element = state.AddNewElement() as IntState;
-            element.Content.Subscribe(x => notified++);
+            element.PrimitiveContent.Subscribe(x => notified++);
             element.PrimitiveContent.Value = 19;
             element.PrimitiveContent.Value = 23;
             element.PrimitiveContent.Value = 19;
 
-            var array = state.ArrayContent.Value;
+            var array = state.Settability.GetValue() as IList;
             Assert.Equal(4, notified);
             Assert.Equal(19, array[0]);
         }
@@ -63,7 +67,8 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 新規要素を追加すると文字列形式が変化する()
         {
-            var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
+            var project = new Project();
+            var settability = new ValueSettability(project, typeof(Project).GetProperty("Array"));
             var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
@@ -74,7 +79,8 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 要素を削除するとStateの要素数が減る()
         {
-            var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
+            var project = new Project();
+            var settability = new ValueSettability(project, typeof(Project).GetProperty("Array"));
             var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
@@ -86,13 +92,14 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 要素を削除すると実配列の要素数が減る()
         {
-            var settability = new ValueSettability(typeof(Project).GetProperty("Array"));
+            var project = new Project();
+            var settability = new ValueSettability(project, typeof(Project).GetProperty("Array"));
             var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
 
             state.AddNewElement();
             state.RemoveAt(0);
 
-            Assert.Empty(state.ArrayContent.Value);
+            Assert.Empty(state.Settability.GetValue() as IList);
         }
     }
 }
