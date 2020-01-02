@@ -46,11 +46,14 @@ namespace Romanesco.Common
                 }
             }).ToReadOnlyReactiveProperty();
 
+            // Undo/Redo登録
             Storage.OnValueChangedWithOldValue
                 .Where(_ => !history.IsOperating)
                 .Select(t => new ContentEditCommandMemento(x => PrimitiveContent.Value = (T)x, t.old, t.value))
                 .Subscribe(history.PushMemento);
 
+            // 初期値を読み込み、変更を反映する処理を登録
+            PrimitiveContent.Value = (T)Storage.GetValue();
             PrimitiveContent.Subscribe(value => Storage.SetValue(value));
         }
 

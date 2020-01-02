@@ -16,8 +16,6 @@ namespace Romanesco.Model.States
 
         public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
 
-        public ReactiveProperty<object> Content { get; } = new ReactiveProperty<object>();
-
         public IReadOnlyReactiveProperty<string> FormattedString { get; }
 
         public Type Type { get; }
@@ -26,9 +24,9 @@ namespace Romanesco.Model.States
 
         public IObservable<Exception> OnError => onError_;
 
-        public object[] Choices { get; }
-
         public IObservable<Unit> OnEdited => Storage.OnValueChanged.Select(x => Unit.Default);
+
+        public object[] Choices { get; }
 
         public EnumState(ValueStorage storage, CommandHistory history)
         {
@@ -50,15 +48,13 @@ namespace Romanesco.Model.States
             if (Choices.Length == 0)
             {
                 onError_.OnNext(new Exception($"列挙体 {storage.Type.Name} に属する列挙子が 0 個でした。"));
-            }
-            else
-            {
-                Storage.SetValue(Choices[0]);
+                return;
             }
 
+            // Undo/Redo登録
             storage.OnValueChangedWithOldValue
                 .Where(_ => !history.IsOperating)
-                .Select(t => new ContentEditCommandMemento(x => Content.Value = x, t.old, t.value))
+                .Select(t => new ContentEditCommandMemento(x => Storage.SetValue(x), t.old, t.value))
                 .Subscribe(history.PushMemento);
         }
     }

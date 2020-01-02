@@ -1,6 +1,8 @@
-﻿using Romanesco.Model.States;
+﻿using Romanesco.Common;
+using Romanesco.Model.States;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -35,6 +37,11 @@ namespace Romanesco.Model.Infrastructure
             {
                 throw new Exception("Given master is not a list of class/struct.");
             }
+        }
+
+        public IFieldState GetById(object id)
+        {
+            return State.Elements.FirstOrDefault(state => getter(state.Storage.GetValue()) == id);
         }
 
         public object GetId(object subject)

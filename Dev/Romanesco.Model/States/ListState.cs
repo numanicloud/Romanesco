@@ -4,6 +4,7 @@ using Romanesco.Common.Utility;
 using Romanesco.Model.Infrastructure;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -38,10 +39,41 @@ namespace Romanesco.Model.States
             this.history = history;
 
             ElementType = Storage.Type.GetGenericArguments()[0];
-            listInstance = Storage.GetValue() as IList;
 
             FormattedString = onContentsChanged.Select(_ => $"Count = {elementsMutable.Count}")
                 .ToReactiveProperty("Count = 0");
+
+            // 初期値を読み込み。初期値が無かったら生成
+            listInstance = Storage.GetValue() as IList;
+            if (listInstance == null)
+            {
+                listInstance = Activator.CreateInstance(typeof(List<>).MakeGenericType(ElementType)) as IList;
+            }
+            else
+            {
+                LoadInitialValue(listInstance, interpret);
+            }
+        }
+
+        private void LoadInitialValue(IList loadedListInstance, StateInterpretFunc interpret)
+        {
+            int index = 0;
+            foreach (var item in loadedListInstance)
+            {
+                var storage = new ValueStorage(
+                    ElementType,
+                    $"{index}",
+                    (value, oldValue) =>
+                    {
+                        var index = loadedListInstance.IndexOf(oldValue);
+                        loadedListInstance[index] = value;
+                    },
+                    item);
+                var state = interpret(storage);
+
+                var disposable = SubscribeElementState(state);
+                elementsMutable.Add((state, disposable));
+            }
         }
 
         public IFieldState AddNewElement()

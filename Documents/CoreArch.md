@@ -54,6 +54,8 @@ Undo/Redo を実際に実行するために必要。Stateたちに行き渡ら�
 * ISaveServiceの実装
 * 仮のプロジェクト型を与える機能(IProjectSettingProviderの仮実装)
 
+`IFieldState` の実装者が初期値をきちんとロードしないといけないのが気がかり。明示的にロードする必要性があることを分かりやすくしたい
+
 ## Gen 3
 
 * IHistoryServiceの実装

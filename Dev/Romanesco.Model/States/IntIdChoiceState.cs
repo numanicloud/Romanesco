@@ -45,13 +45,23 @@ namespace Romanesco.Model.States
                     return "";
                 }
             }).ToReactiveProperty();
+
+            // 値の変化を生データへ反映
+            SelectedItem.Subscribe(x =>
+            {
+                var id = x != null ? Master.Value.GetId(x.Storage.GetValue()) : -1;
+                Storage.SetValue(id);
+            });
         }
 
+        // 編集中は呼ばれないが、ロード中はこのStateより後にマスターが読み込まれる場合があるので遅延できるように
         private void UpdateChoices(string masterName, MasterListContext context)
         {
             if (context.Masters.TryGetValue(masterName, out var list) && list.IdType == typeof(int))
             {
                 Master.Value = list;
+                // 初期値をロード
+                SelectedItem.Value = Master.Value.GetById(Storage.GetValue());
             }
             else
             {

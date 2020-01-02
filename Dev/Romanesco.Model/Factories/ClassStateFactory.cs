@@ -25,7 +25,11 @@ namespace Romanesco.Model.Factories
                 return null;
             }
 
-            settability.SetValue(Activator.CreateInstance(type));
+            // 新規作成時は null である場合がある。ロード時は値が入ってるので上書き禁止
+            if (settability.GetValue() == null)
+            {
+                settability.SetValue(Activator.CreateInstance(type));
+            }
 
             var properties = from p in type.GetProperties()
                              let attr = GetMemberAttributeOrDefault(p)
