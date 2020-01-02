@@ -12,7 +12,7 @@ namespace Romanesco.Model.Factories
 {
     public class ClassStateFactory : IStateFactory
     {
-        public IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret)
+        public IFieldState InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
         {
             EditorMemberAttribute GetMemberAttributeOrDefault(MemberInfo member)
             {
@@ -30,11 +30,11 @@ namespace Romanesco.Model.Factories
             var properties = from p in type.GetProperties()
                              let attr = GetMemberAttributeOrDefault(p)
                              where attr != null
-                             select (state: interpret(new ValueSettability(settability.GetValue(), p)), attr);
+                             select (state: interpret(new ValueStorage(settability.GetValue(), p)), attr);
             var fields = from f in type.GetFields()
                          let attr = GetMemberAttributeOrDefault(f)
                          where attr != null
-                         select (state: interpret(new ValueSettability(settability.GetValue(), f)), attr);
+                         select (state: interpret(new ValueStorage(settability.GetValue(), f)), attr);
             var members = properties.Concat(fields).OrderBy(x => x.attr.Order).ToArray();
 
             var memberStates = members.Select(x => x.state).ToArray();

@@ -11,7 +11,7 @@ namespace Romanesco.Common.Utility
     /// <summary>
     /// プロパティ、フィールドというような、何らかの値を代入できるものを表します。
     /// </summary>
-    public class ValueSettability
+    public class ValueStorage
     {
         private readonly SetterFunction setter;
         private readonly Subject<object> onValueChangedSubject = new Subject<object>();
@@ -25,11 +25,11 @@ namespace Romanesco.Common.Utility
         public IObservable<(object value, object old)> OnValueChangedWithOldValue => onValueChangedSubjectWithOldValue;
 
         /// <summary>
-        /// プロパティをラップし、他の要素と同様に <see cref="ValueSettability"/> として扱えるようにします。
+        /// プロパティをラップし、他の要素と同様に <see cref="ValueStorage"/> として扱えるようにします。
         /// </summary>
         /// <param name="subject">プロパティを持っているオブジェクト。</param>
         /// <param name="property">プロパティを表す PropertyInfo。</param>
-        public ValueSettability(object subject, PropertyInfo property)
+        public ValueStorage(object subject, PropertyInfo property)
         {
             setter = (value, oldValue) => property.SetValue(subject, value);
             Type = property.PropertyType;
@@ -40,11 +40,11 @@ namespace Romanesco.Common.Utility
         }
 
         /// <summary>
-        /// フィールドをラップし、他の要素と同様に <see cref="ValueSettability"/> として扱えるようにします。
+        /// フィールドをラップし、他の要素と同様に <see cref="ValueStorage"/> として扱えるようにします。
         /// </summary>
         /// <param name="subject">フィールドを持っているオブジェクト。</param>
         /// <param name="field">フィールドを表す FieldInfo。</param>
-        public ValueSettability(object subject, FieldInfo field)
+        public ValueStorage(object subject, FieldInfo field)
         {
             setter = (value, oldValue) => field.SetValue(subject, value);
             Type = field.FieldType;
@@ -55,7 +55,7 @@ namespace Romanesco.Common.Utility
         }
 
         /// <summary>
-        /// デリゲートをラップし、他の要素と同様に <see cref="ValueSettability"/> として扱えるようにします。
+        /// デリゲートをラップし、他の要素と同様に <see cref="ValueStorage"/> として扱えるようにします。
         /// </summary>
         /// <param name="type"></param>
         /// <param name="memberName"></param>
@@ -68,7 +68,7 @@ namespace Romanesco.Common.Utility
         ///     値の取得が要求されたときに呼び出されるデリゲート。
         ///     第1引数:インデクサーのインデックスなど、取得に関するその他の情報の配列。
         /// </param>
-        public ValueSettability(Type type, string memberName, SetterFunction setter, object initialValue)
+        public ValueStorage(Type type, string memberName, SetterFunction setter, object initialValue)
         {
             this.setter = setter;
             Type = type;

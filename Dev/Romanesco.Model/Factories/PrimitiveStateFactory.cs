@@ -17,7 +17,7 @@ namespace Romanesco.Model.Factories
             this.history = history;
         }
 
-        public IFieldState InterpretAsState(ValueSettability settability,
+        public IFieldState InterpretAsState(ValueStorage settability,
             StateInterpretFunc interpret)
         {
             if (settability.Type == typeof(int)) return new IntState(settability, history);

@@ -7,12 +7,12 @@ using System.Text;
 namespace Romanesco.Common
 {
 
-    public delegate IFieldState StateInterpretFunc(ValueSettability settability);
+    public delegate IFieldState StateInterpretFunc(ValueStorage settability);
     public delegate IFieldState InterpretProperty(PropertyInfo propertyInfo);
     public delegate IFieldState InterpretField(FieldInfo fieldInfo);
 
     public interface IStateFactory
     {
-        IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret);
+        IFieldState InterpretAsState(ValueStorage settability, StateInterpretFunc interpret);
     }
 }

@@ -18,20 +18,20 @@ namespace Romanesco.Common
         public IReadOnlyReactiveProperty<string> FormattedString { get; }
         public Type Type => typeof(T);
         public ReactiveProperty<T> PrimitiveContent { get; } = new ReactiveProperty<T>();
-        public ValueSettability Settability { get; }
+        public ValueStorage Storage { get; }
         public IObservable<Exception> OnError => onErrorSubject;
-        public IObservable<Unit> OnEdited => Settability.OnValueChanged.Select(x => Unit.Default);
+        public IObservable<Unit> OnEdited => Storage.OnValueChanged.Select(x => Unit.Default);
 
-        public PrimitiveTypeState(ValueSettability settability, CommandHistory history)
+        public PrimitiveTypeState(ValueStorage storage, CommandHistory history)
         {
-            if (settability.Type != Type)
+            if (storage.Type != Type)
             {
-                throw new ArgumentException($"一致しない型のフィールドが渡されました。Expected: {Type.FullName}, Actual: {Settability.Type.FullName}",
-                    nameof(settability));
+                throw new ArgumentException($"一致しない型のフィールドが渡されました。Expected: {Type.FullName}, Actual: {Storage.Type.FullName}",
+                    nameof(storage));
             }
 
-            Settability = settability;
-            Title = new ReactiveProperty<string>(settability.MemberName);
+            Storage = storage;
+            Title = new ReactiveProperty<string>(storage.MemberName);
             
             FormattedString = PrimitiveContent.Select(x =>
             {
@@ -46,12 +46,12 @@ namespace Romanesco.Common
                 }
             }).ToReadOnlyReactiveProperty();
 
-            Settability.OnValueChangedWithOldValue
+            Storage.OnValueChangedWithOldValue
                 .Where(_ => !history.IsOperating)
                 .Select(t => new ContentEditCommandMemento(x => PrimitiveContent.Value = (T)x, t.old, t.value))
                 .Subscribe(history.PushMemento);
 
-            PrimitiveContent.Subscribe(value => Settability.SetValue(value));
+            PrimitiveContent.Subscribe(value => Storage.SetValue(value));
         }
 
         protected virtual string SelectFormattedString(T value)

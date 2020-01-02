@@ -21,24 +21,24 @@ namespace Romanesco.Model.States
 
         public ReactiveProperty<string> Title { get; }
         public IReadOnlyReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
-        public Type Type => Settability.Type;
+        public Type Type => Storage.Type;
         public Type ElementType { get; }
-        public ValueSettability Settability { get; }
+        public ValueStorage Storage { get; }
         public ReadOnlyReactiveCollection<IFieldState> Elements { get; }
         public IObservable<Exception> OnError => Observable.Never<Exception>();
         public IObservable<Unit> OnEdited => onContentsChanged;
 
-        public ListState(ValueSettability settability, StateInterpretFunc interpret, CommandHistory history)
+        public ListState(ValueStorage storage, StateInterpretFunc interpret, CommandHistory history)
         {
-            Title = new ReactiveProperty<string>(settability.MemberName);
+            Title = new ReactiveProperty<string>(storage.MemberName);
             elementsMutable = new ReactiveCollection<(IFieldState state, IDisposable disposable)>();
             Elements = elementsMutable.ToReadOnlyReactiveCollection(x => x.state);
-            Settability = settability;
+            Storage = storage;
             this.interpret = interpret;
             this.history = history;
 
-            ElementType = Settability.Type.GetGenericArguments()[0];
-            listInstance = Settability.GetValue() as IList;
+            ElementType = Storage.Type.GetGenericArguments()[0];
+            listInstance = Storage.GetValue() as IList;
 
             FormattedString = onContentsChanged.Select(_ => $"Count = {elementsMutable.Count}")
                 .ToReactiveProperty("Count = 0");
@@ -49,7 +49,7 @@ namespace Romanesco.Model.States
             var index = elementsMutable.Count;
             listInstance.Add(GetDefaultValue());
 
-            var settability = new ValueSettability(
+            var settability = new ValueStorage(
                 ElementType,
                 $"{index}",
                 (value, oldValue) =>
@@ -93,7 +93,7 @@ namespace Romanesco.Model.States
 
         public void Insert(IFieldState state, int index)
         {
-            listInstance.Insert(index, state.Settability.GetValue());
+            listInstance.Insert(index, state.Storage.GetValue());
 
             var disposable = SubscribeElementState(state);
             elementsMutable.Insert(index, (state, disposable));

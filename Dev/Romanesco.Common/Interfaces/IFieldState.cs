@@ -35,7 +35,7 @@ namespace Romanesco.Common
         /// この要素の入力値が実際に代入される格納先を表します。
         /// シリアライズ/デシリアライズの際に使用されます。
         /// </summary>
-        ValueSettability Settability { get; }
+        ValueStorage Storage { get; }
 
         /// <summary>
         /// メンバーの編集操作にあたってエラーが生じた場合、このストリームに通知します。

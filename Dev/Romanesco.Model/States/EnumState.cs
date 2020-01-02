@@ -22,21 +22,21 @@ namespace Romanesco.Model.States
 
         public Type Type { get; }
 
-        public ValueSettability Settability { get; }
+        public ValueStorage Storage { get; }
 
         public IObservable<Exception> OnError => onError_;
 
         public object[] Choices { get; }
 
-        public IObservable<Unit> OnEdited => Settability.OnValueChanged.Select(x => Unit.Default);
+        public IObservable<Unit> OnEdited => Storage.OnValueChanged.Select(x => Unit.Default);
 
-        public EnumState(ValueSettability settability, CommandHistory history)
+        public EnumState(ValueStorage storage, CommandHistory history)
         {
-            Title = new ReactiveProperty<string>(settability.MemberName);
-            Type = settability.Type;
-            Settability = settability;
+            Title = new ReactiveProperty<string>(storage.MemberName);
+            Type = storage.Type;
+            Storage = storage;
 
-            FormattedString = settability.OnValueChanged
+            FormattedString = storage.OnValueChanged
                 .Select(x => x.ToString())
                 .ToReactiveProperty();
 
@@ -49,14 +49,14 @@ namespace Romanesco.Model.States
 
             if (Choices.Length == 0)
             {
-                onError_.OnNext(new Exception($"列挙体 {settability.Type.Name} に属する列挙子が 0 個でした。"));
+                onError_.OnNext(new Exception($"列挙体 {storage.Type.Name} に属する列挙子が 0 個でした。"));
             }
             else
             {
-                Settability.SetValue(Choices[0]);
+                Storage.SetValue(Choices[0]);
             }
 
-            settability.OnValueChangedWithOldValue
+            storage.OnValueChangedWithOldValue
                 .Where(_ => !history.IsOperating)
                 .Select(t => new ContentEditCommandMemento(x => Content.Value = x, t.old, t.value))
                 .Subscribe(history.PushMemento);

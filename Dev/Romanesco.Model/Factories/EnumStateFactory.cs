@@ -16,7 +16,7 @@ namespace Romanesco.Model.Factories
             this.history = history;
         }
 
-        public IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret)
+        public IFieldState InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
         {
             if (settability.Type.IsEnum)
             {

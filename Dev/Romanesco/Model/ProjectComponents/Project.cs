@@ -17,7 +17,7 @@ namespace Romanesco.Model.ProjectComponents
 
         public ProjectData ToData(IStateSerializer serializer)
         {
-            var jsonRoots = Root.States.Select(s => s.Settability.GetValue()).ToArray();
+            var jsonRoots = Root.States.Select(s => s.Storage.GetValue()).ToArray();
             return new ProjectData
             {
                 AssemblyPath = Settings.Assembly.Location,

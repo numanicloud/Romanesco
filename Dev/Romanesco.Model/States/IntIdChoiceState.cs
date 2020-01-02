@@ -16,16 +16,16 @@ namespace Romanesco.Model.States
         public ReactiveProperty<string> Title { get; }
         public IReadOnlyReactiveProperty<string> FormattedString { get; }
         public Type Type => typeof(int);
-        public ValueSettability Settability { get; }
+        public ValueStorage Storage { get; }
         public IObservable<Exception> OnError => onErrorSubject;
         public ReactiveProperty<MasterList> Master { get; } = new ReactiveProperty<MasterList>();
         public ReactiveProperty<IFieldState> SelectedItem { get; } = new ReactiveProperty<IFieldState>();
-        public IObservable<Unit> OnEdited => Settability.OnValueChanged.Select(x => Unit.Default);
+        public IObservable<Unit> OnEdited => Storage.OnValueChanged.Select(x => Unit.Default);
 
-        public IntIdChoiceState(ValueSettability settability, string masterName, MasterListContext context)
+        public IntIdChoiceState(ValueStorage storage, string masterName, MasterListContext context)
         {
-            Title = new ReactiveProperty<string>(settability.MemberName);
-            Settability = settability;
+            Title = new ReactiveProperty<string>(storage.MemberName);
+            Storage = storage;
 
             // IDisposableをハンドリングするべき。リスト内にこれがある場合、要素削除のときにリークするおそれがある
             context.OnKeyAdded.Where(key => masterName == key)

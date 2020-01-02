@@ -14,7 +14,7 @@ namespace Romanesco.Model.States
         public ReactiveProperty<object> Content { get; } = new ReactiveProperty<object>();
         public IReadOnlyReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
         public Type Type => typeof(object);
-        public ValueSettability Settability { get; } = null;
+        public ValueStorage Storage { get; } = null;
         public IObservable<Exception> OnError => Observable.Never<Exception>();
         public IObservable<Unit> OnEdited => Observable.Never<Unit>();
     }

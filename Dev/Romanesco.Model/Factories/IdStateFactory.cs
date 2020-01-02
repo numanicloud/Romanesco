@@ -18,7 +18,7 @@ namespace Romanesco.Model.Factories
             this.context = context;
         }
 
-        public IFieldState InterpretAsState(ValueSettability settability, StateInterpretFunc interpret)
+        public IFieldState InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
         {
             var type = settability.Type;
             var attr = settability.Attributes.OfType<EditorChoiceOfMasterAttribute>().FirstOrDefault();

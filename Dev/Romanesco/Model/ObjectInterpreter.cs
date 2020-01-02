@@ -20,15 +20,15 @@ namespace Romanesco.Model
 
         public IFieldState InterpretAsState(object projectObject, PropertyInfo property)
         {
-            return InterpretAsState(new ValueSettability(projectObject, property));
+            return InterpretAsState(new ValueStorage(projectObject, property));
         }
 
         public IFieldState InterpretAsState(object projectObject, FieldInfo field)
         {
-            return InterpretAsState(new ValueSettability(projectObject, field));
+            return InterpretAsState(new ValueStorage(projectObject, field));
         }
 
-        private IFieldState InterpretAsState(ValueSettability settability)
+        private IFieldState InterpretAsState(ValueStorage settability)
         {
             foreach (var factory in Factories)
             {

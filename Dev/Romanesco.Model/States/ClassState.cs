@@ -16,16 +16,16 @@ namespace Romanesco.Model.States {
 
         public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
         public IReadOnlyReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
-        public Type Type => Settability.Type;
-        public ValueSettability Settability { get; }
+        public Type Type => Storage.Type;
+        public ValueStorage Storage { get; }
         public Common.IFieldState[] Fields { get; }
         public IObservable<Exception> OnError => onErrorSubject;
         public IObservable<Unit> OnEdited { get; }
 
-        public ClassState(ValueSettability settability, Common.IFieldState[] fields)
+        public ClassState(ValueStorage storage, Common.IFieldState[] fields)
         {
-            Title = new ReactiveProperty<string>(settability.MemberName);
-            Settability = settability;
+            Title = new ReactiveProperty<string>(storage.MemberName);
+            Storage = storage;
             Fields = fields;
 
             OnEdited = Observable.Merge(fields.Select(x => x.OnEdited));
@@ -34,14 +34,14 @@ namespace Romanesco.Model.States {
             {
                 try
                 {
-                    return Settability.GetValue().ToString();
+                    return Storage.GetValue().ToString();
                 }
                 catch (Exception ex)
                 {
                     onErrorSubject.OnNext(ContentAccessException.GetFormattedStringError(ex));
                     return "";
                 }
-            }).ToReadOnlyReactiveProperty(settability.GetValue().ToString());
+            }).ToReadOnlyReactiveProperty(storage.GetValue().ToString());
         }
     }
 }
