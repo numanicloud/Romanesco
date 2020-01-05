@@ -12,12 +12,14 @@ namespace Romanesco.Model.EditorState
         private readonly IProjectHistoryService historyService;
         private readonly Project project;
 
-        public override bool CanSave => true;
+        public override string Title => "Romanesco - 新規プロジェクト";
 
-        public NewEditorState(Editor editor, Project project) : base(editor)
+        public NewEditorState(EditorContext context, Project project) : base(context)
         {
-            loadService = new NullLoadService();
-            saveService = new WindowsSaveService(project, null, new NewtonsoftStateSerializer());
+            var deserializer = new NewtonsoftStateDeserializer();
+            var serializer = new NewtonsoftStateSerializer();
+            loadService = new WindowsLoadService(context, deserializer);
+            saveService = new WindowsSaveService(project, serializer);
             historyService = new NullHistoryService();
             this.project = project;
         }
@@ -30,9 +32,14 @@ namespace Romanesco.Model.EditorState
 
         public override void OnSave()
         {
-            Editor.ChangeState(new CleanEditorState(Editor, project));
+            Context.Editor.ChangeState(new CleanEditorState(Context, project));
         }
 
         public override void OnSaveAs() => OnSave();
+
+        public override void OnEdit()
+        {
+            Context.Editor.ChangeState(new DirtyEditorState(Context, project));
+        }
     }
 }

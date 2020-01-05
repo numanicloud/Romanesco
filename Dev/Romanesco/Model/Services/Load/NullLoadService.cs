@@ -8,12 +8,12 @@ namespace Romanesco.Model.Services
 {
     class NullLoadService : IProjectLoadService
     {
-        public Project Create(ObjectInterpreter interpreter)
+        public Project Create()
         {
             return null;
         }
 
-        public Project Open()
+        public Task<Project> OpenAsync()
         {
             return null;
         }

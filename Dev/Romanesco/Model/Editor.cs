@@ -1,6 +1,10 @@
-﻿using Romanesco.Annotations;
+﻿using Reactive.Bindings;
+using Romanesco.Annotations;
 using Romanesco.Common.Entities;
+using Romanesco.Common.Interfaces;
 using Romanesco.Model.EditorState;
+using Romanesco.Model.ProjectComponents;
+using Romanesco.Model.Services;
 using Romanesco.Model.Services.Serialize;
 using System;
 using System.Linq;
@@ -12,12 +16,38 @@ namespace Romanesco.Model
     class Editor
     {
         private EditorState.EditorState editorState;
-        private readonly ObjectInterpreter interpreter;
+        private readonly EditorContext context;
+        private readonly IStateFactoryProvider factoryProvider;
 
-        public void Create()
+        public ReactiveProperty<string> ApplicationTitle { get; }
+
+        public Editor(IStateFactoryProvider factoryProvider, IProjectSettingProvider settingProvider)
         {
-            editorState.GetLoadService().Create(interpreter);
-            editorState.OnCreate();
+            this.factoryProvider = factoryProvider;
+            context = new EditorContext(this, CreateInterpreter(), settingProvider);
+            editorState = new EmptyEditorState(context);
+
+            ApplicationTitle = new ReactiveProperty<string>(editorState.Title);
+        }
+
+        private ObjectInterpreter CreateInterpreter()
+        {
+            return new ObjectInterpreter(factoryProvider.GetStateFactories().ToArray());
+        }
+
+        private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
+
+        public Project Create()
+        {
+            context.Interpreter = CreateInterpreter();
+            var project = editorState.GetLoadService().Create();
+            if (project != null)
+            {
+                editorState.OnCreate();
+                editorState = new NewEditorState(context, project);
+                UpdateTitle();
+            }
+            return project;
         }
 
         public void Export()
@@ -26,10 +56,17 @@ namespace Romanesco.Model
             editorState.OnExport();
         }
 
-        public void Open()
+        public async Task<Project> OpenAsync()
         {
-            editorState.GetLoadService().Open();
-            editorState.OnOpen();
+            context.Interpreter = CreateInterpreter();
+            var project = await editorState.GetLoadService().OpenAsync();
+            if (project != null)
+            {
+                editorState.OnOpen();
+                editorState = new CleanEditorState(context, project);
+                UpdateTitle();
+            }
+            return project;
         }
 
         public async Task SaveAsync()
@@ -42,6 +79,7 @@ namespace Romanesco.Model
         {
             await editorState.GetSaveService().SaveAsAsync();
             editorState.OnSaveAs();
+            UpdateTitle();
         }
 
         public void Undo()
@@ -59,34 +97,7 @@ namespace Romanesco.Model
         public void ChangeState(EditorState.EditorState state)
         {
             editorState = state;
-        }
-
-        // 仮
-        public ProjectComponents.Project LoadProject(Common.IStateFactory[] factories,
-            Services.IProjectSettingProvider settingProvider)
-        {
-            var settings = settingProvider.GetSettings();
-            var instance = Activator.CreateInstance(settings.ProjectType);
-
-            var interpreter = new ObjectInterpreter(factories);
-            var properties = settings.ProjectType.GetProperties()
-                .Where(p => p.GetCustomAttribute<EditorMemberAttribute>() != null)
-                .Select(p => interpreter.InterpretAsState(instance, p))
-                .ToArray();
-            var fields = settings.ProjectType.GetFields()
-                .Where(f => f.GetCustomAttribute<EditorMemberAttribute>() != null)
-                .Select(f => interpreter.InterpretAsState(instance, f))
-                .ToArray();
-
-            var stateRoot = new StateRoot()
-            {
-                States = properties.Concat(fields).ToArray(),
-            };
-            var project = new ProjectComponents.Project(settings, stateRoot);
-
-            editorState = new NewEditorState(this, project);
-
-            return project;
+            UpdateTitle();
         }
     }
 }

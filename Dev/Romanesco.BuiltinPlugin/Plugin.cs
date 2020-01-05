@@ -9,15 +9,11 @@ namespace Romanesco.BuiltinPlugin
 {
     public class Plugin : IPluginFacade
     {
-        private readonly MasterListContext masterListContext;
         private ProjectContext projectContext;
 
-        public Plugin()
+        public IEnumerable<IStateFactory> GetStateFactories()
         {
-            masterListContext = new MasterListContext();
-        }
-
-        public IEnumerable<IStateFactory> GetStateFactories() {
+            var masterListContext = new MasterListContext();
             yield return new Model.Factories.IdStateFactory(masterListContext);
             yield return new Model.Factories.PrimitiveStateFactory(projectContext.CommandHistory);
             yield return new Model.Factories.EnumStateFactory(projectContext.CommandHistory);
@@ -25,7 +21,8 @@ namespace Romanesco.BuiltinPlugin
             yield return new Model.Factories.ClassStateFactory();
         }
 
-        public IEnumerable<IStateViewModelFactory> GetStateViewModelFactories() {
+        public IEnumerable<IStateViewModelFactory> GetStateViewModelFactories()
+        {
             yield return new ViewModel.Factories.IdViewModelFactory();
             yield return new ViewModel.Factories.PrimitiveViewModelFactory();
             yield return new ViewModel.Factories.EnumViewModelFactory();
@@ -33,7 +30,8 @@ namespace Romanesco.BuiltinPlugin
             yield return new ViewModel.Factories.ListViewModelFactory();
         }
 
-        public IEnumerable<IViewFactory> GetViewFactories() {
+        public IEnumerable<IViewFactory> GetViewFactories()
+        {
             yield return new View.Factories.IdViewFactory();
             yield return new View.Factories.PrimitiveViewFactory();
             yield return new View.Factories.EnumViewFactory();

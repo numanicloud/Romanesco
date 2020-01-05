@@ -7,13 +7,17 @@ namespace Romanesco.Model.EditorState
 {
     class EmptyEditorState : EditorState
     {
-        public override bool CanSave => false;
+        private readonly IProjectLoadService loadService;
 
-        public EmptyEditorState(Editor editor) : base(editor)
+        public override string Title => "Romanesco - プロジェクトなし";
+
+        public EmptyEditorState(EditorContext context) : base(context)
         {
+            var deserializer = new Services.Serialize.NewtonsoftStateDeserializer();
+            loadService = new WindowsLoadService(context, deserializer);
         }
 
-        public override IProjectLoadService GetLoadService() => new NullLoadService();
+        public override IProjectLoadService GetLoadService() => loadService;
 
         public override IProjectSaveService GetSaveService() => new NullSaveService();
 

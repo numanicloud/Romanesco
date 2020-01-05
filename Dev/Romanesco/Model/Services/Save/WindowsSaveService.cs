@@ -13,13 +13,11 @@ namespace Romanesco.Model.Services.Save
     class WindowsSaveService : IProjectSaveService
     {
         private readonly Project project;
-        private readonly string defaultSavePath;
         private readonly IStateSerializer saveSerializer;
 
-        public WindowsSaveService(Project project, string defaultSavePath, IStateSerializer saveSerializer)
+        public WindowsSaveService(Project project, IStateSerializer saveSerializer)
         {
             this.project = project;
-            this.defaultSavePath = defaultSavePath;
             this.saveSerializer = saveSerializer;
         }
 
@@ -30,21 +28,21 @@ namespace Romanesco.Model.Services.Save
 
         public async Task SaveAsync()
         {
-            if (defaultSavePath == null)
+            if (project.DefaultSavePath == null)
             {
                 await SaveAsAsync();
                 return;
             }
 
-            await SaveToPathAsync(defaultSavePath);
+            await SaveToPathAsync(project.DefaultSavePath);
         }
 
         public async Task SaveAsAsync()
         {
             var defaultName = "Project.roma";
-            if (defaultSavePath != null)
+            if (project.DefaultSavePath != null)
             {
-                defaultName = Path.GetFileName(defaultSavePath);
+                defaultName = Path.GetFileName(project.DefaultSavePath);
             }
 
             var dialog = new SaveFileDialog()
@@ -58,6 +56,7 @@ namespace Romanesco.Model.Services.Save
             if (result == true)
             {
                 await SaveToPathAsync(dialog.FileName);
+                project.DefaultSavePath = dialog.FileName;
             }
         }
 

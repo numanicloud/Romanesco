@@ -18,12 +18,12 @@ namespace Romanesco.Model
             Factories = factories;
         }
 
-        public IFieldState InterpretAsState(object projectObject, PropertyInfo property)
+        public IFieldState InterpretRootAsState(object projectObject, PropertyInfo property)
         {
             return InterpretAsState(new ValueStorage(projectObject, property));
         }
 
-        public IFieldState InterpretAsState(object projectObject, FieldInfo field)
+        public IFieldState InterpretRootAsState(object projectObject, FieldInfo field)
         {
             return InterpretAsState(new ValueStorage(projectObject, field));
         }

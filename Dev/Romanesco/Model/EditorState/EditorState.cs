@@ -7,13 +7,13 @@ namespace Romanesco.Model.EditorState
 {
     abstract class EditorState
     {
-        protected Editor Editor { get; }
+        protected EditorContext Context { get; }
 
-        public abstract bool CanSave { get; }
+        public abstract string Title { get; }
 
-        public EditorState(Editor editor)
+        protected EditorState(EditorContext context)
         {
-            Editor = editor;
+            this.Context = context;
         }
 
         public abstract IProjectLoadService GetLoadService();

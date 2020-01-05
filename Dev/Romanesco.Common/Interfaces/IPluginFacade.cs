@@ -1,13 +1,11 @@
-﻿using Romanesco.Common.Utility;
-using System;
+﻿using Romanesco.Common.Interfaces;
+using Romanesco.Common.Utility;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Romanesco.Common {
-    public interface IPluginFacade {
+namespace Romanesco.Common
+{
+    public interface IPluginFacade : IStateFactoryProvider, IStateViewModelFactoryProvider, IViewFactoryProvider
+    {
         void LoadContext(ProjectContext context);
-        IEnumerable<IStateFactory> GetStateFactories();
-        IEnumerable<IStateViewModelFactory> GetStateViewModelFactories();
-        IEnumerable<IViewFactory> GetViewFactories();
     }
 }

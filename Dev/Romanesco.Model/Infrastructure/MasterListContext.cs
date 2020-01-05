@@ -16,6 +16,11 @@ namespace Romanesco.Model.Infrastructure
 
         public IObservable<string> OnKeyAdded => onKeyAdded;
 
+        public void ClearList()
+        {
+            masterDictionary.Clear();
+        }
+
         public void AddList(MasterList master)
         {
             if (!Masters.ContainsKey(master.MasterName))

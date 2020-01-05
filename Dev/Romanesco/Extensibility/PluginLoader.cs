@@ -21,9 +21,7 @@ namespace Romanesco.Extensibility
 
         public PluginExtentions Load(string dirPath)
         {
-            List<IStateFactory> stateFactories = new List<IStateFactory>();
-            List<IStateViewModelFactory> stateViewModelFactories = new List<IStateViewModelFactory>();
-            List<IViewFactory> viewFactories = new List<IViewFactory>();
+            var plugins = new List<IPluginFacade>();
 
             if (Directory.Exists(dirPath))
             {
@@ -51,9 +49,7 @@ namespace Romanesco.Extensibility
 
                 var facade = Activator.CreateInstance(type) as IPluginFacade;
                 facade.LoadContext(projectContext);
-                stateFactories.AddRange(facade.GetStateFactories());
-                stateViewModelFactories.AddRange(facade.GetStateViewModelFactories());
-                viewFactories.AddRange(facade.GetViewFactories());
+                plugins.Add(facade);
             }
 
             Debug.Print("Loaded assemblies:");
@@ -62,7 +58,7 @@ namespace Romanesco.Extensibility
                 Debug.Print(asm.FullName);
             }
 
-            return new PluginExtentions(stateFactories, stateViewModelFactories, viewFactories);
+            return new PluginExtentions(plugins.ToArray());
         }
 
         private Assembly LoadPluginAssembly(string assemblyPath)
