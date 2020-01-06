@@ -1,7 +1,7 @@
 ﻿using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 
-namespace Romanesco.ViewModel
+namespace Romanesco.ViewModel.States
 {
     class ViewModelInterpreter
     {

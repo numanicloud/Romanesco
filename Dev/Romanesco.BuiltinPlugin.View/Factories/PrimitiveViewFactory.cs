@@ -1,10 +1,10 @@
-﻿using Romanesco.Common.View.Basics;
+﻿using Romanesco.BuiltinPlugin.View.View;
+using Romanesco.Common.View.Basics;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.View.View;
 using Romanesco.ViewModel.States;
 
-namespace Romanesco.View.Factories
+namespace Romanesco.BuiltinPlugin.View.Factories
 {
     public class PrimitiveViewFactory : IViewFactory
     {

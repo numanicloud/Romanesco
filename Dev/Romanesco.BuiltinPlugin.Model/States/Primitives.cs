@@ -1,7 +1,7 @@
 ﻿using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Implementations;
 
-namespace Romanesco.Model.States
+namespace Romanesco.BuiltinPlugin.Model.States
 {
     public class IntState : PrimitiveTypeState<int>
     {

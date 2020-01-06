@@ -8,7 +8,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Romanesco.Model.States
+namespace Romanesco.BuiltinPlugin.Model.States
 {
     public class ClassState : IFieldState
     {
@@ -28,7 +28,7 @@ namespace Romanesco.Model.States
             Storage = storage;
             Fields = fields;
 
-            OnEdited = Observable.Merge(fields.Select(x => x.OnEdited));
+            OnEdited = fields.Select(x => x.OnEdited).Merge();
 
             FormattedString = OnEdited.Select(_ =>
             {

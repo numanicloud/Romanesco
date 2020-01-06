@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Romanesco.Model.Services
+﻿namespace Romanesco.Model.Services.History
 {
     class NullHistoryService : IProjectHistoryService
     {

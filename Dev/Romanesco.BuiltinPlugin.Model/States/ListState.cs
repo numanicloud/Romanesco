@@ -1,8 +1,8 @@
 ﻿using Reactive.Bindings;
+using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Model;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.Infrastructure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Romanesco.Model.States
+namespace Romanesco.BuiltinPlugin.Model.States
 {
     public class ListState : IFieldState
     {

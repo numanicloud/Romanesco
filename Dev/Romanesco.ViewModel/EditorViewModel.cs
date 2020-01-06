@@ -1,14 +1,14 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model;
-using Romanesco.ViewModel;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Romanesco.Common.Model;
+using Romanesco.Model.EditorComponents;
+using Romanesco.ViewModel.States;
 
-namespace Romanesco.View
+namespace Romanesco.ViewModel
 {
     public class EditorViewModel
     {

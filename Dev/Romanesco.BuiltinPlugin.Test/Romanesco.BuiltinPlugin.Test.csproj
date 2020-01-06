@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Romanesco.BuiltinPlugin.Model\Romanesco.BuiltinPlugin.Model.csproj" />
     <ProjectReference Include="..\Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj" />
     <ProjectReference Include="..\Romanesco.Model\Romanesco.BuiltinPlugin.Model.csproj" />
     <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.BuiltinPlugin.ViewModel.csproj" />

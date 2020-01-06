@@ -1,11 +1,8 @@
-﻿using Romanesco.Model.States;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Reactive.Subjects;
-using System.Text;
 
-namespace Romanesco.Model.Infrastructure
+namespace Romanesco.BuiltinPlugin.Model.Infrastructure
 {
     public class MasterListContext
     {

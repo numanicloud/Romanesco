@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.States;
 using Romanesco.ViewModel.States;
 
 namespace Romanesco.ViewModel.Factories

@@ -1,7 +1,7 @@
-﻿using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.States;
+﻿using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.Common.Model.Interfaces;
 
-namespace Romanesco.Model.Infrastructure
+namespace Romanesco.BuiltinPlugin.Model.Infrastructure
 {
     class RemoveElementToListCommandMemento : ICommandMemento
     {

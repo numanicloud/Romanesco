@@ -1,16 +1,16 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.EditorState;
+using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Romanesco.Model
+namespace Romanesco.Model.EditorComponents
 {
     class Editor : IEditorFacade
     {
-        private EditorState.EditorState editorState;
+        private EditorState editorState;
         private readonly EditorContext context;
         private readonly IStateFactoryProvider factoryProvider;
 
@@ -89,7 +89,7 @@ namespace Romanesco.Model
             editorState.OnRedo();
         }
 
-        public void ChangeState(EditorState.EditorState state)
+        public void ChangeState(EditorState state)
         {
             editorState = state;
             UpdateTitle();

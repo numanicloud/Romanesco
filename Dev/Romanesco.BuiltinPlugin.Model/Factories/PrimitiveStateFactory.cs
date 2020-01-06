@@ -1,8 +1,8 @@
-﻿using Romanesco.Common.Model.Basics;
+﻿using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.States;
 
-namespace Romanesco.Model.Factories
+namespace Romanesco.BuiltinPlugin.Model.Factories
 {
     public class PrimitiveStateFactory : IStateFactory
     {

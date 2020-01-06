@@ -5,7 +5,7 @@ using System;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace Romanesco.ViewModel
+namespace Romanesco.ViewModel.States
 {
     public class NoneViewModel : IStateViewModel
     {

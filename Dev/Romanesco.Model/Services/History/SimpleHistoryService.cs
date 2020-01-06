@@ -1,6 +1,6 @@
 ﻿using Romanesco.Model.ProjectComponents;
 
-namespace Romanesco.Model.Services
+namespace Romanesco.Model.Services.History
 {
     class SimpleHistoryService : IProjectHistoryService
     {

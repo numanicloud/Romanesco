@@ -1,12 +1,12 @@
-﻿using Romanesco.Common.View.Basics;
+﻿using Romanesco.BuiltinPlugin.View.DataContext;
+using Romanesco.Common.View.Basics;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.View.DataContext;
 using Romanesco.ViewModel.States;
 using System;
 using System.Linq;
 
-namespace Romanesco.View.Factories
+namespace Romanesco.BuiltinPlugin.View.Factories
 {
     public class ClassViewFactory : IViewFactory
     {

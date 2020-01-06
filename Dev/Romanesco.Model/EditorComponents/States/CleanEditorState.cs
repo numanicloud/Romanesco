@@ -1,9 +1,10 @@
 ﻿using Romanesco.Model.ProjectComponents;
-using Romanesco.Model.Services;
+using Romanesco.Model.Services.History;
+using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 using Romanesco.Model.Services.Serialize;
 
-namespace Romanesco.Model.EditorState
+namespace Romanesco.Model.EditorComponents.States
 {
     class CleanEditorState : EditorState
     {

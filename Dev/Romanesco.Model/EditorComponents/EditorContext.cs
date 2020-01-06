@@ -1,9 +1,6 @@
 ﻿using Romanesco.Model.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Romanesco.Model
+namespace Romanesco.Model.EditorComponents
 {
     class EditorContext
     {

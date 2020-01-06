@@ -1,6 +1,8 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
+using Romanesco.View.States;
+using Romanesco.ViewModel;
 using System;
 using System.Linq;
 

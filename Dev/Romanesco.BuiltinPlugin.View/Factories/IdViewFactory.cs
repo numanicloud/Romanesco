@@ -2,7 +2,7 @@
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 
-namespace Romanesco.View.Factories
+namespace Romanesco.BuiltinPlugin.View.Factories
 {
     public class IdViewFactory : IViewFactory
     {

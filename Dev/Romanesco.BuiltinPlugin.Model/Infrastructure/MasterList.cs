@@ -1,10 +1,10 @@
-﻿using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.States;
+﻿using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Romanesco.Model.Infrastructure
+namespace Romanesco.BuiltinPlugin.Model.Infrastructure
 {
     public class MasterList
     {
@@ -26,7 +26,7 @@ namespace Romanesco.Model.Infrastructure
                 IdType = prop.PropertyType;
                 getter = obj => prop.GetGetMethod().Invoke(obj, null);
             }
-            else if(State.ElementType.GetField(IdMemberName) is FieldInfo field)
+            else if (State.ElementType.GetField(IdMemberName) is FieldInfo field)
             {
                 IdType = field.FieldType;
                 getter = obj => field.GetValue(obj);

@@ -1,9 +1,9 @@
 ﻿using Romanesco.Common.View.Basics;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.ViewModel;
+using Romanesco.ViewModel.States;
 
-namespace Romanesco.View
+namespace Romanesco.View.States
 {
     class ViewInterpreter
     {

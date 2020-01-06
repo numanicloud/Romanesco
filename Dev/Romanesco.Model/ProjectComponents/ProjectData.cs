@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Romanesco.Model.ProjectComponents
+﻿namespace Romanesco.Model.ProjectComponents
 {
     public class ProjectData
     {

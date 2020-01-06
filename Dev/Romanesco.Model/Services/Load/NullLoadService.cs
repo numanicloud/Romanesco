@@ -1,10 +1,7 @@
 ﻿using Romanesco.Model.ProjectComponents;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Romanesco.Model.Services
+namespace Romanesco.Model.Services.Load
 {
     class NullLoadService : IProjectLoadService
     {

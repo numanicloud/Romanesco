@@ -1,12 +1,13 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
+using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services.Serialize;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Romanesco.Model.Services
+namespace Romanesco.Model.Services.Load
 {
     class WindowsLoadService : IProjectLoadService
     {

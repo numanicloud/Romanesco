@@ -1,9 +1,10 @@
-﻿using Romanesco.Common.Extensibility.Interfaces;
+﻿using Romanesco.BuiltinPlugin.Model.Factories;
+using Romanesco.BuiltinPlugin.Model.Infrastructure;
+using Romanesco.Common.Extensibility.Interfaces;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.Infrastructure;
 using System.Collections.Generic;
 
 namespace Romanesco.BuiltinPlugin
@@ -19,7 +20,7 @@ namespace Romanesco.BuiltinPlugin
             yield return new Model.Factories.PrimitiveStateFactory(projectContext.CommandHistory);
             yield return new Model.Factories.EnumStateFactory(projectContext.CommandHistory);
             yield return new Model.Factories.ListStateFactory(masterListContext, projectContext.CommandHistory);
-            yield return new Model.Factories.ClassStateFactory();
+            yield return new ClassStateFactory();
         }
 
         public IEnumerable<IStateViewModelFactory> GetStateViewModelFactories()

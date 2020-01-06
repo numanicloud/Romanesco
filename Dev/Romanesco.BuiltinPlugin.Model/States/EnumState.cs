@@ -8,7 +8,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Romanesco.Model.States
+namespace Romanesco.BuiltinPlugin.Model.States
 {
     public class EnumState : IFieldState
     {

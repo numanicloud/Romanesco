@@ -1,9 +1,8 @@
-﻿using Romanesco.Model.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Romanesco.Model.Services.History;
+using Romanesco.Model.Services.Load;
+using Romanesco.Model.Services.Save;
 
-namespace Romanesco.Model.EditorState
+namespace Romanesco.Model.EditorComponents.States
 {
     abstract class EditorState
     {
@@ -13,7 +12,7 @@ namespace Romanesco.Model.EditorState
 
         protected EditorState(EditorContext context)
         {
-            this.Context = context;
+            Context = context;
         }
 
         public abstract IProjectLoadService GetLoadService();

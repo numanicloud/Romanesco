@@ -1,10 +1,7 @@
 ﻿using Romanesco.Model.ProjectComponents;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Romanesco.Model
+namespace Romanesco.Model.EditorComponents
 {
     public interface IEditorFacade
     {

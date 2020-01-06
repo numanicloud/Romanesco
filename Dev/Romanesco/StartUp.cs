@@ -3,6 +3,7 @@ using Romanesco.Extensibility;
 using Romanesco.Sample;
 using Romanesco.View;
 using Romanesco.Model.EditorComponents;
+using Romanesco.ViewModel;
 
 namespace Romanesco
 {

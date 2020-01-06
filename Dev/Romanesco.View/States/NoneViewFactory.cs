@@ -1,9 +1,9 @@
 ﻿using Romanesco.Common.View.Basics;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.ViewModel;
+using Romanesco.ViewModel.States;
 
-namespace Romanesco.View.Factories
+namespace Romanesco.View.States
 {
     public class NoneViewFactory : IViewFactory
     {

@@ -1,16 +1,16 @@
-﻿using Romanesco.Common.Model.Exceptions;
+﻿using Romanesco.BuiltinPlugin.View.DataContext;
+using Romanesco.BuiltinPlugin.View.View;
+using Romanesco.Common.Model.Exceptions;
 using Romanesco.Common.View.Basics;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.View.DataContext;
-using Romanesco.View.View;
 using Romanesco.ViewModel.States;
 using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows.Controls;
 
-namespace Romanesco.View.Factories
+namespace Romanesco.BuiltinPlugin.View.Factories
 {
     public class ArrayViewFactory : IViewFactory
     {

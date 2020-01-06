@@ -4,7 +4,7 @@ using Romanesco.Common.View.Interfaces;
 using Romanesco.ViewModel.States;
 using System.Windows.Controls;
 
-namespace Romanesco.View.DataContext
+namespace Romanesco.BuiltinPlugin.View.DataContext
 {
     public class ListContext
     {

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Romanesco.Common;
-using Romanesco.Common.Model.Interfaces;
+﻿using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model.States;
 
-namespace Romanesco.ViewModel.Factories
+namespace Romanesco.ViewModel.States
 {
     public class NoneViewModelFactory : IStateViewModelFactory
     {

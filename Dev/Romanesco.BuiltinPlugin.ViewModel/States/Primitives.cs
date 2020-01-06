@@ -1,5 +1,5 @@
-﻿using Romanesco.Common.ViewModel.Implementations;
-using Romanesco.Model.States;
+﻿using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.Common.ViewModel.Implementations;
 
 namespace Romanesco.ViewModel.States
 {
