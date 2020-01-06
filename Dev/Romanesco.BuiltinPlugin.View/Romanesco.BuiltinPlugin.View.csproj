@@ -19,12 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Romanesco.BuiltinPlugin.Model\Romanesco.BuiltinPlugin.Model.csproj" />
+    <ProjectReference Include="..\Romanesco.BuiltinPlugin.ViewModel\Romanesco.BuiltinPlugin.ViewModel.csproj" />
     <ProjectReference Include="..\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
     <ProjectReference Include="..\Romanesco.Common.ViewModel\Romanesco.Common.ViewModel.csproj" />
     <ProjectReference Include="..\Romanesco.Common.View\Romanesco.Common.View.csproj" />
-    <ProjectReference Include="..\Romanesco.Model\Romanesco.Model.csproj" />
     <ProjectReference Include="..\Romanesco.Styles\Romanesco.Styles.csproj" />
-    <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.ViewModel.csproj" />
     <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj">
       <Private>false</Private>
     </ProjectReference>

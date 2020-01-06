@@ -14,9 +14,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj" />
-    <ProjectReference Include="..\Romanesco.Model\Romanesco.Model.csproj" />
-    <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.ViewModel.csproj" />
-    <ProjectReference Include="..\Romanesco.View\Romanesco.View.csproj" />
+    <ProjectReference Include="..\Romanesco.Model\Romanesco.BuiltinPlugin.Model.csproj" />
+    <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.BuiltinPlugin.ViewModel.csproj" />
+    <ProjectReference Include="..\Romanesco.View\Romanesco.BuiltinPlugin.View.csproj" />
   </ItemGroup>
 
 </Project>

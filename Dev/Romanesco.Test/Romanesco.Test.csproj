@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Romanesco.Model\Romanesco.Model.csproj" />
+    <ProjectReference Include="..\Romanesco.Model\Romanesco.BuiltinPlugin.Model.csproj" />
   </ItemGroup>
 
 </Project>

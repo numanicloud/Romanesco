@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <AssemblyName>Romanesco.BuiltinPlugin.Model</AssemblyName>
+    <RootNamespace>Romanesco.BuiltinPlugin.Model</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
