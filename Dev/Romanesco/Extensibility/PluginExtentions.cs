@@ -1,9 +1,9 @@
-﻿using Romanesco.Common;
-using Romanesco.Common.Interfaces;
-using System;
+﻿using Romanesco.Common.Extensibility.Interfaces;
+using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.View.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Romanesco.Extensibility
 {

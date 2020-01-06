@@ -1,11 +1,7 @@
 ﻿using Reactive.Bindings;
-using Romanesco.Common;
-using Romanesco.Common.Utility;
+using Romanesco.Common.View.Basics;
+using Romanesco.Common.View.Interfaces;
 using Romanesco.ViewModel.States;
-using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Text;
 using System.Windows.Controls;
 
 namespace Romanesco.View.DataContext

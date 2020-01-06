@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -24,7 +20,7 @@ namespace Romanesco
             Dispatcher.UnhandledException += Dispatcher_UnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-            Common.Utility.Helper.OnUnhandledExceptionRaisedInSubscribe += Helper_OnUnhandledExceptionRaisedInSubscribe;
+            Common.Model.Helper.OnUnhandledExceptionRaisedInSubscribe += Helper_OnUnhandledExceptionRaisedInSubscribe;
 
             // .NET Core のバグで、識別子が意図せず日本語になってしまう問題対策(もう直ってるかも)
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");

@@ -5,6 +5,7 @@ using Romanesco.View;
 using System.Reactive.Linq;
 using System;
 using System.Threading.Tasks;
+using Romanesco.Common.Model.Basics;
 
 namespace Romanesco
 {
@@ -14,7 +15,7 @@ namespace Romanesco
 
         public MainDataContext LoadMainDataContext()
         {
-            var loader = new PluginLoader(new Common.Utility.ProjectContext());
+            var loader = new PluginLoader(new ProjectContext());
             var extensions = loader.Load("Plugins");
             var sampleSettingProvider = new SampleProjectSettingProvider();
 

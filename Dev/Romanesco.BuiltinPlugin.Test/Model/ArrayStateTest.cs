@@ -1,11 +1,8 @@
-﻿using Romanesco.Common;
-using Romanesco.Common.Utility;
+﻿using Romanesco.Common.Model.Basics;
 using Romanesco.Model.States;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Romanesco.BuiltinPlugin.Test.Model

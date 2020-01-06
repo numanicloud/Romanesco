@@ -1,13 +1,12 @@
 ﻿using Reactive.Bindings;
-using Romanesco.Common;
-using Romanesco.Common.Interfaces;
-using Romanesco.Common.Utility;
+using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model;
 using Romanesco.ViewModel;
+using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System;
+using Romanesco.Common.Model;
 
 namespace Romanesco.View
 {

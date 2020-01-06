@@ -1,6 +1,5 @@
 ﻿using Romanesco.Annotations;
-using Romanesco.Common.Entities;
-using Romanesco.Common.Utility;
+using Romanesco.Common.Model.Basics;
 using Romanesco.Model.Services.Serialize;
 using System.Linq;
 using System.Reflection;

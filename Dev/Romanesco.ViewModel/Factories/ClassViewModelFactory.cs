@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Romanesco.Common;
+﻿using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model.States;
 using Romanesco.ViewModel.States;
+using System.Linq;
 
 namespace Romanesco.ViewModel.Factories
 {
-    public class ClassViewModelFactory : Common.IStateViewModelFactory
+    public class ClassViewModelFactory : IStateViewModelFactory
     {
         public IStateViewModel InterpretAsViewModel(IFieldState state, ViewModelInterpretFunc interpretRecursively)
         {

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Romanesco.Common;
+﻿using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model.States;
 using Romanesco.ViewModel.States;
 

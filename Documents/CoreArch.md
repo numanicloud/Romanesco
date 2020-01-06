@@ -58,32 +58,36 @@ Undo/Redo を実際に実行するために必要。Stateたちに行き渡ら�
 
 Viewとの接続がうまくいかないと（Bindingマークアップが間違っていたりすると）、生のデータが更新されないが無言で続行されてしまう。この問題に気づきやすくすることはできないか？
 
-## Gen 2.5
+## Gen 3
 
 * Commonを Model, ViewModel, View に分離
 * 名前空間を整理
 
-## Gen 3
+## Gen 4
 
 * IHistoryServiceの実装
 * EditorContext
 * CommandHistory
 
-## Gen 4
+## Gen 5
+
+* コマンドの実行可否に応じてボタン自体を押せないようにする
+
+## Gen 6
 
 * EditorProjectAttribute
 * ProjectSettings
 
-## Gen 5
+## Gen 7
 
 * デフォルトのシリアライズ/デシリアライズ
 * ユーザー定義のシリアライズ/デシリアライズ
 * Export
 
-## Gen 6
+## Gen 8
 
 * DependencyManager
 
-## Gen 7
+## Gen 9
 
 * エラー処理の取り残し

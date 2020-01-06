@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using Romanesco.Common;
-using Romanesco.Common.Utility;
+﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.States;
 
 namespace Romanesco.Model.Factories

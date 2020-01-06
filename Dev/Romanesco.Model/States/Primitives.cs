@@ -1,8 +1,5 @@
-﻿using Romanesco.Common;
-using Romanesco.Common.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.Model.States
 {

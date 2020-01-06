@@ -1,11 +1,9 @@
-﻿using Romanesco.Common;
-using Romanesco.Common.Utility;
+﻿using Romanesco.Annotations;
+using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.States;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Romanesco.Annotations;
 using System.Linq;
 
 namespace Romanesco.Model.Factories

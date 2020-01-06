@@ -9,7 +9,7 @@ using System.Text;
 namespace Romanesco.Common.Utility
 {
     public class ContentEditCommandMemento : ICommandMemento
-    {
+    {   
         private readonly Action<object> setter;
         private readonly object prev;
         private readonly object current;

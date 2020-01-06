@@ -1,13 +1,10 @@
-﻿using Romanesco.Common;
-using Romanesco.Common.Utility;
+﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.States;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Romanesco.Model.Factories
 {
-    public class EnumStateFactory : Common.IStateFactory
+    public class EnumStateFactory : IStateFactory
     {
         private readonly CommandHistory history;
 

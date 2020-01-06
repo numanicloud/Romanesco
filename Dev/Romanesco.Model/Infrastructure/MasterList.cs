@@ -1,10 +1,8 @@
-﻿using Romanesco.Common;
+﻿using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.States;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Romanesco.Model.Infrastructure
 {

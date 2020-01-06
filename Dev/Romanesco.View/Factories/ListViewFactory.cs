@@ -1,5 +1,7 @@
-﻿using Romanesco.Common;
-using Romanesco.Common.Utility;
+﻿using Romanesco.Common.Model.Exceptions;
+using Romanesco.Common.View.Basics;
+using Romanesco.Common.View.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.View.DataContext;
 using Romanesco.View.View;
 using Romanesco.ViewModel.States;

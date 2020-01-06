@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Reactive.Bindings;
+using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
+using System;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using Reactive.Bindings;
-using Romanesco.Common.Utility;
 
 namespace Romanesco.Model.States
 {
-    public class NoneState : Common.IFieldState
+    public class NoneState : IFieldState
     {
         public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
         public ReactiveProperty<object> Content { get; } = new ReactiveProperty<object>();

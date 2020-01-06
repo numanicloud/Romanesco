@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Subjects;
-using System.Text;
-using Romanesco.Common;
-using Romanesco.Common.Utility;
+﻿using Romanesco.Common.View.Basics;
+using Romanesco.Common.View.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.View.DataContext;
 using Romanesco.ViewModel.States;
+using System;
+using System.Linq;
 
 namespace Romanesco.View.Factories
 {
-    public class ClassViewFactory : Common.IViewFactory
+    public class ClassViewFactory : IViewFactory
     {
         public StateViewContext InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively)
         {

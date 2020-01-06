@@ -1,23 +1,26 @@
-﻿using Romanesco.Common;
-using Romanesco.Common.Utility;
+﻿using Romanesco.Common.View.Basics;
+using Romanesco.Common.View.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls;
 
-namespace Romanesco.View {
-    class ViewInterpreter {
+namespace Romanesco.View
+{
+    class ViewInterpreter
+    {
         private readonly IViewFactory[] factories;
 
-        public ViewInterpreter(IViewFactory[] factories) {
+        public ViewInterpreter(IViewFactory[] factories)
+        {
             this.factories = factories;
         }
 
-        public StateViewContext InterpretAsView(IStateViewModel viewModel) {
-            foreach (var factory in factories) {
+        public StateViewContext InterpretAsView(IStateViewModel viewModel)
+        {
+            foreach (var factory in factories)
+            {
                 var result = factory.InterpretAsView(viewModel, InterpretAsView);
-                if (result != null) {
+                if (result != null)
+                {
                     return result;
                 }
             }

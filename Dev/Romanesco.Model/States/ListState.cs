@@ -1,6 +1,7 @@
 ﻿using Reactive.Bindings;
-using Romanesco.Common;
-using Romanesco.Common.Utility;
+using Romanesco.Common.Model;
+using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.Infrastructure;
 using System;
 using System.Collections;
@@ -10,7 +11,6 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using Reactive.Bindings.Extensions;
 
 namespace Romanesco.Model.States
 {

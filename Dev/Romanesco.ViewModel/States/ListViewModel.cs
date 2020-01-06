@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Reactive.Bindings;
+using Romanesco.Common.ViewModel.Interfaces;
+using Romanesco.Model.States;
+using System;
 using System.Reactive;
 using System.Reactive.Subjects;
-using System.Text;
-using Reactive.Bindings;
-using Romanesco.Common;
-using Romanesco.Model.States;
 
 namespace Romanesco.ViewModel.States
 {

@@ -1,9 +1,7 @@
-﻿using Romanesco.Common;
+﻿using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model.States;
 using Romanesco.ViewModel.States;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Romanesco.ViewModel.Factories
 {

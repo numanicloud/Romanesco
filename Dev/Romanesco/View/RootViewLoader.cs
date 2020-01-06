@@ -1,8 +1,6 @@
-﻿using Romanesco.Common;
-using System;
-using System.Collections.Generic;
+﻿using Romanesco.Common.View.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using System.Linq;
-using System.Text;
 
 namespace Romanesco.View
 {

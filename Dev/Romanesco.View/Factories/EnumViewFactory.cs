@@ -1,10 +1,8 @@
-﻿using Romanesco.Common;
-using Romanesco.Common.Utility;
+﻿using Romanesco.Common.View.Basics;
+using Romanesco.Common.View.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.View.View;
 using Romanesco.ViewModel.States;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Romanesco.View.Factories
 {
