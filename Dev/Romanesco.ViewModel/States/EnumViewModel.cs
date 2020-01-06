@@ -16,6 +16,8 @@ namespace Romanesco.ViewModel.States
     
         public IReadOnlyReactiveProperty<string> FormattedString => state.FormattedString;
 
+        public ReactiveProperty<object> Content => state.Content;
+
         public IObservable<Unit> ShowDetail => Observable.Never<Unit>();
 
         public IObservable<Exception> OnError => state.OnError;

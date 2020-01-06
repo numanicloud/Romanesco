@@ -6,6 +6,6 @@ namespace Romanesco.Model.Services.Serialize
 {
     interface IStateDeserializer
     {
-        object Deserialize(string encoded);
+        object Deserialize(string encoded, Type type);
     }
 }

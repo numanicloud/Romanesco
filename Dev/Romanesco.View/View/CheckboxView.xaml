@@ -13,6 +13,6 @@
     </UserControl.Resources>
 
     <ContentControl Template="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type style:EditorStyles}, ResourceId=TitledField}}">
-        <CheckBox IsChecked="{Binding Content.Value}"/>
+        <CheckBox IsChecked="{Binding PrimitiveContent.Value}"/>
     </ContentControl>
 </UserControl>

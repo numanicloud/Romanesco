@@ -21,12 +21,11 @@ namespace Romanesco.Model.ProjectComponents
 
         public ProjectData ToData(IStateSerializer serializer)
         {
-            var jsonRoots = Root.States.Select(s => s.Storage.GetValue()).ToArray();
             return new ProjectData
             {
                 AssemblyPath = Settings.Assembly.Location,
                 ProjectTypeQualifier = Settings.ProjectType.FullName,
-                EncodedMaster = serializer.Serialize(jsonRoots),
+                EncodedMaster = serializer.Serialize(Root.RootInstance),
             };
         }
 
@@ -42,7 +41,8 @@ namespace Romanesco.Model.ProjectComponents
 
             var root = new StateRoot()
             {
-                States = states
+                States = states,
+                RootInstance = instance,
             };
 
             return new Project(settings, root);
@@ -53,7 +53,7 @@ namespace Romanesco.Model.ProjectComponents
             var assembly = Assembly.LoadFrom(data.AssemblyPath);
             var type = assembly.GetType(data.ProjectTypeQualifier);
             var settings = new ProjectSettings(assembly, type);
-            var instance = deserializer.Deserialize(data.EncodedMaster);
+            var instance = deserializer.Deserialize(data.EncodedMaster, type);
             return FromInstance(settings, interpreter, instance);
         }
     }

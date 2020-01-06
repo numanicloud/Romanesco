@@ -61,7 +61,7 @@ namespace Romanesco.Model.States
             {
                 Master.Value = list;
                 // ‰Šú’l‚ğƒ[ƒh
-                SelectedItem.Value = Master.Value.GetById(Storage.GetValue());
+                SelectedItem.Value = list.GetById(Storage.GetValue());
             }
             else
             {

@@ -41,7 +41,12 @@ namespace Romanesco.Model.Infrastructure
 
         public IFieldState GetById(object id)
         {
-            return State.Elements.FirstOrDefault(state => getter(state.Storage.GetValue()) == id);
+            var result = State.Elements.FirstOrDefault(state =>
+            {
+                var itemId = getter(state.Storage.GetValue());
+                return itemId.Equals(id);
+            });
+            return result;
         }
 
         public object GetId(object subject)

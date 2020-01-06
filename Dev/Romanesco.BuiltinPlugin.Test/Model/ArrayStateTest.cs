@@ -73,7 +73,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 
             state.AddNewElement();
 
-            Assert.Equal("Length = 1", state.FormattedString.Value);
+            Assert.Equal("Count = 1", state.FormattedString.Value);
         }
 
         [Fact]

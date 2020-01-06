@@ -9,6 +9,7 @@ namespace Romanesco.Common.Entities
 {
     public class StateRoot
     {
+        public object RootInstance { get; set; }
         public IFieldState[] States { get; set; }
     }
 }

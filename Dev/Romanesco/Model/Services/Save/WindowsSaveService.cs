@@ -65,7 +65,7 @@ namespace Romanesco.Model.Services.Save
             var data = project.ToData(saveSerializer);
             var json = JsonConvert.SerializeObject(data);
 
-            using (var file = File.OpenWrite(path))
+            using (var file = File.Create(path))
             {
                 using (var writer = new StreamWriter(file))
                 {

@@ -1,6 +1,13 @@
-﻿using System;
+﻿using Reactive.Bindings.Extensions;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Text;
+
+using static System.Collections.Specialized.NotifyCollectionChangedAction;
 
 namespace Romanesco.Common.Utility
 {
@@ -64,6 +71,41 @@ namespace Romanesco.Common.Utility
                     OnUnhandledExceptionRaisedInSubscribe(ex);
                 }
             });
+        }
+
+        public static (ObservableCollection<U> result, IDisposable disposable) ToObservableCollection<T, U>(
+            this ObservableCollection<T> source,
+            Func<T, U> converter)
+        {
+            var proxy = new ObservableCollection<U>();
+            var disposable = new CompositeDisposable();
+
+            source.CollectionChangedAsObservable().Where(x => x.Action == Add)
+                .Select(x => new { Index = x.NewStartingIndex, Item = x.NewItems.Cast<T>().First() })
+                .Subscribe(x => proxy.Insert(x.Index, converter(x.Item)))
+                .AddTo(disposable);
+
+            source.CollectionChangedAsObservable().Where(x => x.Action == Move)
+                .Select(x => new { OldIndex = x.OldStartingIndex, NewIndex = x.NewStartingIndex })
+                .Subscribe(x =>
+                {
+                    var item = proxy[x.OldIndex];
+                    proxy.RemoveAt(x.OldIndex);
+                    proxy.Insert(x.NewIndex, item);
+                })
+                .AddTo(disposable);
+
+            source.CollectionChangedAsObservable().Where(x => x.Action == Remove)
+                .Select(x => new { OldIndex = x.OldStartingIndex })
+                .Subscribe(x => proxy.RemoveAt(x.OldIndex))
+                .AddTo(disposable);
+
+            source.CollectionChangedAsObservable().Where(x => x.Action == Replace)
+                .Select(x => new { Index = x.NewStartingIndex, Item = x.NewItems.Cast<T>().First() })
+                .Subscribe(x => proxy[x.Index] = converter(x.Item))
+                .AddTo(disposable);
+
+            return (proxy, disposable);
         }
     }
 }

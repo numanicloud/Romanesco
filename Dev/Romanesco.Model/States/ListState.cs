@@ -5,17 +5,19 @@ using Romanesco.Model.Infrastructure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.Model.States
 {
     public class ListState : IFieldState
     {
         private readonly Subject<Unit> onContentsChanged = new Subject<Unit>();
-        private readonly ReactiveCollection<(IFieldState state, IDisposable disposable)> elementsMutable;
+        private readonly ObservableCollection<(IFieldState state, IDisposable disposable)> elementsMutable;
         private readonly StateInterpretFunc interpret;
         private readonly CommandHistory history;
         private readonly IList listInstance;
@@ -25,15 +27,16 @@ namespace Romanesco.Model.States
         public Type Type => Storage.Type;
         public Type ElementType { get; }
         public ValueStorage Storage { get; }
-        public ReadOnlyReactiveCollection<IFieldState> Elements { get; }
+        public ObservableCollection<IFieldState> Elements { get; }
         public IObservable<Exception> OnError => Observable.Never<Exception>();
         public IObservable<Unit> OnEdited => onContentsChanged;
 
         public ListState(ValueStorage storage, StateInterpretFunc interpret, CommandHistory history)
         {
             Title = new ReactiveProperty<string>(storage.MemberName);
-            elementsMutable = new ReactiveCollection<(IFieldState state, IDisposable disposable)>();
-            Elements = elementsMutable.ToReadOnlyReactiveCollection(x => x.state);
+            elementsMutable = new ObservableCollection<(IFieldState state, IDisposable disposable)>();
+            Elements = elementsMutable.ToObservableCollection(t => t.state).result;
+
             Storage = storage;
             this.interpret = interpret;
             this.history = history;
@@ -41,13 +44,14 @@ namespace Romanesco.Model.States
             ElementType = Storage.Type.GetGenericArguments()[0];
 
             FormattedString = onContentsChanged.Select(_ => $"Count = {elementsMutable.Count}")
-                .ToReactiveProperty("Count = 0");
+                .ToReadOnlyReactiveProperty("Count = 0");
 
             // 初期値を読み込み。初期値が無かったら生成
             listInstance = Storage.GetValue() as IList;
             if (listInstance == null)
             {
                 listInstance = Activator.CreateInstance(typeof(List<>).MakeGenericType(ElementType)) as IList;
+                Storage.SetValue(listInstance);
             }
             else
             {
@@ -57,23 +61,23 @@ namespace Romanesco.Model.States
 
         private void LoadInitialValue(IList loadedListInstance, StateInterpretFunc interpret)
         {
-            int index = 0;
-            foreach (var item in loadedListInstance)
+            for (int i = 0; i < loadedListInstance.Count; i++)
             {
                 var storage = new ValueStorage(
                     ElementType,
-                    $"{index}",
+                    $"{i}",
                     (value, oldValue) =>
                     {
                         var index = loadedListInstance.IndexOf(oldValue);
                         loadedListInstance[index] = value;
                     },
-                    item);
+                    loadedListInstance[i]);
                 var state = interpret(storage);
 
                 var disposable = SubscribeElementState(state);
                 elementsMutable.Add((state, disposable));
             }
+            onContentsChanged.OnNext(Unit.Default);
         }
 
         public IFieldState AddNewElement()

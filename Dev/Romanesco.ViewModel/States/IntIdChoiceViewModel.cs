@@ -3,6 +3,7 @@ using Romanesco.Common;
 using Romanesco.Model.States;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Romanesco.ViewModel.States
 
         public IObservable<Exception> OnError => state.OnError;
 
-        public ReadOnlyReactiveCollection<IFieldState> Choices { get; private set; }
+        public ObservableCollection<IFieldState> Choices { get; private set; }
 
         public ReactiveProperty<IFieldState> SelectedItem => state.SelectedItem;
 

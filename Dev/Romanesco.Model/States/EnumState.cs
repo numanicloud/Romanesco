@@ -18,6 +18,8 @@ namespace Romanesco.Model.States
 
         public IReadOnlyReactiveProperty<string> FormattedString { get; }
 
+        public ReactiveProperty<object> Content { get; }
+
         public Type Type { get; }
 
         public ValueStorage Storage { get; }
@@ -33,6 +35,9 @@ namespace Romanesco.Model.States
             Title = new ReactiveProperty<string>(storage.MemberName);
             Type = storage.Type;
             Storage = storage;
+
+            Content = new ReactiveProperty<object>(storage.GetValue());
+            Content.Subscribe(x => Storage.SetValue(x));
 
             FormattedString = storage.OnValueChanged
                 .Select(x => x.ToString())
