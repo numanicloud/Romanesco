@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Romanesco.Model.ProjectComponents
 {
-    class ProjectSettings
+    public class ProjectSettings
     {
         public Assembly ProjectAssembly { get; }
         public Type ProjectType { get; }

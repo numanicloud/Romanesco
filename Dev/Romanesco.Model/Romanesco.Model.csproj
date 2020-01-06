@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj" />
+    <ProjectReference Include="..\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
+  </ItemGroup>
+
+</Project>

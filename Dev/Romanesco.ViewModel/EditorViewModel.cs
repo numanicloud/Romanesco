@@ -10,11 +10,11 @@ using Romanesco.Common.Model;
 
 namespace Romanesco.View
 {
-    class EditorViewModel
+    public class EditorViewModel
     {
         private Task runningCommandTask = null;
 
-        public Editor Editor { get; set; }
+        public IEditorFacade Editor { get; set; }
         public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
 
         public ReactiveCommand CreateCommand { get; set; } = new ReactiveCommand();
@@ -26,7 +26,7 @@ namespace Romanesco.View
         public ReactiveCommand Redo { get; } = new ReactiveCommand();
         public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
 
-        public EditorViewModel(Editor editor, IStateViewModelFactoryProvider factoryProvider)
+        public EditorViewModel(IEditorFacade editor, IStateViewModelFactoryProvider factoryProvider)
         {
             ViewModelInterpreter CreateInterpreter()
             {

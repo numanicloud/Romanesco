@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Romanesco.Model.Services.Serialize
 {
-    interface IStateDeserializer
+    public interface IStateDeserializer
     {
         object Deserialize(string encoded, Type type);
     }

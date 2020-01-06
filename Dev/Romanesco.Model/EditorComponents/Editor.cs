@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Romanesco.Model
 {
-    class Editor
+    class Editor : IEditorFacade
     {
         private EditorState.EditorState editorState;
         private readonly EditorContext context;

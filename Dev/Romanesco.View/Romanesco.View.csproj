@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
+    <ProjectReference Include="..\Romanesco.Common.ViewModel\Romanesco.Common.ViewModel.csproj" />
+    <ProjectReference Include="..\Romanesco.Common.View\Romanesco.Common.View.csproj" />
+    <ProjectReference Include="..\Romanesco.Model\Romanesco.Model.csproj" />
+    <ProjectReference Include="..\Romanesco.Styles\Romanesco.Styles.csproj" />
+    <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\StateRootView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\StateRootView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

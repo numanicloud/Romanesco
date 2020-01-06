@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Romanesco.Model.ProjectComponents
 {
-    class Project
+    public class Project
     {
         public ProjectSettings Settings { get; }
         public StateRoot Root { get; }

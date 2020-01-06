@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Romanesco.View
 {
-    class MainDataContext
+    public class MainDataContext
     {
         private ReactiveProperty<StateRootDataContext> rootProperty = new ReactiveProperty<StateRootDataContext>();
         private IDisposable errorSubscription;

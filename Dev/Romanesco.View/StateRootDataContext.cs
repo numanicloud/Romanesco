@@ -5,7 +5,7 @@ using System.Reactive.Linq;
 
 namespace Romanesco.View
 {
-    class StateRootDataContext
+    public class StateRootDataContext
     {
         public StateViewContext[] RootViews { get; }
         public IObservable<Exception> OnError { get; }

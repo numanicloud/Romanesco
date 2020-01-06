@@ -2,7 +2,7 @@
 
 namespace Romanesco.Model.Services
 {
-    interface IProjectSettingProvider
+    public interface IProjectSettingProvider
     {
         ProjectSettings GetSettings();
     }

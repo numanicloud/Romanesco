@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Romanesco.Model.Services.Serialize
 {
-    interface IStateSerializer
+    public interface IStateSerializer
     {
         string Serialize(object state);
     }
