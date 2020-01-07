@@ -7,6 +7,8 @@ using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
 using System;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 
 namespace Romanesco.Model.EditorComponents
@@ -16,9 +18,11 @@ namespace Romanesco.Model.EditorComponents
         private EditorState editorState;
         private readonly EditorContext context;
         private readonly IStateFactoryProvider factoryProvider;
+        private readonly Subject<(EditorCommandType command, bool canExecute)> canExecuteSubject;
 
         public EditorContext Context => context;
         public ReactiveProperty<string> ApplicationTitle { get; }
+        public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable { get; }
 
         public Editor(IStateFactoryProvider factoryProvider, IProjectSettingProvider settingProvider)
         {
@@ -27,6 +31,12 @@ namespace Romanesco.Model.EditorComponents
             editorState = new EmptyEditorState(context);
 
             ApplicationTitle = new ReactiveProperty<string>(editorState.Title);
+            canExecuteSubject = new Subject<(EditorCommandType command, bool canExecute)>();
+
+            var initialCanExecute = new ReplaySubject<(EditorCommandType command, bool canExecute)>();
+            UpdateCanExecute(initialCanExecute);
+
+            CanExecuteObservable = initialCanExecute.Concat(canExecuteSubject);
         }
 
         public ProjectContext Create()
@@ -70,20 +80,25 @@ namespace Romanesco.Model.EditorComponents
 
         public void Undo()
         {
-            editorState.GetHistoryService().Undo();
+            var history = editorState.GetHistoryService();
+            history.Undo();
             editorState.OnUndo();
+            canExecuteSubject.OnNext((EditorCommandType.Undo, history.CanUndo));
         }
 
         public void Redo()
         {
-            editorState.GetHistoryService().Redo();
+            var history = editorState.GetHistoryService();
+            history.Redo();
             editorState.OnRedo();
+            canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
         }
 
         public void ChangeState(EditorState state)
         {
             editorState = state;
             UpdateTitle();
+            UpdateCanExecute(canExecuteSubject);
         }
 
         private ObjectInterpreter CreateInterpreter(ProjectContextCrawler context)
@@ -106,6 +121,21 @@ namespace Romanesco.Model.EditorComponents
                 UpdateTitle();
             }
             return context.CurrentProject;
+        }
+
+        private void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer)
+        {
+            var load = editorState.GetLoadService();
+            var save = editorState.GetSaveService();
+            var history = editorState.GetHistoryService();
+
+            observer.OnNext((EditorCommandType.Create, load.CanCreate));
+            observer.OnNext((EditorCommandType.Open, load.CanOpen));
+            observer.OnNext((EditorCommandType.Save, save.CanSave));
+            observer.OnNext((EditorCommandType.SaveAs, save.CanSave));
+            observer.OnNext((EditorCommandType.Export, save.CanExport));
+            observer.OnNext((EditorCommandType.Undo, history.CanUndo));
+            observer.OnNext((EditorCommandType.Redo, history.CanRedo));
         }
     }
 }

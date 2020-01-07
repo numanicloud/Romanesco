@@ -14,6 +14,10 @@ namespace Romanesco.Model.Services.Save
         private readonly Project project;
         private readonly IStateSerializer saveSerializer;
 
+        public bool CanSave => true;
+
+        public bool CanExport => false;
+
         public WindowsSaveService(Project project, IStateSerializer saveSerializer)
         {
             this.project = project;

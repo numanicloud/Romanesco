@@ -6,6 +6,10 @@ namespace Romanesco.Model.Services.Load
 {
     class NullLoadService : IProjectLoadService
     {
+        public bool CanCreate => false;
+
+        public bool CanOpen => false;
+
         public Project Create()
         {
             return null;

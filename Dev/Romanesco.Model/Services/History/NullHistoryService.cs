@@ -2,6 +2,10 @@
 {
     class NullHistoryService : IProjectHistoryService
     {
+        public bool CanUndo => false;
+
+        public bool CanRedo => false;
+
         public void Redo()
         {
         }

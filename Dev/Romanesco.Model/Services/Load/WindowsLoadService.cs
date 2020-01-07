@@ -21,6 +21,10 @@ namespace Romanesco.Model.Services.Load
             this.deserializer = deserializer;
         }
 
+        public bool CanCreate => true;
+
+        public bool CanOpen => true;
+
         public Project Create()
         {
             var settings = context.SettingProvider.GetSettings();

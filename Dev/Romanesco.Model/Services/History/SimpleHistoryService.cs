@@ -12,6 +12,10 @@ namespace Romanesco.Model.Services.History
 			this.context = context;
 		}
 
+        public bool CanUndo => context.CommandHistory.CanUndo;
+
+        public bool CanRedo => context.CommandHistory.CanRedo;
+
         public void Redo()
         {
             context.CommandHistory.Redo();

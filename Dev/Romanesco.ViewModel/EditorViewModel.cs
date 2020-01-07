@@ -15,18 +15,34 @@ namespace Romanesco.ViewModel
         public IEditorFacade Editor { get; set; }
         public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
 
-        public ReactiveCommand CreateCommand { get; set; } = new ReactiveCommand();
-        public ReactiveCommand ExportCommand { get; set; } = new ReactiveCommand();
-        public ReactiveCommand OpenCommand { get; } = new ReactiveCommand();
-        public ReactiveCommand SaveCommand { get; set; } = new ReactiveCommand();
-        public ReactiveCommand SaveAsCommand { get; set; } = new ReactiveCommand();
-        public ReactiveCommand Undo { get; } = new ReactiveCommand();
-        public ReactiveCommand Redo { get; } = new ReactiveCommand();
+        public ReactiveCommand CreateCommand { get; set; }
+        public ReactiveCommand OpenCommand { get; }
+        public ReactiveCommand SaveCommand { get; set; }
+        public ReactiveCommand SaveAsCommand { get; set; }
+        public ReactiveCommand ExportCommand { get; set; }
+        public ReactiveCommand Undo { get; }
+        public ReactiveCommand Redo { get; }
         public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
 
         public EditorViewModel(IEditorFacade editor, IStateViewModelFactoryProvider factoryProvider)
         {
+            ReactiveCommand ToEditorCommand(EditorCommandType type)
+            {
+                var canExecute = editor.CanExecuteObservable
+                    .Where(x => x.command == type)
+                    .Select(x => x.canExecute);
+                return new ReactiveCommand(canExecute);
+            }
+
             Editor = editor;
+
+            CreateCommand = ToEditorCommand(EditorCommandType.Create);
+            OpenCommand = ToEditorCommand(EditorCommandType.Open);
+            SaveCommand = ToEditorCommand(EditorCommandType.Save);
+            SaveAsCommand = ToEditorCommand(EditorCommandType.SaveAs);
+            ExportCommand = ToEditorCommand(EditorCommandType.Export);
+            Undo = ToEditorCommand(EditorCommandType.Undo);
+            Redo = ToEditorCommand(EditorCommandType.Redo);
 
             CreateCommand.SubscribeSafe(x =>
             {

@@ -6,6 +6,8 @@ namespace Romanesco.Model.Services.Load
 {
     interface IProjectLoadService
     {
+        bool CanCreate { get; }
+        bool CanOpen { get; }
         Project Create();
         Task<Project> OpenAsync();
     }

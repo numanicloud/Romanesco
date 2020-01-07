@@ -9,6 +9,8 @@ namespace Romanesco.Common.Model.Basics
         private readonly Stack<ICommandMemento> undos = new Stack<ICommandMemento>();
         private readonly Stack<ICommandMemento> redos = new Stack<ICommandMemento>();
 
+        public bool CanUndo => undos.Count != 0;
+        public bool CanRedo => redos.Count != 0;
         public IEnumerable<ICommandMemento> Undos => undos;
         public IEnumerable<ICommandMemento> Redos => redos;
         public bool IsOperating { get; private set; } = false;
