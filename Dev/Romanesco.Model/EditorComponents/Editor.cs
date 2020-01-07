@@ -35,6 +35,7 @@ namespace Romanesco.Model.EditorComponents
 
             var initialCanExecute = new ReplaySubject<(EditorCommandType command, bool canExecute)>();
             UpdateCanExecute(initialCanExecute);
+            initialCanExecute.OnCompleted();
 
             CanExecuteObservable = initialCanExecute.Concat(canExecuteSubject);
         }
@@ -45,7 +46,7 @@ namespace Romanesco.Model.EditorComponents
                 () =>
                 {
                     editorState.OnCreate();
-                    editorState = new NewEditorState(context);
+                    ChangeState(new NewEditorState(context));
                 }).Result;
         }
 
@@ -55,7 +56,7 @@ namespace Romanesco.Model.EditorComponents
                 () =>
                 {
                     editorState.OnOpen();
-                    editorState = new CleanEditorState(context);
+                    ChangeState(new CleanEditorState(context));
                 });
         }
 
@@ -101,6 +102,14 @@ namespace Romanesco.Model.EditorComponents
             UpdateCanExecute(canExecuteSubject);
         }
 
+        private void OnEdit()
+        {
+            editorState.OnEdit();
+            var history = editorState.GetHistoryService();
+            canExecuteSubject.OnNext((EditorCommandType.Undo, history.CanUndo));
+            canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
+        }
+
         private ObjectInterpreter CreateInterpreter(ProjectContextCrawler context)
         {
             return new ObjectInterpreter(factoryProvider.GetStateFactories(context).ToArray());
@@ -119,6 +128,9 @@ namespace Romanesco.Model.EditorComponents
                 context.CurrentProject = new ProjectContext(project, contextCrawler);
                 onSuccess();
                 UpdateTitle();
+
+                Observable.Merge(project.Root.States.Select(x => x.OnEdited))
+                    .Subscribe(x => OnEdit());
             }
             return context.CurrentProject;
         }
