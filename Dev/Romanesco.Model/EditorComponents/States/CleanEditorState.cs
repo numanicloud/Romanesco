@@ -11,18 +11,16 @@ namespace Romanesco.Model.EditorComponents.States
         private readonly IProjectLoadService loadService;
         private readonly IProjectSaveService saveService;
         private readonly IProjectHistoryService historyService;
-        private readonly Project project;
 
-        public override string Title => $"Romanesco - {System.IO.Path.GetFileName(project.DefaultSavePath)}";
+        public override string Title => $"Romanesco - {System.IO.Path.GetFileName(Context.CurrentProject.Project.DefaultSavePath)}";
 
-        public CleanEditorState(EditorContext context, Project project) : base(context)
+        public CleanEditorState(EditorContext context) : base(context)
         {
             var deserializer = new NewtonsoftStateDeserializer();
             var serializer = new NewtonsoftStateSerializer();
             loadService = new WindowsLoadService(context, deserializer);
-            saveService = new WindowsSaveService(project, serializer);
-            historyService = new NullHistoryService();
-            this.project = project;
+            saveService = new WindowsSaveService(context.CurrentProject.Project, serializer);
+            historyService = new SimpleHistoryService(context.CurrentProject);
         }
 
         public override IProjectLoadService GetLoadService() => loadService;
@@ -33,7 +31,7 @@ namespace Romanesco.Model.EditorComponents.States
 
         public override void OnEdit()
         {
-            Context.Editor.ChangeState(new DirtyEditorState(Context, project));
+            Context.Editor.ChangeState(new DirtyEditorState(Context));
         }
     }
 }

@@ -21,7 +21,7 @@
             "type": "shell",
             "args": [
                 "build",
-                "Romanesco.BuiltinPlugin/Romanesco.BuiltinPlugin.csproj",
+                "Dev/Romanesco.BuiltinPlugin/Romanesco.BuiltinPlugin.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -37,9 +37,8 @@
             "type": "shell",
             "args": [
                 "build",
-                // Ask dotnet build to generate full paths for file names.
+                "Dev/Romanesco.sln",
                 "/property:GenerateFullPaths=true",
-                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary"
             ],
             "group": "build",

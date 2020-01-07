@@ -7,6 +7,5 @@ namespace Romanesco.Common.Extensibility.Interfaces
 {
     public interface IPluginFacade : IStateFactoryProvider, IStateViewModelFactoryProvider, IViewFactoryProvider
     {
-        void LoadContext(ProjectContext context);
     }
 }

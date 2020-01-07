@@ -1,8 +1,11 @@
 ﻿using Reactive.Bindings;
+using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,54 +17,36 @@ namespace Romanesco.Model.EditorComponents
         private readonly EditorContext context;
         private readonly IStateFactoryProvider factoryProvider;
 
+        public EditorContext Context => context;
         public ReactiveProperty<string> ApplicationTitle { get; }
 
         public Editor(IStateFactoryProvider factoryProvider, IProjectSettingProvider settingProvider)
         {
             this.factoryProvider = factoryProvider;
-            context = new EditorContext(this, CreateInterpreter(), settingProvider);
+            context = new EditorContext(this, null, settingProvider);
             editorState = new EmptyEditorState(context);
 
             ApplicationTitle = new ReactiveProperty<string>(editorState.Title);
         }
 
-        private ObjectInterpreter CreateInterpreter()
+        public ProjectContext Create()
         {
-            return new ObjectInterpreter(factoryProvider.GetStateFactories().ToArray());
+            return ResetProject(() => Task.FromResult(editorState.GetLoadService().Create()),
+                () =>
+                {
+                    editorState.OnCreate();
+                    editorState = new NewEditorState(context);
+                }).Result;
         }
 
-        private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
-
-        public Project Create()
+        public Task<ProjectContext> OpenAsync()
         {
-            context.Interpreter = CreateInterpreter();
-            var project = editorState.GetLoadService().Create();
-            if (project != null)
-            {
-                editorState.OnCreate();
-                editorState = new NewEditorState(context, project);
-                UpdateTitle();
-            }
-            return project;
-        }
-
-        public void Export()
-        {
-            editorState.GetSaveService().Export();
-            editorState.OnExport();
-        }
-
-        public async Task<Project> OpenAsync()
-        {
-            context.Interpreter = CreateInterpreter();
-            var project = await editorState.GetLoadService().OpenAsync();
-            if (project != null)
-            {
-                editorState.OnOpen();
-                editorState = new CleanEditorState(context, project);
-                UpdateTitle();
-            }
-            return project;
+            return ResetProject(async () => await editorState.GetLoadService().OpenAsync(),
+                () =>
+                {
+                    editorState.OnOpen();
+                    editorState = new CleanEditorState(context);
+                });
         }
 
         public async Task SaveAsync()
@@ -75,6 +60,12 @@ namespace Romanesco.Model.EditorComponents
             await editorState.GetSaveService().SaveAsAsync();
             editorState.OnSaveAs();
             UpdateTitle();
+        }
+
+        public void Export()
+        {
+            editorState.GetSaveService().Export();
+            editorState.OnExport();
         }
 
         public void Undo()
@@ -93,6 +84,28 @@ namespace Romanesco.Model.EditorComponents
         {
             editorState = state;
             UpdateTitle();
+        }
+
+        private ObjectInterpreter CreateInterpreter(ProjectContextCrawler context)
+        {
+            return new ObjectInterpreter(factoryProvider.GetStateFactories(context).ToArray());
+        }
+
+        private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
+
+        private async Task<ProjectContext> ResetProject(Func<Task<Project>> generator, Action onSuccess)
+        {
+            var contextCrawler = new ProjectContextCrawler();
+            context.Interpreter = CreateInterpreter(contextCrawler);
+
+            var project = await generator();
+            if (project != null)
+            {
+                context.CurrentProject = new ProjectContext(project, contextCrawler);
+                onSuccess();
+                UpdateTitle();
+            }
+            return context.CurrentProject;
         }
     }
 }

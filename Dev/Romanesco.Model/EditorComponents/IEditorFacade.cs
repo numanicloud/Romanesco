@@ -1,12 +1,14 @@
-﻿using Romanesco.Model.ProjectComponents;
+﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.ProjectComponents;
+using Romanesco.Model.ProjectComponents;
 using System.Threading.Tasks;
 
 namespace Romanesco.Model.EditorComponents
 {
     public interface IEditorFacade
     {
-        Project Create();
-        Task<Project> OpenAsync();
+        ProjectContext Create();
+        Task<ProjectContext> OpenAsync();
         Task SaveAsync();
         Task SaveAsAsync();
         void Export();

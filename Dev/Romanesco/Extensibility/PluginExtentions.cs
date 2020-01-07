@@ -2,6 +2,7 @@
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
+using Romanesco.Model.ProjectComponents;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,9 +17,9 @@ namespace Romanesco.Extensibility
             this.plugins = plugins;
         }
 
-        public IEnumerable<IStateFactory> GetStateFactories()
+        public IEnumerable<IStateFactory> GetStateFactories(ProjectContextCrawler context)
         {
-            return plugins.SelectMany(p => p.GetStateFactories());
+            return plugins.SelectMany(p => p.GetStateFactories(context));
         }
 
         public IEnumerable<IStateViewModelFactory> GetStateViewModelFactories()

@@ -1,4 +1,5 @@
-﻿using Romanesco.Model.ProjectComponents;
+﻿using Romanesco.Common.Model.ProjectComponents;
+using Romanesco.Model.ProjectComponents;
 using System.Threading.Tasks;
 
 namespace Romanesco.Model.Services.Load

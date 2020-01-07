@@ -1,32 +1,23 @@
-﻿using Romanesco.Annotations;
-using Romanesco.Common.Model.Basics;
-using Romanesco.Model.Services.Serialize;
 using System.Linq;
 using System.Reflection;
+using Romanesco.Annotations;
+using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.ProjectComponents;
+using Romanesco.Model.Services.Serialize;
 
 namespace Romanesco.Model.ProjectComponents
 {
-    public class Project
-    {
-        public ProjectSettings Settings { get; }
-        public StateRoot Root { get; }
-        public string DefaultSavePath { get; set; }
-
-        public Project(ProjectSettings settings, StateRoot root)
-        {
-            Settings = settings;
-            Root = root;
-        }
-
-        public ProjectData ToData(IStateSerializer serializer)
-        {
-            return new ProjectData
-            {
-                AssemblyPath = Settings.Assembly.Location,
-                ProjectTypeQualifier = Settings.ProjectType.FullName,
-                EncodedMaster = serializer.Serialize(Root.RootInstance),
-            };
-        }
+	public static class ProjectConverter
+	{
+		public static ProjectData ToData(Project project, IStateSerializer serializer)
+		{
+			return new ProjectData
+			{
+                AssemblyPath = project.Settings.Assembly.Location,
+                ProjectTypeQualifier = project.Settings.ProjectType.FullName,
+                EncodedMaster = serializer.Serialize(project.Root.RootInstance),
+			};
+		}
 
         public static Project FromInstance(ProjectSettings settings, ObjectInterpreter interpreter, object instance)
         {
@@ -55,5 +46,5 @@ namespace Romanesco.Model.ProjectComponents
             var instance = deserializer.Deserialize(data.EncodedMaster, type);
             return FromInstance(settings, interpreter, instance);
         }
-    }
+	}
 }

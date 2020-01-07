@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
+using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services.Serialize;
 using System;
@@ -60,7 +61,7 @@ namespace Romanesco.Model.Services.Save
 
         private async Task SaveToPathAsync(string path)
         {
-            var data = project.ToData(saveSerializer);
+            var data = ProjectConverter.ToData(project, saveSerializer);
             var json = JsonConvert.SerializeObject(data);
 
             using (var file = File.Create(path))

@@ -11,13 +11,6 @@ namespace Romanesco.Extensibility
 {
     class PluginLoader
     {
-        private readonly ProjectContext projectContext;
-
-        public PluginLoader(ProjectContext projectContext)
-        {
-            this.projectContext = projectContext;
-        }
-
         public PluginExtentions Load(string dirPath)
         {
             var plugins = new List<IPluginFacade>();
@@ -47,7 +40,6 @@ namespace Romanesco.Extensibility
                 }
 
                 var facade = Activator.CreateInstance(type) as IPluginFacade;
-                facade.LoadContext(projectContext);
                 plugins.Add(facade);
             }
 

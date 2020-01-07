@@ -12,8 +12,6 @@ namespace Romanesco.ViewModel
 {
     public class EditorViewModel
     {
-        private Task runningCommandTask = null;
-
         public IEditorFacade Editor { get; set; }
         public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
 
@@ -28,23 +26,18 @@ namespace Romanesco.ViewModel
 
         public EditorViewModel(IEditorFacade editor, IStateViewModelFactoryProvider factoryProvider)
         {
-            ViewModelInterpreter CreateInterpreter()
-            {
-                return new ViewModelInterpreter(factoryProvider.GetStateViewModelFactories().ToArray());
-            }
-
             Editor = editor;
 
-            CreateCommand.Where(x => runningCommandTask == null)
-                .SubscribeSafe(x =>
+            CreateCommand.SubscribeSafe(x =>
             {
-                var interpreter = CreateInterpreter();
-                var project = Editor.Create();
-                Roots.Value = project.Root.States.Select(s => interpreter.InterpretAsViewModel(s)).ToArray();
+                var interpreter = CreateInterpreter(factoryProvider);
+                var projectContext = Editor.Create();
+                Roots.Value = projectContext.Project.Root.States
+                    .Select(s => interpreter.InterpretAsViewModel(s))
+                    .ToArray();
             });
 
-            OpenCommand.Where(x => runningCommandTask == null)
-                .SubscribeSafe(x => Open(factoryProvider));
+            OpenCommand.SubscribeSafe(x => Open(factoryProvider));
 
             ExportCommand.SubscribeSafe(x => Editor.Export());
             SaveCommand.SubscribeSafe(x => Editor.SaveAsync().Wait());
@@ -56,12 +49,18 @@ namespace Romanesco.ViewModel
             GcDebugCommand.SubscribeSafe(x => GC.Collect());
         }
 
+        private ViewModelInterpreter CreateInterpreter(IStateViewModelFactoryProvider factoryProvider)
+        {
+            return new ViewModelInterpreter(factoryProvider.GetStateViewModelFactories().ToArray());
+        }
+
         private async Task Open(IStateViewModelFactoryProvider factoryProvider)
         {
-            var interpreter = new ViewModelInterpreter(factoryProvider.GetStateViewModelFactories().ToArray());
-            var project = await Editor.OpenAsync();
-            Roots.Value = project.Root.States.Select(s => interpreter.InterpretAsViewModel(s)).ToArray();
-            runningCommandTask = null;
+            var interpreter = CreateInterpreter(factoryProvider);
+            var projectContext = await Editor.OpenAsync();
+            Roots.Value = projectContext.Project.Root.States
+                .Select(s => interpreter.InterpretAsViewModel(s))
+                .ToArray();
         }
     }
 }

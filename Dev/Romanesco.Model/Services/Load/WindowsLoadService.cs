@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
+using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services.Serialize;
@@ -24,7 +25,7 @@ namespace Romanesco.Model.Services.Load
         {
             var settings = context.SettingProvider.GetSettings();
             var instance = Activator.CreateInstance(settings.ProjectType);
-            return Project.FromInstance(settings, context.Interpreter, instance);
+            return ProjectConverter.FromInstance(settings, context.Interpreter, instance);
         }
 
         public async Task<Project> OpenAsync()
@@ -44,7 +45,7 @@ namespace Romanesco.Model.Services.Load
                     {
                         var json = await reader.ReadToEndAsync();
                         var data = JsonConvert.DeserializeObject<ProjectData>(json);
-                        var project = Project.FromData(data, deserializer, context.Interpreter);
+                        var project = ProjectConverter.FromData(data, deserializer, context.Interpreter);
                         project.DefaultSavePath = dialog.FileName;
                         return project;
                     }

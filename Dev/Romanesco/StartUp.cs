@@ -11,7 +11,7 @@ namespace Romanesco
     {
         public MainDataContext LoadMainDataContext()
         {
-            var loader = new PluginLoader(new ProjectContext());
+            var loader = new PluginLoader();
             var extensions = loader.Load("Plugins");
             var sampleSettingProvider = new SampleProjectSettingProvider();
 

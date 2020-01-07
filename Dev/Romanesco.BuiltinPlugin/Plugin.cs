@@ -5,21 +5,20 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
+using Romanesco.Model.ProjectComponents;
 using System.Collections.Generic;
 
 namespace Romanesco.BuiltinPlugin
 {
     public class Plugin : IPluginFacade
     {
-        private ProjectContext projectContext;
-
-        public IEnumerable<IStateFactory> GetStateFactories()
+        public IEnumerable<IStateFactory> GetStateFactories(ProjectContextCrawler context)
         {
             var masterListContext = new MasterListContext();
             yield return new Model.Factories.IdStateFactory(masterListContext);
-            yield return new Model.Factories.PrimitiveStateFactory(projectContext.CommandHistory);
-            yield return new Model.Factories.EnumStateFactory(projectContext.CommandHistory);
-            yield return new Model.Factories.ListStateFactory(masterListContext, projectContext.CommandHistory);
+            yield return new Model.Factories.PrimitiveStateFactory(context.CommandHistory);
+            yield return new Model.Factories.EnumStateFactory(context.CommandHistory);
+            yield return new Model.Factories.ListStateFactory(masterListContext, context.CommandHistory);
             yield return new ClassStateFactory();
         }
 
@@ -39,11 +38,6 @@ namespace Romanesco.BuiltinPlugin
             yield return new View.Factories.EnumViewFactory();
             yield return new View.Factories.ClassViewFactory();
             yield return new View.Factories.ArrayViewFactory();
-        }
-
-        public void LoadContext(ProjectContext context)
-        {
-            projectContext = context;
         }
     }
 }
