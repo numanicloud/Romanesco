@@ -27,9 +27,15 @@ namespace Romanesco.Model.Services.Load
 
         public Project Create()
         {
-            var settings = context.SettingProvider.GetSettings();
-            var instance = Activator.CreateInstance(settings.ProjectType);
-            return ProjectConverter.FromInstance(settings, context.Interpreter, instance);
+            var editor = new ProjectSettingsEditor();
+            context.SettingProvider.InputCreateSettings(editor);
+            if (editor.Succeeded)
+            {
+                var settings = new ProjectSettings(editor.Assembly, editor.ProjectType);
+                var instance = Activator.CreateInstance(settings.ProjectType);
+                return ProjectConverter.FromInstance(settings, context.Interpreter, instance);
+            }
+            return null;
         }
 
         public async Task<Project> OpenAsync()

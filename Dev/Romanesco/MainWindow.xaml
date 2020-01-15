@@ -4,8 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:Romanesco.View.Controls;assembly=Romanesco.View"
+        xmlns:window="clr-namespace:Romanesco.View.Windows;assembly=Romanesco.View"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="{Binding Editor.Editor.ApplicationTitle.Value}" Height="450" Width="800">
+
+    <b:Interaction.Triggers>
+        <l:InteractionMessageTrigger Messenger="{Binding Editor.Messenger}" MessageKey="CreateProject">
+            <l:TransitionInteractionMessageAction Mode="Modal" WindowType="{x:Type window:ProjectSettingsEditorWindow}"/>
+        </l:InteractionMessageTrigger>
+    </b:Interaction.Triggers>
 
     <Grid VerticalAlignment="Stretch">
         <Grid.RowDefinitions>

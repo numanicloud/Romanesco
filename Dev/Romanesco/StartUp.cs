@@ -13,11 +13,13 @@ namespace Romanesco
         {
             var loader = new PluginLoader();
             var extensions = loader.Load("Plugins");
-            var sampleSettingProvider = new SampleProjectSettingProvider();
+            var settingsProvider = new VmProjectSettingsProvider();
 
-            var editor = EditorFactory.CreateEditor(extensions, sampleSettingProvider);
+            var editor = EditorFactory.CreateEditor(extensions, settingsProvider);
             var vm = new EditorViewModel(editor, extensions);
             var main = new MainDataContext(vm, extensions);
+
+            settingsProvider.ViewModel = vm;
 
             return main;
         }

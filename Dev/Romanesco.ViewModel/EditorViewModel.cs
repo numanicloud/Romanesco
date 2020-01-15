@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Romanesco.Common.Model;
 using Romanesco.Model.EditorComponents;
 using Romanesco.ViewModel.States;
+using Livet.Messaging;
 
 namespace Romanesco.ViewModel
 {
-    public class EditorViewModel
+    public class EditorViewModel : Livet.ViewModel
     {
         public IEditorFacade Editor { get; set; }
         public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
@@ -48,9 +49,12 @@ namespace Romanesco.ViewModel
             {
                 var interpreter = CreateInterpreter(factoryProvider);
                 var projectContext = Editor.Create();
-                Roots.Value = projectContext.Project.Root.States
-                    .Select(s => interpreter.InterpretAsViewModel(s))
-                    .ToArray();
+                if (projectContext != null)
+                {
+                    Roots.Value = projectContext.Project.Root.States
+                        .Select(s => interpreter.InterpretAsViewModel(s))
+                        .ToArray();
+                }
             });
 
             OpenCommand.SubscribeSafe(x => Open(factoryProvider));
@@ -63,6 +67,14 @@ namespace Romanesco.ViewModel
             Redo.SubscribeSafe(x => Editor.Redo());
 
             GcDebugCommand.SubscribeSafe(x => GC.Collect());
+
+            //Messenger.Raise(new TransitionMessage())
+        }
+
+        public void ShowProjectSetting(ProjectSettingsEditor editor)
+        {
+            var vm = new ProjectSettingsEditorViewModel(editor);
+            Messenger.Raise(new TransitionMessage(vm, "CreateProject"));
         }
 
         private ViewModelInterpreter CreateInterpreter(IStateViewModelFactoryProvider factoryProvider)

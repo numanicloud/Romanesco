@@ -60,6 +60,7 @@ namespace Romanesco.Sample
         }
     }
 
+    [EditorProject]
     public class Project
     {
         [EditorMember]

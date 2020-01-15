@@ -3,17 +3,17 @@ using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 
-namespace Romanesco.Sample
+namespace Romanesco.ViewModel
 {
-    class SampleProjectSettingProvider : IProjectSettingProvider
+    public class VmProjectSettingsProvider : IProjectSettingProvider
     {
+        public EditorViewModel ViewModel { get; set; }
+
         public void InputCreateSettings(ProjectSettingsEditor editor)
         {
-            editor.AssemblyPath.Value = typeof(Project).Assembly.Location;
-            editor.ProjectTypeFullName.Value = typeof(Project).FullName;
+            ViewModel.ShowProjectSetting(editor);
         }
     }
 }
