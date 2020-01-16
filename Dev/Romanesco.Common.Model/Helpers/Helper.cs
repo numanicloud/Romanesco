@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-
+using System.Threading.Tasks;
 using static System.Collections.Specialized.NotifyCollectionChangedAction;
 
 namespace Romanesco.Common.Model
@@ -105,6 +105,11 @@ namespace Romanesco.Common.Model
                 .AddTo(disposable);
 
             return (proxy, disposable);
+        }
+
+        public static void Forget(this Task task)
+        {
+            var ignore = task;
         }
     }
 }

@@ -73,9 +73,9 @@ namespace Romanesco.Model.EditorComponents
             UpdateTitle();
         }
 
-        public void Export()
+        public async Task ExportAsync()
         {
-            editorState.GetSaveService().Export();
+            await editorState.GetSaveService().ExportAsync();
             editorState.OnExport();
         }
 
@@ -125,7 +125,10 @@ namespace Romanesco.Model.EditorComponents
             var project = await generator();
             if (project != null)
             {
-                context.CurrentProject = new ProjectContext(project, contextCrawler);
+                context.CurrentProject = new ProjectContext(project, contextCrawler)
+                {
+                    Exporter = new Services.Export.NewtonsoftJsonProjectTypeExporter(),
+                };
                 onSuccess();
                 UpdateTitle();
 

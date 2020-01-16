@@ -8,6 +8,7 @@ using Romanesco.Common.Model;
 using Romanesco.Model.EditorComponents;
 using Romanesco.ViewModel.States;
 using Livet.Messaging;
+using Romanesco.Common.Model.Helpers;
 
 namespace Romanesco.ViewModel
 {
@@ -15,6 +16,8 @@ namespace Romanesco.ViewModel
     {
         public IEditorFacade Editor { get; set; }
         public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
+
+        public BooleanUsingScopeSource CommandExecution { get; }
 
         public ReactiveCommand CreateCommand { get; set; }
         public ReactiveCommand OpenCommand { get; }
@@ -31,11 +34,13 @@ namespace Romanesco.ViewModel
             {
                 var canExecute = editor.CanExecuteObservable
                     .Where(x => x.command == type)
-                    .Select(x => x.canExecute);
+                    .Select(x => x.canExecute)
+                    .Concat(CommandExecution.IsUsing.Select(x => !x));
                 return new ReactiveCommand(canExecute);
             }
 
             Editor = editor;
+            CommandExecution = new BooleanUsingScopeSource();
 
             CreateCommand = ToEditorCommand(EditorCommandType.Create);
             OpenCommand = ToEditorCommand(EditorCommandType.Open);
@@ -45,24 +50,11 @@ namespace Romanesco.ViewModel
             Undo = ToEditorCommand(EditorCommandType.Undo);
             Redo = ToEditorCommand(EditorCommandType.Redo);
 
-            CreateCommand.SubscribeSafe(x =>
-            {
-                var interpreter = CreateInterpreter(factoryProvider);
-                var projectContext = Editor.Create();
-                if (projectContext != null)
-                {
-                    Roots.Value = projectContext.Project.Root.States
-                        .Select(s => interpreter.InterpretAsViewModel(s))
-                        .ToArray();
-                }
-            });
-
-            OpenCommand.SubscribeSafe(x => Open(factoryProvider));
-
-            ExportCommand.SubscribeSafe(x => Editor.Export());
-            SaveCommand.SubscribeSafe(x => Editor.SaveAsync().Wait());
-            SaveAsCommand.SubscribeSafe(x => Editor.SaveAsAsync().Wait());
-
+            CreateCommand.SubscribeSafe(x => Create(factoryProvider));
+            OpenCommand.SubscribeSafe(x => OpenAsync(factoryProvider).Forget());
+            ExportCommand.SubscribeSafe(x => ExportAsync().Forget());
+            SaveCommand.SubscribeSafe(x => SaveAsync().Forget());
+            SaveAsCommand.SubscribeSafe(x => SaveAsAsync().Wait());
             Undo.SubscribeSafe(x => Editor.Undo());
             Redo.SubscribeSafe(x => Editor.Redo());
 
@@ -82,13 +74,55 @@ namespace Romanesco.ViewModel
             return new ViewModelInterpreter(factoryProvider.GetStateViewModelFactories().ToArray());
         }
 
-        private async Task Open(IStateViewModelFactoryProvider factoryProvider)
+        private void Create(IStateViewModelFactoryProvider factoryProvider)
         {
-            var interpreter = CreateInterpreter(factoryProvider);
-            var projectContext = await Editor.OpenAsync();
-            Roots.Value = projectContext.Project.Root.States
-                .Select(s => interpreter.InterpretAsViewModel(s))
-                .ToArray();
+            using (CommandExecution.Create())
+            {
+                var interpreter = CreateInterpreter(factoryProvider);
+                var projectContext = Editor.Create();
+                if (projectContext != null)
+                {
+                    Roots.Value = projectContext.Project.Root.States
+                        .Select(s => interpreter.InterpretAsViewModel(s))
+                        .ToArray();
+                }
+            }
+        }
+
+        private async Task OpenAsync(IStateViewModelFactoryProvider factoryProvider)
+        {
+            using (CommandExecution.Create())
+            {
+                var interpreter = CreateInterpreter(factoryProvider);
+                var projectContext = await Editor.OpenAsync();
+                Roots.Value = projectContext.Project.Root.States
+                    .Select(s => interpreter.InterpretAsViewModel(s))
+                    .ToArray();
+            }
+        }
+
+        private async Task ExportAsync()
+        {
+            using (CommandExecution.Create())
+            {
+                await Editor.ExportAsync();
+            }
+        }
+
+        private async Task SaveAsync()
+        {
+            using (CommandExecution.Create())
+            {
+                await Editor.SaveAsync();
+            }
+        }
+
+        private async Task SaveAsAsync()
+        {
+            using (CommandExecution.Create())
+            {
+                await Editor.SaveAsAsync();
+            }
         }
     }
 }

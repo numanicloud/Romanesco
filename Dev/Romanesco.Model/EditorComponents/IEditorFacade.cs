@@ -13,7 +13,7 @@ namespace Romanesco.Model.EditorComponents
         Task<ProjectContext> OpenAsync();
         Task SaveAsync();
         Task SaveAsAsync();
-        void Export();
+        Task ExportAsync();
         void Undo();
         void Redo();
     }

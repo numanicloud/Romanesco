@@ -19,7 +19,7 @@ namespace Romanesco.Model.EditorComponents.States
             var deserializer = new NewtonsoftStateDeserializer();
             var serializer = new NewtonsoftStateSerializer();
             loadService = new WindowsLoadService(context, deserializer);
-            saveService = new WindowsSaveService(context.CurrentProject.Project, serializer);
+            saveService = new WindowsSaveService(context.CurrentProject.Project, serializer, context.CurrentProject.Exporter);
             historyService = new SimpleHistoryService(context.CurrentProject);
 		}
 

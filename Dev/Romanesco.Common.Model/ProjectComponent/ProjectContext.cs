@@ -1,4 +1,5 @@
-﻿using Romanesco.Common.Model.ProjectComponents;
+﻿using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.ProjectComponents;
 
 namespace Romanesco.Common.Model.Basics
@@ -8,6 +9,7 @@ namespace Romanesco.Common.Model.Basics
 		private readonly ProjectContextCrawler crawler;
 
         public CommandHistory CommandHistory => crawler.CommandHistory;
+        public IProjectTypeExporter Exporter { get; set; }
 		public Project Project { get; }
 
         public ProjectContext(Project project, ProjectContextCrawler crawler)

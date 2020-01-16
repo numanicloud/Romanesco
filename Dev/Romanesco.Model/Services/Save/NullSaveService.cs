@@ -8,8 +8,9 @@ namespace Romanesco.Model.Services.Save
 
         public bool CanExport => false;
 
-        public void Export()
+        public Task ExportAsync()
         {
+            return Task.CompletedTask;
         }
 
         public Task SaveAsAsync()

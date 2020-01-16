@@ -2,10 +2,13 @@
 using Newtonsoft.Json;
 using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.ProjectComponents;
+using Romanesco.Model.Services.Export;
 using Romanesco.Model.Services.Serialize;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.Model.Services.Save
 {
@@ -13,20 +16,34 @@ namespace Romanesco.Model.Services.Save
     {
         private readonly Project project;
         private readonly IStateSerializer saveSerializer;
+        private readonly IProjectTypeExporter exporter;
 
         public bool CanSave => true;
 
-        public bool CanExport => false;
+        public bool CanExport => true;
 
-        public WindowsSaveService(Project project, IStateSerializer saveSerializer)
+        public WindowsSaveService(Project project,
+            IStateSerializer saveSerializer,
+            IProjectTypeExporter exporter)
         {
             this.project = project;
             this.saveSerializer = saveSerializer;
+            this.exporter = exporter;
         }
 
-        public void Export()
+        public async Task ExportAsync()
         {
-            throw new NotImplementedException();
+            var dialog = new CommonOpenFileDialog()
+            {
+                IsFolderPicker = !exporter.DoExportIntoSingleFile,
+                Title = "マスター データを保存",
+            };
+            var result = dialog.ShowDialog();
+
+            if (result == CommonFileDialogResult.Ok)
+            {
+                await exporter.ExportAsync(project.Root.RootInstance, dialog.FileName);
+            }
         }
 
         public async Task SaveAsync()

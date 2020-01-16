@@ -8,6 +8,6 @@ namespace Romanesco.Model.Services.Save
         public bool CanExport { get; }
         Task SaveAsync();
         Task SaveAsAsync();
-        void Export();
+        Task ExportAsync();
     }
 }
