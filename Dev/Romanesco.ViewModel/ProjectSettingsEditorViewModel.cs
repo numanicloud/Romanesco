@@ -17,6 +17,8 @@ namespace Romanesco.ViewModel
         public ReactiveProperty<string> AssemblyPath => editor.AssemblyPath;
         public ReactiveProperty<string> ProjectTypeName => editor.ProjectTypeFullName;
         public ReactiveProperty<string[]> ProjectTypeMenu => editor.ProjectTypeMenu;
+        public ReactiveProperty<string> ProjectTypeExporterName => editor.ProjectTypeExporterFullName;
+        public ReactiveProperty<string[]> ProjectTypeExporterMenu => editor.ProjectTypeExporterMenu;
 
         public ProjectSettingsEditorViewModel(ProjectSettingsEditor editor)
         {

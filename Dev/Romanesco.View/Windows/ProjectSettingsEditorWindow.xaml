@@ -8,7 +8,7 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="ProjectSettingsEditorWindow" Height="220" Width="480"
+        Title="ProjectSettingsEditorWindow" Height="280" Width="480"
         ResizeMode="NoResize">
 
     <b:Interaction.Triggers>
@@ -36,13 +36,20 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Margin="6" Text="プロジェクト型のあるアセンブリ:"/>
         <TextBox Grid.Row="1" Margin="8" MaxHeight="28" Text="{Binding AssemblyPath.Value}"/>
+        
         <TextBlock Grid.Row="2" Margin="6" Text="プロジェクト型:"/>
         <ComboBox Grid.Row="3" Margin="8" MaxHeight="28" ItemsSource="{Binding ProjectTypeMenu.Value}"
                   SelectedItem="{Binding ProjectTypeName.Value}"/>
+
+        <TextBlock Grid.Row="4" Margin="6" Text="エクスポートAPIを実装する型:"/>
+        <ComboBox Grid.Row="5" Margin="8" MaxHeight="28" ItemsSource="{Binding ProjectTypeExporterMenu.Value}"
+                  SelectedItem="{Binding ProjectTypeExporterName.Value}"/>
 
         <Button Grid.Column="1" Grid.Row="1" Margin="6" Content="参照..." MaxHeight="28">
             <b:Interaction.Triggers>
@@ -52,7 +59,7 @@
             </b:Interaction.Triggers>
         </Button>
 
-        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Margin="6" Content="作成">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="Click">

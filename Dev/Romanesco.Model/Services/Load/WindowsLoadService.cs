@@ -31,7 +31,7 @@ namespace Romanesco.Model.Services.Load
             context.SettingProvider.InputCreateSettings(editor);
             if (editor.Succeeded)
             {
-                var settings = new ProjectSettings(editor.Assembly, editor.ProjectType);
+                var settings = new ProjectSettings(editor.Assembly, editor.ProjectType, editor.ExporterType);
                 var instance = Activator.CreateInstance(settings.ProjectType);
                 return ProjectConverter.FromInstance(settings, context.Interpreter, instance);
             }

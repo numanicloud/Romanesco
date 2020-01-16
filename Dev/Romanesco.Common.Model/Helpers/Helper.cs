@@ -111,5 +111,14 @@ namespace Romanesco.Common.Model
         {
             var ignore = task;
         }
+
+        public static IEnumerable<T> StartsWith<T>(this IEnumerable<T> source, T value)
+        {
+            yield return value;
+            foreach (var item in source)
+            {
+                yield return item;
+            }
+        }
     }
 }

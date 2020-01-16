@@ -1,7 +1,10 @@
 ﻿using Romanesco.Annotations;
+using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Romanesco.Sample
 {
@@ -72,5 +75,31 @@ namespace Romanesco.Sample
     public enum FooBar
     {
         Foo, Bar, Fizz, Buzz
+    }
+
+    public class SampleExporter : IProjectTypeExporter
+    {
+        public bool DoExportIntoSingleFile => false;
+
+        public async Task ExportAsync(object rootInstance, string exportPath)
+        {
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(rootInstance, Newtonsoft.Json.Formatting.Indented);
+
+            using (var file = File.Create(Path.Combine(exportPath, "SampleMaster1.json")))
+            {
+                using (var writer = new StreamWriter(file))
+                {
+                    await writer.WriteAsync(json);
+                }
+            }
+
+            using (var file = File.Create(Path.Combine(exportPath, "SampleMaster2.json")))
+            {
+                using (var writer = new StreamWriter(file))
+                {
+                    await writer.WriteAsync(json);
+                }
+            }
+        }
     }
 }

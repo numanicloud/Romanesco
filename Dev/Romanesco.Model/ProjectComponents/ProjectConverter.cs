@@ -15,6 +15,7 @@ namespace Romanesco.Model.ProjectComponents
 			{
                 AssemblyPath = project.Settings.Assembly.Location,
                 ProjectTypeQualifier = project.Settings.ProjectType.FullName,
+                ProjectTypeExporterQualifier = project.Settings.ExporterType.FullName,
                 EncodedMaster = serializer.Serialize(project.Root.RootInstance),
 			};
 		}
@@ -42,7 +43,9 @@ namespace Romanesco.Model.ProjectComponents
         {
             var assembly = Assembly.LoadFrom(data.AssemblyPath);
             var type = assembly.GetType(data.ProjectTypeQualifier);
-            var settings = new ProjectSettings(assembly, type);
+            var exporter = assembly.GetType(data.ProjectTypeExporterQualifier);
+
+            var settings = new ProjectSettings(assembly, type, exporter);
             var instance = deserializer.Deserialize(data.EncodedMaster, type);
             return FromInstance(settings, interpreter, instance);
         }

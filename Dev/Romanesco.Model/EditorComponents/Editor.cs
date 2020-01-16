@@ -127,7 +127,7 @@ namespace Romanesco.Model.EditorComponents
             {
                 context.CurrentProject = new ProjectContext(project, contextCrawler)
                 {
-                    Exporter = new Services.Export.NewtonsoftJsonProjectTypeExporter(),
+                    Exporter = (IProjectTypeExporter)Activator.CreateInstance(project.Settings.ExporterType),
                 };
                 onSuccess();
                 UpdateTitle();
