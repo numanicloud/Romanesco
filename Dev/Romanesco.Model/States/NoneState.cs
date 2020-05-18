@@ -13,7 +13,7 @@ namespace Romanesco.Model.States
         public ReactiveProperty<object> Content { get; } = new ReactiveProperty<object>();
         public IReadOnlyReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
         public Type Type => typeof(object);
-        public ValueStorage Storage { get; } = null;
+        public ValueStorage Storage { get; } = new ValueStorage(typeof(int), "None", (value, args) => { }, 0);
         public IObservable<Exception> OnError => Observable.Never<Exception>();
         public IObservable<Unit> OnEdited => Observable.Never<Unit>();
     }

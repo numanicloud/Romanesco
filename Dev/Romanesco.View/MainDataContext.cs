@@ -10,12 +10,12 @@ namespace Romanesco.View
 {
     public class MainDataContext
     {
-        private ReactiveProperty<StateRootDataContext> rootProperty = new ReactiveProperty<StateRootDataContext>();
-        private IDisposable errorSubscription;
+        private ReactiveProperty<StateRootDataContext?> rootProperty = new ReactiveProperty<StateRootDataContext?>();
+        private IDisposable? errorSubscription;
         private readonly IViewFactoryProvider factoryProvider;
 
         public EditorViewModel Editor { get; }
-        public IReadOnlyReactiveProperty<StateRootDataContext> Root => rootProperty;
+        public IReadOnlyReactiveProperty<StateRootDataContext?> Root => rootProperty;
 
         public MainDataContext(EditorViewModel editor, IViewFactoryProvider factoryProvider)
         {

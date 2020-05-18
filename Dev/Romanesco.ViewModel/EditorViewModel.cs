@@ -50,7 +50,7 @@ namespace Romanesco.ViewModel
             Undo = ToEditorCommand(EditorCommandType.Undo);
             Redo = ToEditorCommand(EditorCommandType.Redo);
 
-            CreateCommand.SubscribeSafe(x => Create(factoryProvider));
+            CreateCommand.SubscribeSafe(x => CreateAsync(factoryProvider).Forget());
             OpenCommand.SubscribeSafe(x => OpenAsync(factoryProvider).Forget());
             ExportCommand.SubscribeSafe(x => ExportAsync().Forget());
             SaveCommand.SubscribeSafe(x => SaveAsync().Forget());
@@ -74,12 +74,12 @@ namespace Romanesco.ViewModel
             return new ViewModelInterpreter(factoryProvider.GetStateViewModelFactories().ToArray());
         }
 
-        private void Create(IStateViewModelFactoryProvider factoryProvider)
+        private async Task CreateAsync(IStateViewModelFactoryProvider factoryProvider)
         {
             using (CommandExecution.Create())
             {
                 var interpreter = CreateInterpreter(factoryProvider);
-                var projectContext = Editor.Create();
+                var projectContext = await Editor.CreateAsync();
                 if (projectContext != null)
                 {
                     Roots.Value = projectContext.Project.Root.States
@@ -95,6 +95,11 @@ namespace Romanesco.ViewModel
             {
                 var interpreter = CreateInterpreter(factoryProvider);
                 var projectContext = await Editor.OpenAsync();
+                if (projectContext == null)
+                {
+                    return;
+                }
+
                 Roots.Value = projectContext.Project.Root.States
                     .Select(s => interpreter.InterpretAsViewModel(s))
                     .ToArray();

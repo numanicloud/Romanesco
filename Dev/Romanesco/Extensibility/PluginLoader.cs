@@ -39,8 +39,10 @@ namespace Romanesco.Extensibility
                     continue;
                 }
 
-                var facade = Activator.CreateInstance(type) as IPluginFacade;
-                plugins.Add(facade);
+                if (Activator.CreateInstance(type) is IPluginFacade facade)
+                {
+                    plugins.Add(facade);
+                }
             }
 
             Debug.Print("Loaded assemblies:");
@@ -64,7 +66,7 @@ namespace Romanesco.Extensibility
             return loadContext.LoadFromAssemblyName(name);
         }
 
-        private string GetEntryPointAssemblyPath(string dirPath)
+        private string? GetEntryPointAssemblyPath(string dirPath)
         {
             var settingPath = Path.Combine(dirPath, "Plugin.txt");
             if (!File.Exists(settingPath)) {

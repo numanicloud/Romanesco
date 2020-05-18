@@ -1,4 +1,5 @@
-﻿using Romanesco.Common.Model.ProjectComponents;
+﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.ProjectComponents;
 using System.Threading.Tasks;
 
@@ -10,12 +11,12 @@ namespace Romanesco.Model.Services.Load
 
         public bool CanOpen => false;
 
-        public Project Create()
+        public async Task<ProjectContext?> CreateAsync()
         {
             return null;
         }
 
-        public Task<Project> OpenAsync()
+        public async Task<ProjectContext?> OpenAsync()
         {
             return null;
         }

@@ -7,6 +7,6 @@ namespace Romanesco.Common.View.Interfaces
 
     public interface IViewFactory
     {
-        StateViewContext InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively);
+        StateViewContext? InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively);
     }
 }

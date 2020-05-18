@@ -6,6 +6,6 @@ namespace Romanesco.Common.ViewModel.Interfaces
 
     public interface IStateViewModelFactory
     {
-        IStateViewModel InterpretAsViewModel(IFieldState state, ViewModelInterpretFunc interpretRecursively);
+        IStateViewModel? InterpretAsViewModel(IFieldState state, ViewModelInterpretFunc interpretRecursively);
     }
 }

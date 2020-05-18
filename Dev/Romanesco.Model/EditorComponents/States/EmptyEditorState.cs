@@ -1,4 +1,6 @@
-﻿using Romanesco.Model.Services.History;
+﻿using Romanesco.Common.Model.Interfaces;
+using Romanesco.Model.Services;
+using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 
@@ -10,10 +12,10 @@ namespace Romanesco.Model.EditorComponents.States
 
         public override string Title => "Romanesco - プロジェクトなし";
 
-        public EmptyEditorState(EditorContext context) : base(context)
+        public EmptyEditorState(IProjectSettingProvider projectSettingProvider, IStateFactoryProvider factoryProvider)
         {
             var deserializer = new Services.Serialize.NewtonsoftStateDeserializer();
-            loadService = new WindowsLoadService(context, deserializer);
+            loadService = new WindowsLoadService(projectSettingProvider, factoryProvider, deserializer);
         }
 
         public override IProjectLoadService GetLoadService() => loadService;

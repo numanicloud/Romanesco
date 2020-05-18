@@ -33,6 +33,8 @@ namespace Romanesco.Model.Services.Save
 
         public async Task ExportAsync()
         {
+            //return Task.CompletedTask;
+            //*
             var dialog = new CommonOpenFileDialog()
             {
                 IsFolderPicker = !exporter.DoExportIntoSingleFile,
@@ -44,6 +46,7 @@ namespace Romanesco.Model.Services.Save
             {
                 await exporter.ExportAsync(project.Root.RootInstance, dialog.FileName);
             }
+            //*/
         }
 
         public async Task SaveAsync()

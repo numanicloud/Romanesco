@@ -10,7 +10,7 @@ namespace Romanesco
     /// </summary>
     public partial class App : Application
     {
-        private MementoSola.Altseed.Debug.RootExceptionHandler logger;
+        private MementoSola.Altseed.Debug.RootExceptionHandler? logger;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -30,27 +30,30 @@ namespace Romanesco
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            logger.ProcessError(e.Exception);
+            logger?.ProcessError(e.Exception);
         }
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            logger.ProcessError(e.Exception);
+            logger?.ProcessError(e.Exception);
         }
 
         private void Helper_OnUnhandledExceptionRaisedInSubscribe(Exception exception)
         {
-            logger.ProcessError(exception);
+            logger?.ProcessError(exception);
         }
 
-        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
-            logger.ProcessError(e.Exception);
+            if (e.Exception != null)
+            {
+                logger?.ProcessError(e.Exception);
+            }
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            logger.ProcessError((Exception)e.ExceptionObject);
+            logger?.ProcessError((Exception)e.ExceptionObject);
         }
     }
 }

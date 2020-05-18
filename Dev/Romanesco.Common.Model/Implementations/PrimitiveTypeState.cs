@@ -32,6 +32,16 @@ namespace Romanesco.Common.Model.Implementations
             Storage = storage;
             Title = new ReactiveProperty<string>(storage.MemberName);
 
+            // 初期値を読み込み、変更を反映する処理を登録
+            PrimitiveContent.Value = (T)Storage.GetValue();
+            PrimitiveContent.Subscribe(value =>
+            {
+                if (value != null)
+                {
+                    Storage.SetValue(value);
+                }
+            });
+
             FormattedString = PrimitiveContent.Select(x =>
             {
                 try
@@ -43,11 +53,7 @@ namespace Romanesco.Common.Model.Implementations
                     onErrorSubject.OnNext(ContentAccessException.GetFormattedStringError(ex));
                     return "";
                 }
-            }).ToReadOnlyReactiveProperty();
-
-            // 初期値を読み込み、変更を反映する処理を登録
-            PrimitiveContent.Value = (T)Storage.GetValue();
-            PrimitiveContent.Subscribe(value => Storage.SetValue(value));
+            }).ToReadOnlyReactiveProperty(SelectFormattedString(PrimitiveContent.Value));
 
             // Undo/Redo登録
             Storage.OnValueChangedWithOldValue
@@ -58,7 +64,7 @@ namespace Romanesco.Common.Model.Implementations
 
         protected virtual string SelectFormattedString(T value)
         {
-            return value.ToString();
+            return value?.ToString() ?? "";
         }
     }
 }

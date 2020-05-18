@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Test", "Romanesco
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco", "Romanesco\Romanesco.csproj", "{609FEC82-18E6-4A12-8632-1D3FE785F1D3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin", "Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj", "{7BACE71E-2D77-43D1-A31E-152F99383ED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin", "BuiltinPlugin\Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj", "{7BACE71E-2D77-43D1-A31E-152F99383ED1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Styles", "Romanesco.Styles\Romanesco.Styles.csproj", "{5DB20132-C90C-407E-B36C-121F745BE896}"
 EndProject
@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Annotations", "Ro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuiltinPlugin", "BuiltinPlugin", "{F5D542FD-12EF-4403-90D7-341A515BE1C9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.Test", "Romanesco.BuiltinPlugin.Test\Romanesco.BuiltinPlugin.Test.csproj", "{D71384DB-B0E8-4880-838C-8D08B1EA0B7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.Test", "BuiltinPlugin\Romanesco.BuiltinPlugin.Test\Romanesco.BuiltinPlugin.Test.csproj", "{D71384DB-B0E8-4880-838C-8D08B1EA0B7E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Common.Model", "Romanesco.Common.Model\Romanesco.Common.Model.csproj", "{F8448101-34CC-4AA4-AAA5-492C633D9DA0}"
 EndProject
@@ -27,11 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Common.Extensibil
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{84731ACB-BD59-4E85-9035-33D086452815}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.Model", "Romanesco.BuiltinPlugin.Model\Romanesco.BuiltinPlugin.Model.csproj", "{7B1BDDEB-C5BF-4D85-B19A-17EDC3C25E3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.Model", "BuiltinPlugin\Romanesco.BuiltinPlugin.Model\Romanesco.BuiltinPlugin.Model.csproj", "{7B1BDDEB-C5BF-4D85-B19A-17EDC3C25E3E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.ViewModel", "Romanesco.BuiltinPlugin.ViewModel\Romanesco.BuiltinPlugin.ViewModel.csproj", "{B9A61CF7-E7EF-4818-A7D9-104348085269}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.ViewModel", "BuiltinPlugin\Romanesco.BuiltinPlugin.ViewModel\Romanesco.BuiltinPlugin.ViewModel.csproj", "{B9A61CF7-E7EF-4818-A7D9-104348085269}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.View", "Romanesco.BuiltinPlugin.View\Romanesco.BuiltinPlugin.View.csproj", "{81F27CD5-A10E-479F-ABFF-3C8DD1D98B7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.View", "BuiltinPlugin\Romanesco.BuiltinPlugin.View\Romanesco.BuiltinPlugin.View.csproj", "{81F27CD5-A10E-479F-ABFF-3C8DD1D98B7C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Host", "Host", "{01C5DEF4-E315-4138-9843-56169C7073D0}"
 EndProject

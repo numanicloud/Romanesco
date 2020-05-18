@@ -6,14 +6,7 @@ namespace Romanesco.Model.EditorComponents.States
 {
     abstract class EditorState
     {
-        protected EditorContext Context { get; }
-
         public abstract string Title { get; }
-
-        protected EditorState(EditorContext context)
-        {
-            Context = context;
-        }
 
         public abstract IProjectLoadService GetLoadService();
         public abstract IProjectSaveService GetSaveService();

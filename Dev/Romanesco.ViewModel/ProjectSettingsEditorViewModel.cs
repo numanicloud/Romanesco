@@ -1,17 +1,14 @@
-﻿using Livet.Behaviors.Messaging;
-using Livet.Messaging;
+﻿using Livet.Messaging;
 using Reactive.Bindings;
+using Romanesco.Common.Model;
 using Romanesco.Model.EditorComponents;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+using System.Collections.ObjectModel;
 
 namespace Romanesco.ViewModel
 {
     public class ProjectSettingsEditorViewModel : Livet.ViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
         private readonly ProjectSettingsEditor editor;
 
         public ReactiveProperty<string> AssemblyPath => editor.AssemblyPath;
@@ -19,13 +16,34 @@ namespace Romanesco.ViewModel
         public ReactiveProperty<string[]> ProjectTypeMenu => editor.ProjectTypeMenu;
         public ReactiveProperty<string> ProjectTypeExporterName => editor.ProjectTypeExporterFullName;
         public ReactiveProperty<string[]> ProjectTypeExporterMenu => editor.ProjectTypeExporterMenu;
+        public ObservableCollection<string> DependencyProjects => editor.DependencyProjects;
+        public ReactiveCommand<object> AddCommand { get; }
+        public ReactiveCommand<object> RemoveCommand { get; }
 
         public ProjectSettingsEditorViewModel(ProjectSettingsEditor editor)
         {
             this.editor = editor;
+            AddCommand = new ReactiveCommand<object>();
+            RemoveCommand = new ReactiveCommand<object>();
+
+            AddCommand.SubscribeSafe(x => AddDependencyProject());
+            RemoveCommand.SubscribeSafe(x => RemoveDependencyProject((string)x));
         }
 
         public void OpenAssembly() => editor.OpenAssembly();
+
+        public void AddDependencyProject() => editor.OpenDependencyProject(DependencyProjects.Count);
+
+        public void OpenDependencyProject(string value)
+        {
+            var index = DependencyProjects.IndexOf(value);
+            if (index != -1)
+            {
+                editor.OpenDependencyProject(index);
+            }
+        }
+
+        public void RemoveDependencyProject(string value) => editor.RemoveDependencyProject(value);
 
         public void Confirm()
         {

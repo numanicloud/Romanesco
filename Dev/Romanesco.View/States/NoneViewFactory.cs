@@ -7,7 +7,7 @@ namespace Romanesco.View.States
 {
     public class NoneViewFactory : IViewFactory
     {
-        public StateViewContext InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively)
+        public StateViewContext? InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively)
         {
             if (viewModel is NoneViewModel vm)
             {

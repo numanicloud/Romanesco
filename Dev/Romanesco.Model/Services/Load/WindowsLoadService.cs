@@ -1,23 +1,32 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
+using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services.Serialize;
 using System;
 using System.IO;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace Romanesco.Model.Services.Load
 {
     class WindowsLoadService : IProjectLoadService
     {
-        private readonly EditorContext context;
+        private readonly IProjectSettingProvider projectSettingProvider;
+        private readonly IStateFactoryProvider stateFactoryProvider;
         private readonly IStateDeserializer deserializer;
 
-        public WindowsLoadService(EditorContext context, IStateDeserializer deserializer)
+        public WindowsLoadService(IProjectSettingProvider projectSettingProvider,
+            IStateFactoryProvider stateFactoryProvider,
+            IStateDeserializer deserializer)
         {
-            this.context = context;
+            this.projectSettingProvider = projectSettingProvider;
+            this.stateFactoryProvider = stateFactoryProvider;
             this.deserializer = deserializer;
         }
 
@@ -25,20 +34,64 @@ namespace Romanesco.Model.Services.Load
 
         public bool CanOpen => true;
 
-        public Project Create()
+        public async Task<ProjectContext?> CreateAsync()
+        {
+            return await ResetProject(CreateInternalAsync);
+        }
+
+        public async Task<ProjectContext?> OpenAsync()
+        {
+            return await ResetProject(OpenInternalAsync);
+        }
+
+        private ObjectInterpreter CreateInterpreter(ProjectContextCrawler context)
+        {
+            return new ObjectInterpreter(stateFactoryProvider.GetStateFactories(context).ToArray());
+        }
+
+        private async Task<ProjectContext?> ResetProject(Func<ObjectInterpreter, Task<Project?>> generator)
+        {
+            var contextCrawler = new ProjectContextCrawler();
+            var interpreter = CreateInterpreter(contextCrawler);
+
+            var project = await generator(interpreter);
+            if (project != null)
+            {
+                if (Activator.CreateInstance(project.Settings.ExporterType) is IProjectTypeExporter exporter)
+                {
+                    return new ProjectContext(project, contextCrawler, exporter);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"{project.Settings.ExporterType}をインスタンス化できませんでした。");
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private async Task<Project?> CreateInternalAsync(ObjectInterpreter interpreter)
         {
             var editor = new ProjectSettingsEditor();
-            context.SettingProvider.InputCreateSettings(editor);
-            if (editor.Succeeded)
+            var settings = projectSettingProvider.InputCreateSettings(editor);
+
+            if (settings != null)
             {
-                var settings = new ProjectSettings(editor.Assembly, editor.ProjectType, editor.ExporterType);
-                var instance = Activator.CreateInstance(settings.ProjectType);
-                return ProjectConverter.FromInstance(settings, context.Interpreter, instance);
+                if (Activator.CreateInstance(settings.ProjectType) is object instance)
+                {
+                    return await ProjectConverter.FromInstanceAsync(settings, deserializer, interpreter, instance);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"プロジェクト型 {settings.ProjectType} のインスタンスを作成できませんでした。");
+                }
             }
             return null;
         }
 
-        public async Task<Project> OpenAsync()
+        private async Task<Project?> OpenInternalAsync(ObjectInterpreter interpreter)
         {
             var dialog = new OpenFileDialog()
             {
@@ -49,17 +102,14 @@ namespace Romanesco.Model.Services.Load
             var result = dialog.ShowDialog();
             if (result == true)
             {
-                using (var file = File.OpenRead(dialog.FileName))
-                {
-                    using (var reader = new StreamReader(file))
-                    {
-                        var json = await reader.ReadToEndAsync();
-                        var data = JsonConvert.DeserializeObject<ProjectData>(json);
-                        var project = ProjectConverter.FromData(data, deserializer, context.Interpreter);
-                        project.DefaultSavePath = dialog.FileName;
-                        return project;
-                    }
-                }
+                using var file = File.OpenRead(dialog.FileName);
+                using var reader = new StreamReader(file);
+
+                var json = await reader.ReadToEndAsync();
+                var data = JsonConvert.DeserializeObject<ProjectData>(json);
+                var project = await ProjectConverter.FromDataAsync(data, deserializer, interpreter);
+                project.DefaultSavePath = dialog.FileName;
+                return project;
             }
             else
             {

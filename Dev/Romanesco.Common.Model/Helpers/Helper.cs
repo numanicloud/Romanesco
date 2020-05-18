@@ -12,7 +12,7 @@ namespace Romanesco.Common.Model
 {
     public static class Helper
     {
-        public static event Action<Exception> OnUnhandledExceptionRaisedInSubscribe;
+        public static event Action<Exception>? OnUnhandledExceptionRaisedInSubscribe;
 
         public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> condition)
         {
@@ -37,7 +37,7 @@ namespace Romanesco.Common.Model
         /// <param name="onNext">イベントをハンドリングするデリゲート。</param>
         /// <returns></returns>
         public static IDisposable SubscribeSafe<T>(this IObservable<T> source,
-            Action<T> onNext, Action<Exception> onError = null, Action onCompleted = null)
+            Action<T> onNext, Action<Exception>? onError = null, Action? onCompleted = null)
         {
             return source.Subscribe(x =>
             {
@@ -47,7 +47,7 @@ namespace Romanesco.Common.Model
                 }
                 catch (Exception ex)
                 {
-                    OnUnhandledExceptionRaisedInSubscribe(ex);
+                    OnUnhandledExceptionRaisedInSubscribe?.Invoke(ex);
                 }
             }, exception =>
             {
@@ -57,7 +57,7 @@ namespace Romanesco.Common.Model
                 }
                 catch (Exception ex)
                 {
-                    OnUnhandledExceptionRaisedInSubscribe(ex);
+                    OnUnhandledExceptionRaisedInSubscribe?.Invoke(ex);
                 }
             }, () =>
             {
@@ -67,7 +67,7 @@ namespace Romanesco.Common.Model
                 }
                 catch (Exception ex)
                 {
-                    OnUnhandledExceptionRaisedInSubscribe(ex);
+                    OnUnhandledExceptionRaisedInSubscribe?.Invoke(ex);
                 }
             });
         }

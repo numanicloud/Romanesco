@@ -4,6 +4,7 @@ using Romanesco.Common.Model;
 using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -21,10 +22,11 @@ namespace Romanesco.Model.EditorComponents
         public ReactiveProperty<string[]> ProjectTypeMenu { get; } = new ReactiveProperty<string[]>();
         public ReactiveProperty<string> ProjectTypeExporterFullName { get; set; } = new ReactiveProperty<string>();
         public ReactiveProperty<string[]> ProjectTypeExporterMenu { get; } = new ReactiveProperty<string[]>();
+        public ObservableCollection<string> DependencyProjects { get; } = new ObservableCollection<string>();
 
         public Assembly Assembly => Assembly.LoadFrom(AssemblyPath.Value);
-        public Type ProjectType => Assembly.GetType(ProjectTypeFullName.Value);
-        public Type ExporterType
+        public Type? ProjectType => Assembly.GetType(ProjectTypeFullName.Value);
+        public Type? ExporterType
         {
             get
             {
@@ -43,7 +45,7 @@ namespace Romanesco.Model.EditorComponents
         {
             AssemblyPath.Where(x => x != null).Subscribe(x =>
             {
-                Assembly assembly = null;
+                Assembly assembly;
                 try
                 {
                     assembly = Assembly.LoadFrom(x);
@@ -57,12 +59,12 @@ namespace Romanesco.Model.EditorComponents
 
                 ProjectTypeMenu.Value = types
                     .Where(y => y.GetCustomAttribute<Annotations.EditorProjectAttribute>() != null)
-                    .Select(y => y.FullName)
+                    .Select(y => y.FullName ?? "<無効>")
                     .ToArray();
 
                 ProjectTypeExporterMenu.Value = types
                     .Where(y => typeof(IProjectTypeExporter).IsAssignableFrom(y))
-                    .Select(y => y.FullName)
+                    .Select(y => y.FullName ?? "<無効>")
                     .StartsWith(DefaultExporterName)
                     .ToArray();
 
@@ -71,6 +73,54 @@ namespace Romanesco.Model.EditorComponents
         }
 
         public void OpenAssembly()
+        {
+            var asm = OpenAssemblyByDialog();
+            if (asm != null)
+            {
+                AssemblyPath.Value = asm;
+            }
+        }
+
+        public void OpenDependencyProject(int index)
+        {
+            var asm = OpenProjectByDialog();
+            if (string.IsNullOrEmpty(asm))
+            {
+                return;
+            }
+
+            if (index == DependencyProjects.Count)
+            {
+                DependencyProjects.Add(asm);
+            }
+            else
+            {
+                DependencyProjects[index] = asm;
+            }
+        }
+
+        public void RemoveDependencyProject(string value)
+        {
+            DependencyProjects.Remove(value);
+        }
+
+        private string? OpenProjectByDialog()
+        {
+            var dialog = new OpenFileDialog()
+            {
+                Filter = "Romanesco プロジェクト (*.roma)|*.roma",
+                Title = "プロジェクトを読み込む"
+            };
+
+            var result = dialog.ShowDialog();
+            if (result == true)
+            {
+                return dialog.FileName;
+            }
+            return null;
+        }
+
+        private string? OpenAssemblyByDialog()
         {
             var dialog = new OpenFileDialog()
             {
@@ -81,8 +131,9 @@ namespace Romanesco.Model.EditorComponents
             var result = dialog.ShowDialog();
             if (result == true)
             {
-                AssemblyPath.Value = dialog.FileName;
+                return dialog.FileName;
             }
+            return null;
         }
     }
 }

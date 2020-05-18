@@ -16,19 +16,18 @@ namespace Romanesco.Model.EditorComponents
     class Editor : IEditorFacade
     {
         private EditorState editorState;
-        private readonly EditorContext context;
         private readonly IStateFactoryProvider factoryProvider;
+        private readonly IProjectSettingProvider settingProvider;
         private readonly Subject<(EditorCommandType command, bool canExecute)> canExecuteSubject;
 
-        public EditorContext Context => context;
         public ReactiveProperty<string> ApplicationTitle { get; }
         public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable { get; }
 
         public Editor(IStateFactoryProvider factoryProvider, IProjectSettingProvider settingProvider)
         {
             this.factoryProvider = factoryProvider;
-            context = new EditorContext(this, null, settingProvider);
-            editorState = new EmptyEditorState(context);
+            this.settingProvider = settingProvider;
+            editorState = new EmptyEditorState(settingProvider, factoryProvider);
 
             ApplicationTitle = new ReactiveProperty<string>(editorState.Title);
             canExecuteSubject = new Subject<(EditorCommandType command, bool canExecute)>();
@@ -40,23 +39,23 @@ namespace Romanesco.Model.EditorComponents
             CanExecuteObservable = initialCanExecute.Concat(canExecuteSubject);
         }
 
-        public ProjectContext Create()
+        public Task<ProjectContext?> CreateAsync()
         {
-            return ResetProject(() => Task.FromResult(editorState.GetLoadService().Create()),
-                () =>
+            return ResetProject(async () => await editorState.GetLoadService().CreateAsync(),
+                context =>
                 {
                     editorState.OnCreate();
-                    ChangeState(new NewEditorState(context));
-                }).Result;
+                    ChangeState(new NewEditorState(context, factoryProvider));
+                });
         }
 
-        public Task<ProjectContext> OpenAsync()
+        public Task<ProjectContext?> OpenAsync()
         {
             return ResetProject(async () => await editorState.GetLoadService().OpenAsync(),
-                () =>
+                context =>
                 {
                     editorState.OnOpen();
-                    ChangeState(new CleanEditorState(context));
+                    ChangeState(new CleanEditorState(context, factoryProvider));
                 });
         }
 
@@ -110,32 +109,24 @@ namespace Romanesco.Model.EditorComponents
             canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
         }
 
-        private ObjectInterpreter CreateInterpreter(ProjectContextCrawler context)
-        {
-            return new ObjectInterpreter(factoryProvider.GetStateFactories(context).ToArray());
-        }
-
         private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
 
-        private async Task<ProjectContext> ResetProject(Func<Task<Project>> generator, Action onSuccess)
+        private async Task<ProjectContext?> ResetProject(Func<Task<ProjectContext?>> generator, Action<EditorContext> onSuccess)
         {
-            var contextCrawler = new ProjectContextCrawler();
-            context.Interpreter = CreateInterpreter(contextCrawler);
-
-            var project = await generator();
-            if (project != null)
+            var projectContext = await generator();
+            if (projectContext is null)
             {
-                context.CurrentProject = new ProjectContext(project, contextCrawler)
-                {
-                    Exporter = (IProjectTypeExporter)Activator.CreateInstance(project.Settings.ExporterType),
-                };
-                onSuccess();
-                UpdateTitle();
-
-                Observable.Merge(project.Root.States.Select(x => x.OnEdited))
-                    .Subscribe(x => OnEdit());
+                return null;
             }
-            return context.CurrentProject;
+
+            var editorContext = new EditorContext(this, settingProvider, projectContext);
+            onSuccess(editorContext);
+            UpdateTitle();
+
+            Observable.Merge(projectContext.Project.Root.States.Select(x => x.OnEdited))
+                .Subscribe(x => OnEdit());
+
+            return projectContext;
         }
 
         private void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer)

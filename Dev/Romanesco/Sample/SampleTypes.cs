@@ -34,7 +34,7 @@ namespace Romanesco.Sample
         [EditorMember(order: 1)]
         public bool Boolean { get; set; }
         [EditorMember(order: 2)]
-        public string String { get; set; }
+        public string String { get; set; } = "";
         [EditorMember(order: 3)]
         public float Float { get; set; }
         [EditorMember(order: 4)]
@@ -47,7 +47,7 @@ namespace Romanesco.Sample
         public double Double;
         public int Hidden;
         [EditorMember(order: 8)]
-        public Fuga Fuga { get; set; }
+        public Fuga? Fuga { get; set; }
         [EditorMember(order: 9)]
         [EditorMaster("Fugas", "Id")]
         public List<Fuga> FugaList { get; set; } = new List<Fuga>();
@@ -67,14 +67,36 @@ namespace Romanesco.Sample
     public class Project
     {
         [EditorMember]
-        public Hoge Hoge { get; set; }
+        public Hoge? Hoge { get; set; }
         [EditorMember]
-        public Fuga Fuga { get; set; }
+        public Fuga? Fuga { get; set; }
     }
 
     public enum FooBar
     {
         Foo, Bar, Fizz, Buzz
+    }
+
+    [EditorProject]
+    public class DependentSubject
+    {
+        [EditorMember]
+        public Dependent? Dependency { get; set; }
+    }
+
+    public class Dependent
+    {
+        [EditorMember]
+        [EditorChoiceOfMaster("Fugas")]
+        public int Ref { get; set; }
+    }
+
+    [EditorProject]
+    public class DependentTarget
+    {
+        [EditorMember]
+        [EditorMaster("Fugas", "Id")]
+        public List<Fuga> Fugas { get; set; } = new List<Fuga>();
     }
 
     public class SampleExporter : IProjectTypeExporter

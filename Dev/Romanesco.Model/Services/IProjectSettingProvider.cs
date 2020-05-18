@@ -5,6 +5,6 @@ namespace Romanesco.Model.Services
 {
     public interface IProjectSettingProvider
     {
-        void InputCreateSettings(ProjectSettingsEditor editor);
+        ProjectSettings? InputCreateSettings(ProjectSettingsEditor editor);
     }
 }

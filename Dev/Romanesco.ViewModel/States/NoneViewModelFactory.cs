@@ -6,7 +6,7 @@ namespace Romanesco.ViewModel.States
 {
     public class NoneViewModelFactory : IStateViewModelFactory
     {
-        public IStateViewModel InterpretAsViewModel(IFieldState state, ViewModelInterpretFunc interpretRecursively)
+        public IStateViewModel? InterpretAsViewModel(IFieldState state, ViewModelInterpretFunc interpretRecursively)
         {
             return state is NoneState none ? new NoneViewModel(none) : null;
         }

@@ -5,7 +5,7 @@ namespace Romanesco.Model.Services.Serialize
 {
     class NewtonsoftStateDeserializer : IStateDeserializer
     {
-        public object Deserialize(string encoded, Type type)
+        public object? Deserialize(string encoded, Type type)
         {
             return JsonConvert.DeserializeObject(encoded, type);
         }
