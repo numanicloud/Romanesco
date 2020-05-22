@@ -33,13 +33,12 @@ namespace Romanesco.Common.Model.Implementations
             Title = new ReactiveProperty<string>(storage.MemberName);
 
             // 初期値を読み込み、変更を反映する処理を登録
-            PrimitiveContent.Value = (T)Storage.GetValue();
+            // TODO: !演算子を使わないためにも、class版とstruct版のPrimitiveTypeStateが必要
+            PrimitiveContent.Value = (T)Storage.GetValue()!;
+
             PrimitiveContent.Subscribe(value =>
             {
-                if (value != null)
-                {
-                    Storage.SetValue(value);
-                }
+                Storage.SetValue(value);
             });
 
             FormattedString = PrimitiveContent.Select(x =>
@@ -58,7 +57,7 @@ namespace Romanesco.Common.Model.Implementations
             // Undo/Redo登録
             Storage.OnValueChangedWithOldValue
                 .Where(_ => !history.IsOperating)
-                .Select(t => new ContentEditCommandMemento(x => PrimitiveContent.Value = (T)x, t.old, t.value))
+                .Select(t => new ContentEditCommandMemento(x => PrimitiveContent.Value = (T)x!, t.old, t.value))
                 .Subscribe(history.PushMemento);
         }
 

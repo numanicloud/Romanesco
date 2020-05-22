@@ -45,13 +45,13 @@ namespace Romanesco.BuiltinPlugin.Model.States
                     onErrorSubject.OnNext(ContentAccessException.GetFormattedStringError(ex));
                     return "";
                 }
-            }).ToReactiveProperty(Storage.GetValue().ToString() ?? "");
+            }).ToReactiveProperty(Storage.GetValue()?.ToString() ?? "");
 
             // 値の変化を生データへ反映
             SelectedItem.Subscribe(x =>
             {
-                var id = x == null ? -1
-                    : Master.Value != null ? Master.Value.GetId(x.Storage.GetValue())
+                var id = Master.Value == null ? -1
+                    : x?.Storage.GetValue() is { } value ? Master.Value.GetId(value)
                     : -1;
                 Storage.SetValue(id);
             });
@@ -64,7 +64,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
             {
                 Master.Value = list;
                 // 初期値をロード
-                SelectedItem.Value = list.GetById(Storage.GetValue());
+                SelectedItem.Value = list.GetById(Storage.GetValue() ?? -1);
             }
             else
             {

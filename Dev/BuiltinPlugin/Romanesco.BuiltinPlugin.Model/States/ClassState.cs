@@ -34,14 +34,14 @@ namespace Romanesco.BuiltinPlugin.Model.States
             {
                 try
                 {
-                    return Storage.GetValue().ToString() ?? "";
+                    return Storage.GetValue()?.ToString() ?? "";
                 }
                 catch (Exception ex)
                 {
                     onErrorSubject.OnNext(ContentAccessException.GetFormattedStringError(ex));
                     return "";
                 }
-            }).ToReadOnlyReactiveProperty(storage.GetValue().ToString() ?? "");
+            }).ToReadOnlyReactiveProperty(storage.GetValue()?.ToString() ?? "");
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Romanesco.BuiltinPlugin
             yield return new Model.Factories.PrimitiveStateFactory(context.CommandHistory);
             yield return new Model.Factories.EnumStateFactory(context.CommandHistory);
             yield return new Model.Factories.ListStateFactory(masterListContext, context.CommandHistory);
+            yield return new SubtypingStateFactory();
             yield return new ClassStateFactory();
         }
 

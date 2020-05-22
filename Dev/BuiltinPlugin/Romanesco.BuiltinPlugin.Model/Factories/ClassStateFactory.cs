@@ -3,6 +3,7 @@ using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -24,11 +25,15 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
             }
 
             // 新規作成時は null である場合がある。ロード時は値が入ってるので上書き禁止
-            if (settability.GetValue() == null)
+            if (settability.GetValue() is { } subject)
+            {
+            }
+            else
             {
                 if (Activator.CreateInstance(type) is object classInstance)
                 {
                     settability.SetValue(classInstance);
+                    subject = classInstance;
                 }
                 else
                 {
@@ -39,11 +44,11 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
             var properties = from p in type.GetProperties()
                              let attr = GetMemberAttributeOrDefault(p)
                              where attr != null
-                             select (state: interpret(new ValueStorage(settability.GetValue(), p)), attr);
+                             select (state: interpret(new ValueStorage(subject, p)), attr);
             var fields = from f in type.GetFields()
                          let attr = GetMemberAttributeOrDefault(f)
                          where attr != null
-                         select (state: interpret(new ValueStorage(settability.GetValue(), f)), attr);
+                         select (state: interpret(new ValueStorage(subject, f)), attr);
             var members = properties.Concat(fields).OrderBy(x => x.attr.Order).ToArray();
 
             var memberStates = members.Select(x => x.state).ToArray();

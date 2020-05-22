@@ -36,11 +36,12 @@ namespace Romanesco.BuiltinPlugin.Model.States
             Type = storage.Type;
             Storage = storage;
 
-            Content = new ReactiveProperty<object>(storage.GetValue());
+            // Enum変数は初期値がnullでないので !演算子で済ませる
+            Content = new ReactiveProperty<object>(storage.GetValue()!);
             Content.Subscribe(x => Storage.SetValue(x));
 
             FormattedString = storage.OnValueChanged
-                .Select(x => x.ToString() ?? "")
+                .Select(x => x?.ToString() ?? "")
                 .ToReactiveProperty(Content.Value.ToString() ?? "");
 
             var values = new List<object>();

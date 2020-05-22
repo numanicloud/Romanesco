@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Romanesco.Common.Model.Basics
 {
-    public delegate void SetterFunction(object value, object oldValue);
+    public delegate void SetterFunction(object? value, object? oldValue);
 
     /// <summary>
     /// プロパティ、フィールドというような、何らかの値を代入できるものを表します。
@@ -14,15 +14,15 @@ namespace Romanesco.Common.Model.Basics
     public class ValueStorage
     {
         private readonly SetterFunction setter;
-        private readonly Subject<object> onValueChangedSubject = new Subject<object>();
-        private readonly Subject<(object value, object old)> onValueChangedSubjectWithOldValue = new Subject<(object value, object old)>();
-        private object currentValue;
+        private readonly Subject<object?> onValueChangedSubject = new Subject<object?>();
+        private readonly Subject<(object? value, object? old)> onValueChangedSubjectWithOldValue = new Subject<(object? value, object? old)>();
+        private object? currentValue;
 
         public Type Type { get; }
         public string MemberName { get; }
         public Attribute[] Attributes { get; set; }
-        public IObservable<object> OnValueChanged => onValueChangedSubject;
-        public IObservable<(object value, object old)> OnValueChangedWithOldValue => onValueChangedSubjectWithOldValue;
+        public IObservable<object?> OnValueChanged => onValueChangedSubject;
+        public IObservable<(object? value, object? old)> OnValueChangedWithOldValue => onValueChangedSubjectWithOldValue;
 
         /// <summary>
         /// プロパティをラップし、他の要素と同様に <see cref="ValueStorage"/> として扱えるようにします。
@@ -99,7 +99,7 @@ namespace Romanesco.Common.Model.Basics
         /// </summary>
         /// <param name="value">設定する値。</param>
         /// <param name="context">インデクサーのインデックスなど、代入先を特定するその他の情報の配列。</param>
-        public void SetValue(object value)
+        public void SetValue(object? value)
         {
             var oldValue = currentValue;
             setter.Invoke(value, oldValue);
@@ -113,7 +113,7 @@ namespace Romanesco.Common.Model.Basics
         /// この要素が表す格納先から値を取得します。
         /// </summary>
         /// <param name="context">インデクサーのインデックスなど、取得元を特定するその他の情報の配列。</param>
-        public object GetValue()
+        public object? GetValue()
         {
             return currentValue;
         }
