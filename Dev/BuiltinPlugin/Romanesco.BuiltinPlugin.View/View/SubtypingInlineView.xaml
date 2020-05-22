@@ -12,7 +12,8 @@
 
     <ContentControl Template="{DynamicResource {ComponentResourceKey ResourceId=TitledField, TypeInTargetAssembly={x:Type style:EditorStyles}}}">
         <StackPanel Orientation="Vertical" Margin="3,5,3,3">
-            <ComboBox ItemsSource="{Binding ViewModel.Choices}" SelectedItem="{Binding ViewModel.SelectedType.Value}"/>
+            <ComboBox ItemsSource="{Binding ViewModel.Choices}" SelectedItem="{Binding ViewModel.SelectedType.Value}"
+                      DisplayMemberPath="OptionName" />
             <TextBlock Text="{Binding ViewModel.FormattedString.Value}" Margin="0,0,0,4"/>
             <Button Content="編集" Command="{Binding ViewModel.EditCommand}" HorizontalAlignment="Left"/>
         </StackPanel>

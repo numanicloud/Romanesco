@@ -14,6 +14,7 @@ namespace Romanesco.Sample
 		public override string ToString() => $"BaseType; {BaseField}:int";
 	}
 
+	[EditorSubtypeName("パワフル型")]
 	public class PowerfulType : BaseType
 	{
 		[EditorMember]
@@ -22,6 +23,7 @@ namespace Romanesco.Sample
 		public override string ToString() => $"PowerfulField; {PowerfulField}:float\n{base.ToString()}";
 	}
 
+	[EditorSubtypeName("インテリジェント型")]
 	public class IntelligentType : BaseType
 	{
 		[EditorMember]

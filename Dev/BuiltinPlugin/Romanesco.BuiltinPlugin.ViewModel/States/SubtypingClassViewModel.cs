@@ -1,5 +1,6 @@
 ﻿using Reactive.Bindings;
 using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.Common.Model.Basics;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel.States;
 using System;
@@ -22,8 +23,8 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 		public IObservable<Unit> ShowDetail => showDetailSubject;
 		public IObservable<Exception> OnError => state.OnError;
 
-		public ObservableCollection<Type> Choices => state.Choices;
-		public ReactiveProperty<Type?> SelectedType => state.SelectedType;
+		public ObservableCollection<ISubtypeOption> Choices => state.Choices;
+		public ReactiveProperty<ISubtypeOption> SelectedType => state.SelectedType;
 		public ReactiveProperty<ClassViewModel?> CurrentViewModel { get; } = new ReactiveProperty<ClassViewModel?>();
 		public ReactiveCommand EditCommand { get; }
 
