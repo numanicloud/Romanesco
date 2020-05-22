@@ -84,7 +84,7 @@ namespace Romanesco.Common.Model.Basics
         ///     値の取得が要求されたときに呼び出されるデリゲート。
         ///     第1引数:インデクサーのインデックスなど、取得に関するその他の情報の配列。
         /// </param>
-        public ValueStorage(Type type, string memberName, SetterFunction setter, object initialValue)
+        public ValueStorage(Type type, string memberName, SetterFunction setter, object? initialValue)
         {
             this.setter = setter;
             Type = type;

@@ -1,11 +1,12 @@
 ﻿using Romanesco.BuiltinPlugin.Model.Factories;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
+using Romanesco.BuiltinPlugin.ViewModel.Factories;
 using Romanesco.Common.Extensibility.Interfaces;
-using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model.ProjectComponents;
+using Romanesco.ViewModel.Factories;
 using System.Collections.Generic;
 
 namespace Romanesco.BuiltinPlugin
@@ -15,21 +16,22 @@ namespace Romanesco.BuiltinPlugin
         public IEnumerable<IStateFactory> GetStateFactories(ProjectContextCrawler context)
         {
             var masterListContext = new MasterListContext();
-            yield return new Model.Factories.IdStateFactory(masterListContext);
-            yield return new Model.Factories.PrimitiveStateFactory(context.CommandHistory);
-            yield return new Model.Factories.EnumStateFactory(context.CommandHistory);
-            yield return new Model.Factories.ListStateFactory(masterListContext, context.CommandHistory);
+            yield return new IdStateFactory(masterListContext);
+            yield return new PrimitiveStateFactory(context.CommandHistory);
+            yield return new EnumStateFactory(context.CommandHistory);
+            yield return new ListStateFactory(masterListContext, context.CommandHistory);
             yield return new SubtypingStateFactory();
             yield return new ClassStateFactory();
         }
 
         public IEnumerable<IStateViewModelFactory> GetStateViewModelFactories()
         {
-            yield return new ViewModel.Factories.IdViewModelFactory();
-            yield return new ViewModel.Factories.PrimitiveViewModelFactory();
-            yield return new ViewModel.Factories.EnumViewModelFactory();
-            yield return new ViewModel.Factories.ClassViewModelFactory();
-            yield return new ViewModel.Factories.ListViewModelFactory();
+            yield return new IdViewModelFactory();
+            yield return new PrimitiveViewModelFactory();
+            yield return new EnumViewModelFactory();
+            yield return new SubtypingClassViewModelFactory();
+            yield return new ClassViewModelFactory();
+            yield return new ListViewModelFactory();
         }
 
         public IEnumerable<IViewFactory> GetViewFactories()

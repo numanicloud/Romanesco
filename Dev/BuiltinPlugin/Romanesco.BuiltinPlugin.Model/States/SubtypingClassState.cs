@@ -5,62 +5,84 @@ using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.States;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 using System.Reactive.Linq;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
-	class SubtypingClassState : IFieldState
+	public class SubtypingClassState : IFieldState
 	{
-		private IFieldState CurrentState { get; set; }
-
+		private ReactiveProperty<IFieldState> CurrentState { get; set; } = new ReactiveProperty<IFieldState>();
 
 		public ObservableCollection<Type> Choices { get; } = new ObservableCollection<Type>();
 
 		public ReactiveProperty<Type?> SelectedType { get; } = new ReactiveProperty<Type?>();
 
-		public ReactiveProperty<string> Title => CurrentState.Title;
+		public IReactiveProperty<IFieldState> CurrentStateReadOnly => CurrentState;
 
-		public IReadOnlyReactiveProperty<string> FormattedString => CurrentState.Title;
 
-		public Type Type => CurrentState.Type;
+		public ReactiveProperty<string> Title => CurrentState.Value.Title;
 
-		public ValueStorage Storage => CurrentState.Storage;
+		public IReadOnlyReactiveProperty<string> FormattedString => CurrentState.Value.Title;
 
-		public IObservable<Exception> OnError => CurrentState.OnError;
+		public Type Type => CurrentState.Value.Type;
 
-		public IObservable<Unit> OnEdited => CurrentState.OnEdited;
+		public ValueStorage Storage => CurrentState.Value.Storage;
+
+		public IObservable<Exception> OnError => CurrentState.Value.OnError;
+
+		public IObservable<Unit> OnEdited => CurrentState.Value.OnEdited;
 
 		public SubtypingClassState(ValueStorage storage, SubtypingList subtypingList, StateInterpretFunc interpreter)
 		{
-			CurrentState = new NoneState();
-
+			// 型の選択肢を設定
 			foreach (var item in subtypingList.DerivedTypes)
 			{
 				Choices.Add(item);
 			}
-
 			subtypingList.OnNewEntry.Subscribe(x => Choices.Add(x));
 
+			// 型の初期値をセット
+			TrySetInstance(storage.GetValue()?.GetType(), storage, interpreter, out var state);
+			CurrentState.Value = state;
+
+			// 型が変更されたら更新
 			SelectedType.Subscribe(x =>
 			{
-				if (x is Type derivedType
-					&& Activator.CreateInstance(derivedType) is object instance)
+				if (!TrySetInstance(x, storage, interpreter, out var state))
 				{
-					storage.SetValue(instance);
-					if (interpreter(storage) is ClassState state)
+					// ClassStateとして生成できないなら選択肢にはありえないので
+					SelectedType.Value = null;
+					if (x is Type)
 					{
-						CurrentState = state;
-					}
-					else
-					{
-						// ClassStateとして生成できないなら選択肢にはありえないので
 						Choices.Remove(x);
-						SelectedType.Value = null;
-						storage.SetValue(null);
 					}
 				}
+				CurrentState.Value = state;
 			});
+		}
+
+		private bool TrySetInstance(Type? derivedType, ValueStorage me, StateInterpretFunc interpreter,
+			out IFieldState result)
+		{
+			if (derivedType is Type
+				&& Activator.CreateInstance(derivedType) is object instance)
+			{
+				// 元の ValueStorage とは型の抽象度が異なる新しい ValueStorage
+				var concreteStorage = new ValueStorage(derivedType,
+					me.MemberName,
+					(value, old) => me.SetValue(value),
+					instance);
+
+				if (interpreter(concreteStorage) is ClassState state)
+				{
+					result = state;
+					return true;
+				}
+			}
+			result = new NoneState();
+			return false;
 		}
 	}
 }

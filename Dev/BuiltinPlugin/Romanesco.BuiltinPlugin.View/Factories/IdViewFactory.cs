@@ -1,6 +1,7 @@
 ﻿using Romanesco.Common.View.Basics;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
+using Romanesco.ViewModel.States;
 
 namespace Romanesco.BuiltinPlugin.View.Factories
 {
@@ -8,7 +9,7 @@ namespace Romanesco.BuiltinPlugin.View.Factories
     {
         public StateViewContext? InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively)
         {
-            if (viewModel is ViewModel.States.IntIdChoiceViewModel intid)
+            if (viewModel is IntIdChoiceViewModel intid)
             {
                 var inline = new View.IdChoiceView() { DataContext = intid };
                 var block = new View.IdChoiceView() { DataContext = intid };
