@@ -27,12 +27,14 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			{
 				list = new SubtypingList(type);
 				context.Add(type, list);
+
+				// TODO: 指定された型と別のアセンブリの内容も読み込みたい
+				type.Assembly.GetExportedTypes()
+					.Where(x => type.IsAssignableFrom(x))
+					.Where(x => type != x)
+					.ForEach(x => list.Add(x));
 			}
 
-			// TODO: 指定された型と別のアセンブリの内容も読み込みたい
-			type.Assembly.GetExportedTypes()
-				.Where(x => type.IsAssignableFrom(x))
-				.ForEach(x => list.Add(x));
 
 			return new SubtypingClassState(settability, list, interpret);
 		}

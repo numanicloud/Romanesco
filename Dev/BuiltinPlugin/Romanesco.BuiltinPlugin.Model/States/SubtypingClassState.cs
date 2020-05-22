@@ -22,9 +22,9 @@ namespace Romanesco.BuiltinPlugin.Model.States
 		public IReactiveProperty<IFieldState> CurrentStateReadOnly => CurrentState;
 
 
-		public ReactiveProperty<string> Title => CurrentState.Value.Title;
+		public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
 
-		public IReadOnlyReactiveProperty<string> FormattedString => CurrentState.Value.Title;
+		public IReadOnlyReactiveProperty<string> FormattedString { get; }
 
 		public Type Type => CurrentState.Value.Type;
 
@@ -44,8 +44,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			subtypingList.OnNewEntry.Subscribe(x => Choices.Add(x));
 
 			// 型の初期値をセット
-			TrySetInstance(storage.GetValue()?.GetType(), storage, interpreter, out var state);
-			CurrentState.Value = state;
+			SelectedType.Value = storage.GetValue()?.GetType();
 
 			// 型が変更されたら更新
 			SelectedType.Subscribe(x =>
@@ -61,6 +60,12 @@ namespace Romanesco.BuiltinPlugin.Model.States
 				}
 				CurrentState.Value = state;
 			});
+
+			Title.Value = storage.MemberName;
+
+			FormattedString = CurrentState
+				.SelectMany(x => x.FormattedString)
+				.ToReadOnlyReactiveProperty("");
 		}
 
 		private bool TrySetInstance(Type? derivedType, ValueStorage me, StateInterpretFunc interpreter,
@@ -75,8 +80,16 @@ namespace Romanesco.BuiltinPlugin.Model.States
 					(value, old) => me.SetValue(value),
 					instance);
 
+				if (me.GetValue() is { } value
+					&& value.GetType() is Type loadedType
+					&& loadedType == derivedType)
+				{
+					concreteStorage.SetValue(value);
+				}
+
 				if (interpreter(concreteStorage) is ClassState state)
 				{
+					me.SetValue(instance);
 					result = state;
 					return true;
 				}

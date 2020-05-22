@@ -20,8 +20,11 @@ namespace Romanesco.BuiltinPlugin.Model.Infrastructure
 
 		public void Add(Type derivedType)
 		{
-			derivedTypes.Add(derivedType);
-			newEntrySubject.OnNext(derivedType);
+			if (!derivedTypes.Contains(derivedType))
+			{
+				derivedTypes.Add(derivedType);
+				newEntrySubject.OnNext(derivedType);
+			}
 		}
 	}
 }

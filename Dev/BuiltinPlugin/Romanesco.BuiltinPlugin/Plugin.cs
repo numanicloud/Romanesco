@@ -41,6 +41,7 @@ namespace Romanesco.BuiltinPlugin
             yield return new View.Factories.EnumViewFactory();
             yield return new View.Factories.ClassViewFactory();
             yield return new View.Factories.ArrayViewFactory();
+            yield return new View.Factories.SubtypingViewFactory();
         }
     }
 }

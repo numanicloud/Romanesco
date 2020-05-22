@@ -35,16 +35,7 @@ namespace Romanesco.Common.Model.Basics
             Type = property.PropertyType;
             Attributes = property.GetCustomAttributes().ToArray();
             MemberName = GetMemberName(property.Name, Attributes);
-
-            var get = property.GetValue(subject);
-            if (get != null)
-            {
-                currentValue = get;
-            }
-            else
-            {
-                throw new InvalidOperationException("プロパティから値を取得できませんでした。");
-            }
+            currentValue = property.GetValue(subject);
         }
 
         /// <summary>
@@ -58,16 +49,7 @@ namespace Romanesco.Common.Model.Basics
             Type = field.FieldType;
             Attributes = field.GetCustomAttributes().ToArray();
             MemberName = GetMemberName(field.Name, Attributes);
-
-            var get = field.GetValue(subject);
-            if (get != null)
-            {
-                currentValue = get;
-            }
-            else
-            {
-                throw new InvalidOperationException("フィールドから値を取得できませんでした。");
-            }
+            currentValue = field.GetValue(subject);
         }
 
         /// <summary>

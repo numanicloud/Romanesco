@@ -6,7 +6,10 @@ namespace Romanesco.Model.Services.Serialize
     {
         public string Serialize(object state)
         {
-            return JsonConvert.SerializeObject(state);
+            return JsonConvert.SerializeObject(state, new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.All
+            });
         }
     }
 }
