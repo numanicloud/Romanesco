@@ -35,11 +35,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.Vie
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Host", "Host", "{01C5DEF4-E315-4138-9843-56169C7073D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Romanesco.Model", "Romanesco.Model\Romanesco.Model.csproj", "{F0EA0B19-948F-4912-9985-9E3A7E3293E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Model", "Romanesco.Model\Romanesco.Model.csproj", "{F0EA0B19-948F-4912-9985-9E3A7E3293E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Romanesco.ViewModel", "Romanesco.ViewModel\Romanesco.ViewModel.csproj", "{5CB8E18A-4D59-4C58-A703-0DF03AE802BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.ViewModel", "Romanesco.ViewModel\Romanesco.ViewModel.csproj", "{5CB8E18A-4D59-4C58-A703-0DF03AE802BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Romanesco.View", "Romanesco.View\Romanesco.View.csproj", "{A834270B-DC37-4CFF-9D67-533E33ED8303}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.View", "Romanesco.View\Romanesco.View.csproj", "{A834270B-DC37-4CFF-9D67-533E33ED8303}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{9B3D8DEE-1861-41DD-908E-D41236555B5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NacHelpers", "submodules\NacHelper\NacHelpers\NacHelpers.csproj", "{973E7462-79FA-43F6-82C3-185749965451}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +115,10 @@ Global
 		{A834270B-DC37-4CFF-9D67-533E33ED8303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A834270B-DC37-4CFF-9D67-533E33ED8303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A834270B-DC37-4CFF-9D67-533E33ED8303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{973E7462-79FA-43F6-82C3-185749965451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{973E7462-79FA-43F6-82C3-185749965451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{973E7462-79FA-43F6-82C3-185749965451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{973E7462-79FA-43F6-82C3-185749965451}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,6 +140,7 @@ Global
 		{F0EA0B19-948F-4912-9985-9E3A7E3293E8} = {01C5DEF4-E315-4138-9843-56169C7073D0}
 		{5CB8E18A-4D59-4C58-A703-0DF03AE802BE} = {01C5DEF4-E315-4138-9843-56169C7073D0}
 		{A834270B-DC37-4CFF-9D67-533E33ED8303} = {01C5DEF4-E315-4138-9843-56169C7073D0}
+		{973E7462-79FA-43F6-82C3-185749965451} = {9B3D8DEE-1861-41DD-908E-D41236555B5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {87D5578B-44E4-4B3D-8D5F-9B5D1879A11D}

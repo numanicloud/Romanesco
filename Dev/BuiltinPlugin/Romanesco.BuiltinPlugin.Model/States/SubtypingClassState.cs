@@ -4,11 +4,9 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.States;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {

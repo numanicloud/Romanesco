@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Reactive.Subjects;
-using System.Text;
 
 namespace Romanesco.BuiltinPlugin.Model.Infrastructure
 {
