@@ -2,6 +2,7 @@
 using Reactive.Bindings;
 using Romanesco.Common.Model;
 using Romanesco.Common.Model.Interfaces;
+using Romanesco.Model.ProjectComponents;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,7 +25,14 @@ namespace Romanesco.Model.EditorComponents
         public ReactiveProperty<string[]> ProjectTypeExporterMenu { get; } = new ReactiveProperty<string[]>();
         public ObservableCollection<string> DependencyProjects { get; } = new ObservableCollection<string>();
 
-        public Assembly Assembly => Assembly.LoadFrom(AssemblyPath.Value);
+        public Assembly Assembly
+		{
+            get
+			{
+                var loader = new MyAssemblyLoadContext(AssemblyPath.Value);
+                return loader.LoadFromAssemblyPath(AssemblyPath.Value);
+            }
+		}
         public Type? ProjectType => Assembly.GetType(ProjectTypeFullName.Value);
         public Type? ExporterType
         {
@@ -45,16 +53,20 @@ namespace Romanesco.Model.EditorComponents
         {
             AssemblyPath.Where(x => x != null).Subscribe(x =>
             {
+                var loader = new MyAssemblyLoadContext(x);
+
                 Assembly assembly;
                 try
                 {
-                    assembly = Assembly.LoadFrom(x);
+                    assembly = loader.LoadFromAssemblyPath(x);
                 }
                 catch (Exception)
                 {
                     return;
                 }
 
+                try
+                {
                 var types = assembly.GetTypes();
 
                 ProjectTypeMenu.Value = types
@@ -69,6 +81,12 @@ namespace Romanesco.Model.EditorComponents
                     .ToArray();
 
                 ProjectTypeExporterFullName.Value = DefaultExporterName;
+
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             });
         }
 

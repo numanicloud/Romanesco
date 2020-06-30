@@ -11,47 +11,73 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
     public class ClassStateFactory : IStateFactory
     {
         public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
-        {
-            EditorMemberAttribute? GetMemberAttributeOrDefault(MemberInfo member)
-            {
-                return member.GetCustomAttribute<EditorMemberAttribute>();
-            }
+		{
+			var type = settability.Type;
+			if (!type.IsClass)
+			{
+				return null;
+			}
 
-            var type = settability.Type;
-            if (!type.IsClass)
-            {
-                return null;
-            }
+			// 新規作成時は null である場合がある。逆にロード時は値が入ってるので上書き禁止
+			object subject = GetOrCreateInstance(settability);
 
-            // 新規作成時は null である場合がある。ロード時は値が入ってるので上書き禁止
-            if (settability.GetValue() is { } subject)
-            {
-            }
-            else
-            {
-                if (Activator.CreateInstance(type) is object classInstance)
-                {
-                    settability.SetValue(classInstance);
-                    subject = classInstance;
-                }
-                else
-                {
-                    throw new InvalidOperationException($"{type.FullName}のインスタンスを生成できませんでした。");
-                }
-            }
+			IFieldState[] memberStates = subject is DynamicMock mock
+				? MakeDynamicMockMembers(type, mock)
+				: MakeClassMembers(type, subject);
 
-            var properties = from p in type.GetProperties()
-                             let attr = GetMemberAttributeOrDefault(p)
-                             where attr != null
-                             select (state: interpret(new ValueStorage(subject, p)), attr);
-            var fields = from f in type.GetFields()
-                         let attr = GetMemberAttributeOrDefault(f)
-                         where attr != null
-                         select (state: interpret(new ValueStorage(subject, f)), attr);
-            var members = properties.Concat(fields).OrderBy(x => x.attr.Order).ToArray();
+			return new ClassState(settability, memberStates);
 
-            var memberStates = members.Select(x => x.state).ToArray();
-            return new ClassState(settability, memberStates);
-        }
-    }
+			EditorMemberAttribute? GetMemberAttributeOrDefault(MemberInfo member)
+			{
+				return member.GetCustomAttribute<EditorMemberAttribute>();
+			}
+
+			IFieldState[] MakeClassMembers(Type type, object subject)
+			{
+				var properties = from p in type.GetProperties()
+								 let attr = GetMemberAttributeOrDefault(p)
+								 where attr != null
+								 select (state: interpret(new ValueStorage(subject, p)), attr);
+				var fields = from f in type.GetFields()
+							 let attr = GetMemberAttributeOrDefault(f)
+							 where attr != null
+							 select (state: interpret(new ValueStorage(subject, f)), attr);
+				var members = properties.Concat(fields).OrderBy(x => x.attr.Order).ToArray();
+
+				var memberStates = members.Select(x => x.state).ToArray();
+				return memberStates;
+			}
+
+			IFieldState[] MakeDynamicMockMembers(Type type, DynamicMock subject)
+			{
+				var factory = new ValueStorageFactory();
+				return subject.Keys
+					.Select(x => interpret(factory.FromDynamicMocksMember(subject, x)))
+					.Where(x => x != null)
+					.ToArray()!;
+			}
+		}
+
+		private static object GetOrCreateInstance(ValueStorage settability)
+		{
+			var type = settability.Type;
+			if (settability.GetValue() is { } subject)
+			{
+			}
+			else
+			{
+				if (Activator.CreateInstance(type) is object classInstance)
+				{
+					settability.SetValue(classInstance);
+					subject = classInstance;
+				}
+				else
+				{
+					throw new InvalidOperationException($"{type.FullName}のインスタンスを生成できませんでした。");
+				}
+			}
+
+			return subject;
+		}
+	}
 }

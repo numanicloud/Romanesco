@@ -1,0 +1,29 @@
+# AssemblyRepository
+
+* アセンブリをロードする機能
+* プラットフォームが異なるアセンブリはメタデータを読み込む機能
+* インスタンスを生成する機能
+* メタデータのみのアセンブリからはDynamicObjectを生成する機能
+* ValueStorageを生成する機能
+
+
+
+## メタデータ生成しないもの
+
+* プロジェクト型
+* エクスポーター型
+* プラグインファサード
+
+これらはプラットフォームが異なるならばエラーとする
+そもそもAssemblyRepositoryを使わない
+
+# ValueStorage
+
+これ自体は抽象クラスのほうがよいかも？
+以下のような実装が考えられる
+
+* Property版
+* Field版
+* List版
+* DynamicObject版
+* Delegate版
