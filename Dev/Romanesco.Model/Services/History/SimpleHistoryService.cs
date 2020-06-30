@@ -1,29 +1,28 @@
 ﻿using Romanesco.Common.Model.Basics;
-using Romanesco.Model.ProjectComponents;
 
 namespace Romanesco.Model.Services.History
 {
     class SimpleHistoryService : IProjectHistoryService
     {
-		private readonly ProjectContext context;
+		private readonly CommandHistory commandHistory;
 
-		public SimpleHistoryService(ProjectContext context)
+		public SimpleHistoryService(CommandHistory commandHistory)
         {
-			this.context = context;
+			this.commandHistory = commandHistory;
 		}
 
-        public bool CanUndo => context.CommandHistory.CanUndo;
+        public bool CanUndo => commandHistory.CanUndo;
 
-        public bool CanRedo => context.CommandHistory.CanRedo;
+        public bool CanRedo => commandHistory.CanRedo;
 
         public void Redo()
         {
-            context.CommandHistory.Redo();
+            commandHistory.Redo();
         }
 
         public void Undo()
         {
-            context.CommandHistory.Undo();
+            commandHistory.Undo();
         }
     }
 }

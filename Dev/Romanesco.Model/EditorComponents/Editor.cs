@@ -1,34 +1,28 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.EditorComponents.States;
-using Romanesco.Model.ProjectComponents;
-using Romanesco.Model.Services;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Romanesco.Model.EditorComponents
 {
-    class Editor : IEditorFacade
+	public class Editor : IEditorFacade
     {
         private EditorState editorState;
-        private readonly IStateFactoryProvider factoryProvider;
-        private readonly IProjectSettingProvider settingProvider;
+		private IServiceLocator serviceLocator;
         private readonly Subject<(EditorCommandType command, bool canExecute)> canExecuteSubject;
 
         public ReactiveProperty<string> ApplicationTitle { get; }
         public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable { get; }
 
-        public Editor(IStateFactoryProvider factoryProvider, IProjectSettingProvider settingProvider)
-        {
-            this.factoryProvider = factoryProvider;
-            this.settingProvider = settingProvider;
-            editorState = new EmptyEditorState(settingProvider, factoryProvider);
+		public Editor(IServiceLocator serviceLocator)
+		{
+			this.serviceLocator = serviceLocator;
+            editorState = serviceLocator.GetService<EmptyEditorState>();
 
             ApplicationTitle = new ReactiveProperty<string>(editorState.Title);
             canExecuteSubject = new Subject<(EditorCommandType command, bool canExecute)>();
@@ -40,13 +34,13 @@ namespace Romanesco.Model.EditorComponents
             CanExecuteObservable = initialCanExecute.Concat(canExecuteSubject);
         }
 
-        public Task<ProjectContext?> CreateAsync()
+		public Task<ProjectContext?> CreateAsync()
         {
             return ResetProject(async () => await editorState.GetLoadService().CreateAsync(),
                 context =>
                 {
                     editorState.OnCreate();
-                    ChangeState(new NewEditorState(context, factoryProvider));
+                    ChangeState(serviceLocator.CreateInstance<NewEditorState>(context));
                 });
         }
 
@@ -56,7 +50,7 @@ namespace Romanesco.Model.EditorComponents
                 context =>
                 {
                     editorState.OnOpen();
-                    ChangeState(new CleanEditorState(context, factoryProvider));
+                    ChangeState(serviceLocator.CreateInstance<CleanEditorState>(context));
                 });
         }
 
@@ -95,7 +89,7 @@ namespace Romanesco.Model.EditorComponents
             canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
         }
 
-        public void ChangeState(EditorState state)
+        internal void ChangeState(EditorState state)
         {
             editorState = state;
             UpdateTitle();
@@ -120,7 +114,7 @@ namespace Romanesco.Model.EditorComponents
                 return null;
             }
 
-            var editorContext = new EditorContext(this, settingProvider, projectContext);
+            var editorContext = serviceLocator.CreateInstance<EditorContext>(this, projectContext);
             onSuccess(editorContext);
             UpdateTitle();
 

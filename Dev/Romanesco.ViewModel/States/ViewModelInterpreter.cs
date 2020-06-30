@@ -1,15 +1,17 @@
 ﻿using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Romanesco.ViewModel.States
 {
-    class ViewModelInterpreter
+	class ViewModelInterpreter
     {
         private readonly IStateViewModelFactory[] factories;
 
-        public ViewModelInterpreter(IStateViewModelFactory[] factories)
+        public ViewModelInterpreter(IEnumerable<IStateViewModelFactory> factories)
         {
-            this.factories = factories;
+            this.factories = factories.ToArray();
         }
 
         public IStateViewModel InterpretAsViewModel(IFieldState state)

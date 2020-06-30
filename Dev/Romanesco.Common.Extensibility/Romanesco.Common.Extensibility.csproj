@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
     <ProjectReference Include="..\Romanesco.Common.ViewModel\Romanesco.Common.ViewModel.csproj" />
     <ProjectReference Include="..\Romanesco.Common.View\Romanesco.Common.View.csproj" />

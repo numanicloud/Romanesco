@@ -1,0 +1,15 @@
+@startuml
+
+class StartUp
+{
+}
+
+StartUp o-- IServiceProvider_App
+StartUp o-- PluginLoader
+HostServiceLocator o-- IServiceProvider_App
+HostServiceLocator o-- PluginServiceLocator
+PluginServiceLocator o-- IServiceProvider_Plugin
+PluginExtension <-- IServiceProvider_Plugin
+PluginLoader <-- PluginExtension
+
+@enduml

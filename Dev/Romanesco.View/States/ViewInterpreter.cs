@@ -2,6 +2,8 @@
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel.States;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Romanesco.View.States
 {
@@ -9,9 +11,9 @@ namespace Romanesco.View.States
     {
         private readonly IViewFactory[] factories;
 
-        public ViewInterpreter(IViewFactory[] factories)
+        public ViewInterpreter(IEnumerable<IViewFactory> factories)
         {
-            this.factories = factories;
+            this.factories = factories.ToArray();
         }
 
         public StateViewContext InterpretAsView(IStateViewModel viewModel)

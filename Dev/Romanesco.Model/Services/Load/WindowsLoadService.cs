@@ -7,114 +7,113 @@ using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services.Serialize;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 
 namespace Romanesco.Model.Services.Load
 {
-    class WindowsLoadService : IProjectLoadService
-    {
-        private readonly IProjectSettingProvider projectSettingProvider;
-        private readonly IStateFactoryProvider stateFactoryProvider;
-        private readonly IStateDeserializer deserializer;
+	class WindowsLoadService : IProjectLoadService
+	{
+		private readonly IProjectSettingProvider projectSettingProvider;
+		private readonly IStateDeserializer deserializer;
+		private readonly IStateFactory[] factories;
 
-        public WindowsLoadService(IProjectSettingProvider projectSettingProvider,
-            IStateFactoryProvider stateFactoryProvider,
-            IStateDeserializer deserializer)
-        {
-            this.projectSettingProvider = projectSettingProvider;
-            this.stateFactoryProvider = stateFactoryProvider;
-            this.deserializer = deserializer;
-        }
+		public WindowsLoadService(IProjectSettingProvider projectSettingProvider,
+			IStateDeserializer deserializer,
+			IEnumerable<IStateFactory> factories)
+		{
+			this.projectSettingProvider = projectSettingProvider;
+			this.deserializer = deserializer;
+			this.factories = factories.ToArray();
+		}
 
-        public bool CanCreate => true;
+		public bool CanCreate => true;
 
-        public bool CanOpen => true;
+		public bool CanOpen => true;
 
-        public async Task<ProjectContext?> CreateAsync()
-        {
-            return await ResetProject(CreateInternalAsync);
-        }
+		public async Task<ProjectContext?> CreateAsync()
+		{
+			return await ResetProject(CreateInternalAsync);
+		}
 
-        public async Task<ProjectContext?> OpenAsync()
-        {
-            return await ResetProject(OpenInternalAsync);
-        }
+		public async Task<ProjectContext?> OpenAsync()
+		{
+			return await ResetProject(OpenInternalAsync);
+		}
 
-        private ObjectInterpreter CreateInterpreter(ProjectContextCrawler context)
-        {
-            return new ObjectInterpreter(stateFactoryProvider.GetStateFactories(context).ToArray());
-        }
+		private ObjectInterpreter CreateInterpreter()
+		{
+			return new ObjectInterpreter(factories);
+		}
 
-        private async Task<ProjectContext?> ResetProject(Func<ObjectInterpreter, Task<Project?>> generator)
-        {
-            var contextCrawler = new ProjectContextCrawler();
-            var interpreter = CreateInterpreter(contextCrawler);
+		private async Task<ProjectContext?> ResetProject(Func<ObjectInterpreter, Task<Project?>> generator)
+		{
+			var interpreter = CreateInterpreter();
 
-            var project = await generator(interpreter);
-            if (project != null)
-            {
-                if (Activator.CreateInstance(project.Settings.ExporterType) is IProjectTypeExporter exporter)
-                {
-                    return new ProjectContext(project, contextCrawler, exporter);
-                }
-                else
-                {
-                    throw new InvalidOperationException($"{project.Settings.ExporterType}をインスタンス化できませんでした。");
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
+			var project = await generator(interpreter);
+			if (project != null)
+			{
+				if (Activator.CreateInstance(project.Settings.ExporterType) is IProjectTypeExporter exporter)
+				{
+					return new ProjectContext(project, exporter);
+				}
+				else
+				{
+					throw new InvalidOperationException($"{project.Settings.ExporterType}をインスタンス化できませんでした。");
+				}
+			}
+			else
+			{
+				return null;
+			}
+		}
 
-        private async Task<Project?> CreateInternalAsync(ObjectInterpreter interpreter)
-        {
-            var editor = new ProjectSettingsEditor();
-            var settings = projectSettingProvider.InputCreateSettings(editor);
+		private async Task<Project?> CreateInternalAsync(ObjectInterpreter interpreter)
+		{
+			var editor = new ProjectSettingsEditor();
+			var settings = projectSettingProvider.InputCreateSettings(editor);
 
-            if (settings != null)
-            {
-                if (Activator.CreateInstance(settings.ProjectType) is object instance)
-                {
-                    return await ProjectConverter.FromInstanceAsync(settings, deserializer, interpreter, instance);
-                }
-                else
-                {
-                    throw new InvalidOperationException($"プロジェクト型 {settings.ProjectType} のインスタンスを作成できませんでした。");
-                }
-            }
-            return null;
-        }
+			if (settings != null)
+			{
+				if (Activator.CreateInstance(settings.ProjectType) is object instance)
+				{
+					return await ProjectConverter.FromInstanceAsync(settings, deserializer, interpreter, instance);
+				}
+				else
+				{
+					throw new InvalidOperationException($"プロジェクト型 {settings.ProjectType} のインスタンスを作成できませんでした。");
+				}
+			}
+			return null;
+		}
 
-        private async Task<Project?> OpenInternalAsync(ObjectInterpreter interpreter)
-        {
-            var dialog = new OpenFileDialog()
-            {
-                Filter = "マスター プロジェクト (*.roma)|*.roma",
-                Title = "マスター プロジェクトを読み込む"
-            };
+		private async Task<Project?> OpenInternalAsync(ObjectInterpreter interpreter)
+		{
+			var dialog = new OpenFileDialog()
+			{
+				Filter = "マスター プロジェクト (*.roma)|*.roma",
+				Title = "マスター プロジェクトを読み込む"
+			};
 
-            var result = dialog.ShowDialog();
-            if (result == true)
-            {
-                using var file = File.OpenRead(dialog.FileName);
-                using var reader = new StreamReader(file);
+			var result = dialog.ShowDialog();
+			if (result == true)
+			{
+				using var file = File.OpenRead(dialog.FileName);
+				using var reader = new StreamReader(file);
 
-                var json = await reader.ReadToEndAsync();
-                var data = JsonConvert.DeserializeObject<ProjectData>(json);
-                var project = await ProjectConverter.FromDataAsync(data, deserializer, interpreter);
-                project.DefaultSavePath = dialog.FileName;
-                return project;
-            }
-            else
-            {
-                return null;
-            }
-        }
-    }
+				var json = await reader.ReadToEndAsync();
+				var data = JsonConvert.DeserializeObject<ProjectData>(json);
+				var project = await ProjectConverter.FromDataAsync(data, deserializer, interpreter);
+				project.DefaultSavePath = dialog.FileName;
+				return project;
+			}
+			else
+			{
+				return null;
+			}
+		}
+	}
 }

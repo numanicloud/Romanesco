@@ -13,7 +13,8 @@ namespace Romanesco.Model.EditorComponents
         public IProjectSettingProvider SettingProvider { get; }
 		public ProjectContext CurrentProject { get; }
 
-		public EditorContext(Editor editor, IProjectSettingProvider settingProvider,
+		public EditorContext(IProjectSettingProvider settingProvider,
+            Editor editor,
             ProjectContext currentProject)
         {
             Editor = editor;

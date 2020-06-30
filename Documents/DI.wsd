@@ -1,0 +1,65 @@
+@startuml
+
+class WindowsLoadService
+{
+}
+
+IProjectLoadService <|-- WindowsLoadService
+WindowsLoadService o-- IProjectSettingProvider
+WindowsLoadService o-- IStateFactoryProvider
+WindowsLoadService o-- IStateDeserializer
+
+EditorContext <-- CleanEditorState
+NewtonsoftStateDeserializer <-- CleanEditorState
+NewtonsoftStateSerializer <-- CleanEditorState
+CleanEditorState o-- IStateFactoryProvider
+CleanEditorState o-- IProjectLoadService
+CleanEditorState o-- IProjectSaveService
+CleanEditorState o-- IProjectHistoryService
+DirtyEditorState <-- CleanEditorState
+
+IProjectSaveService <|-- WindowsSaveService
+WindowsSaveService o-- Project
+WindowsSaveService o-- IStateSerializer
+WindowsSaveService o-- IProjectTypeExporter
+
+IProjectHistoryService <|-- SimpleHistoryService
+SimpleHistoryService o-- ProjectContext
+
+DirtyEditorState o-- IProjectLoadService
+DirtyEditorState o-- IProjectSaveService
+DirtyEditorState o-- IProjectHistoryService
+DirtyEditorState o-- IStateFactoryProvider
+EditorContext <-- DirtyEditorState
+NewtonsoftStateDeserializer <-- DirtyEditorState
+NewtonsoftStateSerializer <-- DirtyEditorState
+CleanEditorState <-- DirtyEditorState
+
+EmptyEditorState o-- IProjectLoadService
+IProjectSettingProvider <-- EmptyEditorState
+IStateFactoryProvider <-- EmptyEditorState
+NewtonsoftStateDeserializer <-- EmptyEditorState
+
+IProjectLoadService o-- NewEditorState
+IProjectSaveService o-- NewEditorState
+IProjectHistoryService o-- NewEditorState
+IStateFactoryProvider o-- NewEditorState
+NewtonsoftStateDeserializer <-- NewEditorState
+NewtonsoftStateSerializer <-- NewEditorState
+EditorContext <-- NewEditorState
+CleanEditorState <-- NewEditorState
+DirtyEditorState <-- NewEditorState
+
+IProjectHistoryService <|-- SimpleHistoryService
+SimpleHistoryService o-- ProjectContext
+
+IEditorFacade <|-- Editor
+IStateFactoryProvider o-- Editor
+IProjectSettingProvider o-- Editor
+
+IProjectTypeExporter <|-- NewtonsoftJsonProjectTypeExporter
+
+StartUp "through" o-- IProjectSettingProvider
+StartUp o-- PluginLoader
+
+@enduml

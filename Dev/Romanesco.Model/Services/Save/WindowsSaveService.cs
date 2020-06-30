@@ -1,40 +1,33 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
-using Romanesco.Common.Model.ProjectComponents;
 using Romanesco.Model.ProjectComponents;
-using Romanesco.Model.Services.Export;
 using Romanesco.Model.Services.Serialize;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.Model.Basics;
 
 namespace Romanesco.Model.Services.Save
 {
-    class WindowsSaveService : IProjectSaveService
+	class WindowsSaveService : IProjectSaveService
     {
-        private readonly Project project;
         private readonly IStateSerializer saveSerializer;
-        private readonly IProjectTypeExporter exporter;
+		private readonly ProjectContext context;
 
         public bool CanSave => true;
 
         public bool CanExport => true;
 
-        public WindowsSaveService(Project project,
-            IStateSerializer saveSerializer,
-            IProjectTypeExporter exporter)
+        public WindowsSaveService(IStateSerializer saveSerializer,
+            ProjectContext context)
         {
-            this.project = project;
             this.saveSerializer = saveSerializer;
-            this.exporter = exporter;
+			this.context = context;
         }
 
         public async Task ExportAsync()
         {
-            //return Task.CompletedTask;
-            //*
+            var exporter = context.Exporter;
             var dialog = new CommonOpenFileDialog()
             {
                 IsFolderPicker = !exporter.DoExportIntoSingleFile,
@@ -44,28 +37,29 @@ namespace Romanesco.Model.Services.Save
 
             if (result == CommonFileDialogResult.Ok)
             {
-                await exporter.ExportAsync(project.Root.RootInstance, dialog.FileName);
+                await exporter.ExportAsync(context.Project.Root.RootInstance, dialog.FileName);
             }
-            //*/
         }
 
         public async Task SaveAsync()
         {
-            if (project.DefaultSavePath == null)
+			if (context.Project.DefaultSavePath is string path)
+			{
+                await SaveToPathAsync(path);
+			}
+			else
             {
                 await SaveAsAsync();
-                return;
             }
-
-            await SaveToPathAsync(project.DefaultSavePath);
         }
 
         public async Task SaveAsAsync()
         {
+            var project = context.Project;
             var defaultName = "Project.roma";
-            if (project.DefaultSavePath != null)
+            if (project.DefaultSavePath is string path)
             {
-                defaultName = Path.GetFileName(project.DefaultSavePath);
+                defaultName = Path.GetFileName(path);
             }
 
             var dialog = new SaveFileDialog()
@@ -85,7 +79,7 @@ namespace Romanesco.Model.Services.Save
 
         private async Task SaveToPathAsync(string path)
         {
-            var data = ProjectConverter.ToData(project, saveSerializer);
+            var data = ProjectConverter.ToData(context.Project, saveSerializer);
             var json = JsonConvert.SerializeObject(data);
 
             using (var file = File.Create(path))

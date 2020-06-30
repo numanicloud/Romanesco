@@ -1,20 +1,26 @@
-﻿using Romanesco.Model.EditorComponents;
+﻿using Romanesco.Common.Model.Interfaces;
+using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
+using Romanesco.ViewModel.Editor;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Romanesco.ViewModel
 {
-    public class VmProjectSettingsProvider : IProjectSettingProvider
+	internal class VmProjectSettingsProvider : IProjectSettingProvider
     {
-        public EditorViewModel? ViewModel { get; set; }
+		private readonly IServiceLocator serviceLocator;
+
+		public VmProjectSettingsProvider(IServiceLocator serviceLocator)
+		{
+			this.serviceLocator = serviceLocator;
+		}
 
         public ProjectSettings? InputCreateSettings(ProjectSettingsEditor editor)
         {
-            ViewModel?.ShowProjectSetting(editor);
+            serviceLocator.GetService<IEditorViewModel>()
+                .ShowProjectSetting(editor);
 
             if (editor.Succeeded)
             {

@@ -9,12 +9,15 @@ using Romanesco.Model.EditorComponents;
 using Romanesco.ViewModel.States;
 using Livet.Messaging;
 using Romanesco.Common.Model.Helpers;
+using Romanesco.ViewModel.Editor;
 
 namespace Romanesco.ViewModel
 {
-    public class EditorViewModel : Livet.ViewModel
+	internal class EditorViewModel : Livet.ViewModel, IEditorViewModel
     {
-        public IEditorFacade Editor { get; set; }
+		private readonly ViewModelInterpreter interpreter;
+
+		public IEditorFacade Editor { get; set; }
         public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
 
         public BooleanUsingScopeSource CommandExecution { get; }
@@ -28,7 +31,7 @@ namespace Romanesco.ViewModel
         public ReactiveCommand Redo { get; }
         public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
 
-        public EditorViewModel(IEditorFacade editor, IStateViewModelFactoryProvider factoryProvider)
+        public EditorViewModel(IEditorFacade editor, ViewModelInterpreter interpreter)
         {
             ReactiveCommand ToEditorCommand(EditorCommandType type)
             {
@@ -40,7 +43,8 @@ namespace Romanesco.ViewModel
             }
 
             Editor = editor;
-            CommandExecution = new BooleanUsingScopeSource();
+			this.interpreter = interpreter;
+			CommandExecution = new BooleanUsingScopeSource();
 
             CreateCommand = ToEditorCommand(EditorCommandType.Create);
             OpenCommand = ToEditorCommand(EditorCommandType.Open);
@@ -50,8 +54,8 @@ namespace Romanesco.ViewModel
             Undo = ToEditorCommand(EditorCommandType.Undo);
             Redo = ToEditorCommand(EditorCommandType.Redo);
 
-            CreateCommand.SubscribeSafe(x => CreateAsync(factoryProvider).Forget());
-            OpenCommand.SubscribeSafe(x => OpenAsync(factoryProvider).Forget());
+            CreateCommand.SubscribeSafe(x => CreateAsync().Forget());
+            OpenCommand.SubscribeSafe(x => OpenAsync().Forget());
             ExportCommand.SubscribeSafe(x => ExportAsync().Forget());
             SaveCommand.SubscribeSafe(x => SaveAsync().Forget());
             SaveAsCommand.SubscribeSafe(x => SaveAsAsync().Wait());
@@ -69,16 +73,10 @@ namespace Romanesco.ViewModel
             Messenger.Raise(new TransitionMessage(vm, "CreateProject"));
         }
 
-        private ViewModelInterpreter CreateInterpreter(IStateViewModelFactoryProvider factoryProvider)
-        {
-            return new ViewModelInterpreter(factoryProvider.GetStateViewModelFactories().ToArray());
-        }
-
-        private async Task CreateAsync(IStateViewModelFactoryProvider factoryProvider)
+        private async Task CreateAsync()
         {
             using (CommandExecution.Create())
             {
-                var interpreter = CreateInterpreter(factoryProvider);
                 var projectContext = await Editor.CreateAsync();
                 if (projectContext != null)
                 {
@@ -89,11 +87,10 @@ namespace Romanesco.ViewModel
             }
         }
 
-        private async Task OpenAsync(IStateViewModelFactoryProvider factoryProvider)
+        private async Task OpenAsync()
         {
             using (CommandExecution.Create())
             {
-                var interpreter = CreateInterpreter(factoryProvider);
                 var projectContext = await Editor.OpenAsync();
                 if (projectContext == null)
                 {

@@ -1,59 +1,65 @@
-﻿using System;
-using System.Globalization;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Romanesco.Common.Model.Interfaces;
+using Romanesco.Extensibility;
+using Romanesco.Model;
+using Romanesco.Model.Services;
+using Romanesco.Startup;
+using Romanesco.View.Entry;
+using Romanesco.ViewModel;
+using System;
 using System.Windows;
 
 namespace Romanesco
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
-    {
-        private MementoSola.Altseed.Debug.RootExceptionHandler? logger;
+	/// <summary>
+	/// Interaction logic for App.xaml
+	/// </summary>
+	public partial class App : Application
+	{
+		private UnhandledExceptionHandler? handler;
+		private IHost? host;
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            logger = new MementoSola.Altseed.Debug.RootExceptionHandler();
+		protected override void OnStartup(StartupEventArgs e)
+		{
+			handler = new UnhandledExceptionHandler(this);
 
-            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
-            Dispatcher.UnhandledException += Dispatcher_UnhandledException;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-            Common.Model.Helper.OnUnhandledExceptionRaisedInSubscribe += Helper_OnUnhandledExceptionRaisedInSubscribe;
+			host = new HostBuilder()
+				.ConfigureServices((context, services) =>
+				{
+					services.AddSingleton<IHostServiceLocator>(provider => new HostServiceLocator(provider))
+						.AddSingleton<IServiceLocator>(provider => new HostServiceLocator(provider))
+						.AddTransient<PluginLoader>()
+						.AddSingleton<MainWindow>();
 
-            // .NET Core のバグで、識別子が意図せず日本語になってしまう問題対策(もう直ってるかも)
-            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-            base.OnStartup(e);
-        }
+					new ModelServiceStartUp().ConfigureServices(services);
+					new ViewModelServiceStartUp().ConfigureServices(services);
+					new ViewServiceStartUp().ConfigureServices(services);
 
-        private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            logger?.ProcessError(e.Exception);
-        }
+					services.AddHostedService<StartUp>();
+				}).Build();
 
-        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            logger?.ProcessError(e.Exception);
-        }
+			base.OnStartup(e);
+		}
 
-        private void Helper_OnUnhandledExceptionRaisedInSubscribe(Exception exception)
-        {
-            logger?.ProcessError(exception);
-        }
+		private async void Application_Startup(object sender, StartupEventArgs e)
+		{
+			if (host is IHost)
+			{
+				await host.StartAsync();
+			}
+			else
+			{
+				throw new Exception();
+			}
+		}
 
-        private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
-        {
-            if (e.Exception != null)
-            {
-                logger?.ProcessError(e.Exception);
-            }
-        }
-
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            logger?.ProcessError((Exception)e.ExceptionObject);
-        }
-    }
+		private async void Application_Exit(object sender, ExitEventArgs e)
+		{
+			if (host is IHost)
+			{
+				await host.StopAsync(TimeSpan.FromSeconds(1));
+			}
+		}
+	}
 }

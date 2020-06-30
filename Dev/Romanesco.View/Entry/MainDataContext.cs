@@ -1,28 +1,27 @@
 ﻿using Reactive.Bindings;
-using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.View.States;
-using Romanesco.ViewModel;
+using Romanesco.ViewModel.Editor;
 using System;
 using System.Linq;
 
 namespace Romanesco.View
 {
-    public class MainDataContext
+	internal class MainDataContext : IEditorViewContext
     {
         private ReactiveProperty<StateRootDataContext?> rootProperty = new ReactiveProperty<StateRootDataContext?>();
         private IDisposable? errorSubscription;
-        private readonly IViewFactoryProvider factoryProvider;
+		private readonly ViewInterpreter interpreter;
 
-        public EditorViewModel Editor { get; }
-        public IReadOnlyReactiveProperty<StateRootDataContext?> Root => rootProperty;
+		public IReadOnlyReactiveProperty<StateRootDataContext?> Root => rootProperty;
+        public IEditorViewModel Editor { get; }
 
-        public MainDataContext(EditorViewModel editor, IViewFactoryProvider factoryProvider)
+        public MainDataContext(IEditorViewModel editor, ViewInterpreter interpreter)
         {
             Editor = editor;
-            this.factoryProvider = factoryProvider;
-            Editor.Roots.Subscribe(roots => LoadRoot(roots));
-        }
+            editor.Roots.Subscribe(roots => LoadRoot(roots));
+			this.interpreter = interpreter;
+		}
 
         private void LoadRoot(IStateViewModel[] vmRoots)
         {
@@ -32,7 +31,6 @@ namespace Romanesco.View
                 return;
             }
 
-            var interpreter = new ViewInterpreter(factoryProvider.GetViewFactories().ToArray());
             var views = vmRoots.Select(vm => interpreter.InterpretAsView(vm)).ToArray();
             rootProperty.Value = new StateRootDataContext(views);
 
