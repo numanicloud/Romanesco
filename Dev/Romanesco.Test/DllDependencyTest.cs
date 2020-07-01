@@ -1,4 +1,5 @@
-﻿using Romanesco.Model.EditorComponents;
+﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,21 @@ namespace Romanesco.Test
 		[Fact]
 		public void 依存関係のあるアセンブリをロードできる()
 		{
-			var editor = new ProjectSettingsEditor();
+			var editor = new ProjectSettingsEditor(new DataAssemblyRepository());
 			editor.AssemblyPath.Value = Path.GetFullPath("./Resources/Dependencies2.dll");
 			Assert.True(editor.ProjectTypeMenu.Value.Length > 0);
+		}
+
+		[Fact]
+		public void メタデータと実体を呼び分けながらロードする()
+		{
+			var repo = new DataAssemblyRepository();
+			var asm = repo.LoadAssemblyFromPath("./Resources/Dependencies2.dll");
+
+			Assert.NotNull(asm);
+
+			var types = asm!.GetTypes();
+			Assert.True(types.Length > 0);
 		}
 	}
 }

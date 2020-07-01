@@ -36,15 +36,15 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 		public IObservable<Unit> OnEdited { get; }
 
-		public SubtypingClassState(ValueStorage storage, SubtypingList subtypingList, StateInterpretFunc interpreter)
+		public SubtypingClassState(ValueStorage storage, SubtypingList subtypingList, IServiceLocator serviceLocator)
 		{
 			// 型の選択肢を設定
 			Choices.Add(new NullSubtypeOption());
 			foreach (var item in subtypingList.DerivedTypes)
 			{
-				Choices.Add(new ConcreteSubtypeOption(item, storage, interpreter));
+				Choices.Add(new ConcreteSubtypeOption(item, storage, serviceLocator));
 			}
-			subtypingList.OnNewEntry.Subscribe(x => Choices.Add(new ConcreteSubtypeOption(x, storage, interpreter)));
+			subtypingList.OnNewEntry.Subscribe(x => Choices.Add(new ConcreteSubtypeOption(x, storage, serviceLocator)));
 
 			// 型の初期値をセット
 			var initialType = storage.GetValue()?.GetType();

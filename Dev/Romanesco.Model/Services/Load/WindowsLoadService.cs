@@ -19,15 +19,21 @@ namespace Romanesco.Model.Services.Load
 	{
 		private readonly IProjectSettingProvider projectSettingProvider;
 		private readonly IStateDeserializer deserializer;
-		private readonly IStateFactory[] factories;
+		private readonly IDataAssemblyRepository assemblyRepo;
+		private readonly IServiceLocator serviceLocator;
+		private readonly ObjectInterpreter interpreter;
 
 		public WindowsLoadService(IProjectSettingProvider projectSettingProvider,
 			IStateDeserializer deserializer,
-			IEnumerable<IStateFactory> factories)
+			IDataAssemblyRepository assemblyRepo,
+			IServiceLocator serviceLocator,
+			ObjectInterpreter interpreter)
 		{
 			this.projectSettingProvider = projectSettingProvider;
 			this.deserializer = deserializer;
-			this.factories = factories.ToArray();
+			this.assemblyRepo = assemblyRepo;
+			this.serviceLocator = serviceLocator;
+			this.interpreter = interpreter;
 		}
 
 		public bool CanCreate => true;
@@ -44,16 +50,9 @@ namespace Romanesco.Model.Services.Load
 			return await ResetProject(OpenInternalAsync);
 		}
 
-		private ObjectInterpreter CreateInterpreter()
+		private async Task<ProjectContext?> ResetProject(Func<Task<Project?>> generator)
 		{
-			return new ObjectInterpreter(factories);
-		}
-
-		private async Task<ProjectContext?> ResetProject(Func<ObjectInterpreter, Task<Project?>> generator)
-		{
-			var interpreter = CreateInterpreter();
-
-			var project = await generator(interpreter);
+			var project = await generator();
 			if (project != null)
 			{
 				if (Activator.CreateInstance(project.Settings.ExporterType) is IProjectTypeExporter exporter)
@@ -71,14 +70,14 @@ namespace Romanesco.Model.Services.Load
 			}
 		}
 
-		private async Task<Project?> CreateInternalAsync(ObjectInterpreter interpreter)
+		private async Task<Project?> CreateInternalAsync()
 		{
-			var editor = new ProjectSettingsEditor();
+			var editor = serviceLocator.GetService<ProjectSettingsEditor>();
 			var settings = projectSettingProvider.InputCreateSettings(editor);
 
 			if (settings != null)
 			{
-				if (Activator.CreateInstance(settings.ProjectType) is object instance)
+				if (assemblyRepo.CreateInstance(settings.ProjectType) is object instance)
 				{
 					return await ProjectConverter.FromInstanceAsync(settings, deserializer, interpreter, instance);
 				}
@@ -90,7 +89,7 @@ namespace Romanesco.Model.Services.Load
 			return null;
 		}
 
-		private async Task<Project?> OpenInternalAsync(ObjectInterpreter interpreter)
+		private async Task<Project?> OpenInternalAsync()
 		{
 			var dialog = new OpenFileDialog()
 			{

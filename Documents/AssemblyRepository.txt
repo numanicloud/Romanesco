@@ -4,7 +4,7 @@
 * プラットフォームが異なるアセンブリはメタデータを読み込む機能
 * インスタンスを生成する機能
 * メタデータのみのアセンブリからはDynamicObjectを生成する機能
-* ValueStorageを生成する機能
+* ValueStorageを生成する機能→ValueStorageFactoryクラス
 
 
 
@@ -27,3 +27,13 @@
 * List版
 * DynamicObject版
 * Delegate版
+
+
+# ServiceLocator生成
+
+
+
+
+
+
+

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Romanesco.Model.EditorComponents
 {
-	public class Editor : IEditorFacade
+	internal class Editor : IEditorFacade
     {
         private EditorState editorState;
 		private IServiceLocator serviceLocator;
@@ -89,7 +89,7 @@ namespace Romanesco.Model.EditorComponents
             canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
         }
 
-        internal void ChangeState(EditorState state)
+        public void ChangeState(EditorState state)
         {
             editorState = state;
             UpdateTitle();

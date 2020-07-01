@@ -12,6 +12,12 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 	public class SubtypingStateFactory : IStateFactory
 	{
 		private readonly SubtypingContext context = new SubtypingContext();
+		private readonly IServiceLocator serviceLocator;
+
+		public SubtypingStateFactory(IServiceLocator serviceLocator)
+		{
+			this.serviceLocator = serviceLocator;
+		}
 
 		public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
 		{
@@ -36,7 +42,7 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			}
 
 
-			return new SubtypingClassState(settability, list, interpret);
+			return new SubtypingClassState(settability, list, serviceLocator);
 		}
 	}
 }

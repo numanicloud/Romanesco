@@ -10,6 +10,13 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 {
     public class ClassStateFactory : IStateFactory
     {
+		private readonly IDataAssemblyRepository asmRepo;
+
+		public ClassStateFactory(IDataAssemblyRepository asmRepo)
+		{
+			this.asmRepo = asmRepo;
+		}
+
         public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
 		{
 			var type = settability.Type;
@@ -58,7 +65,7 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			}
 		}
 
-		private static object GetOrCreateInstance(ValueStorage settability)
+		private object GetOrCreateInstance(ValueStorage settability)
 		{
 			var type = settability.Type;
 			if (settability.GetValue() is { } subject)
@@ -66,7 +73,7 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			}
 			else
 			{
-				if (Activator.CreateInstance(type) is object classInstance)
+				if (asmRepo.CreateInstance(type) is object classInstance)
 				{
 					settability.SetValue(classInstance);
 					subject = classInstance;

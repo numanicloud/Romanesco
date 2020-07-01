@@ -23,7 +23,7 @@ namespace Romanesco.Common.Model.Basics
 			}
 		}
 
-		public Assembly? LoadAssemblyFromPath(string path)
+		public Assembly LoadAssemblyFromPath(string path)
 		{
 			var assemblyName = AssemblyName.GetAssemblyName(path);
 			if (assemblyName.Name is string name)
@@ -40,7 +40,10 @@ namespace Romanesco.Common.Model.Basics
 					return loader.LoadFromAssemblyPath(fullPath);
 				}
 			}
-			return null;
+			else
+			{
+				throw new InvalidOperationException("AssemblyName が無効です");
+			}
 		}
 	}
 }

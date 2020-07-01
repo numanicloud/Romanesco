@@ -16,8 +16,9 @@ namespace Romanesco.Model.EditorComponents
     public class ProjectSettingsEditor
     {
         private const string DefaultExporterName = "デフォルト エクスポートAPI";
+		private readonly IDataAssemblyRepository assemblyRepo;
 
-        public bool Succeeded { get; set; }
+		public bool Succeeded { get; set; }
         public ReactiveProperty<string> AssemblyPath { get; } = new ReactiveProperty<string>();
         public ReactiveProperty<string> ProjectTypeFullName { get; } = new ReactiveProperty<string>();
         public ReactiveProperty<string[]> ProjectTypeMenu { get; } = new ReactiveProperty<string[]>();
@@ -25,15 +26,8 @@ namespace Romanesco.Model.EditorComponents
         public ReactiveProperty<string[]> ProjectTypeExporterMenu { get; } = new ReactiveProperty<string[]>();
         public ObservableCollection<string> DependencyProjects { get; } = new ObservableCollection<string>();
 
-        public Assembly Assembly
-		{
-            get
-			{
-                var loader = new MyAssemblyLoadContext(AssemblyPath.Value);
-                return loader.LoadFromAssemblyPath(AssemblyPath.Value);
-            }
-		}
-        public Type? ProjectType => Assembly.GetType(ProjectTypeFullName.Value);
+		public Assembly Assembly => assemblyRepo.LoadAssemblyFromPath(AssemblyPath.Value);
+		public Type? ProjectType => Assembly.GetType(ProjectTypeFullName.Value);
         public Type? ExporterType
         {
             get
@@ -49,46 +43,27 @@ namespace Romanesco.Model.EditorComponents
             }
         }
 
-        public ProjectSettingsEditor()
+        public ProjectSettingsEditor(IDataAssemblyRepository assemblyRepo)
         {
-            AssemblyPath.Where(x => x != null).Subscribe(x =>
+			AssemblyPath.Where(x => x != null).Subscribe(path =>
             {
-                var loader = new MyAssemblyLoadContext(x);
+				var types = assemblyRepo.LoadAssemblyFromPath(path).GetTypes();
 
-                Assembly assembly;
-                try
-                {
-                    assembly = loader.LoadFromAssemblyPath(x);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-
-                try
-                {
-                var types = assembly.GetTypes();
-
-                ProjectTypeMenu.Value = types
+				ProjectTypeMenu.Value = types
                     .Where(y => y.GetCustomAttribute<Annotations.EditorProjectAttribute>() != null)
                     .Select(y => y.FullName ?? "<無効>")
                     .ToArray();
 
-                ProjectTypeExporterMenu.Value = types
+				ProjectTypeExporterMenu.Value = types
                     .Where(y => typeof(IProjectTypeExporter).IsAssignableFrom(y))
                     .Select(y => y.FullName ?? "<無効>")
                     .StartsWith(DefaultExporterName)
                     .ToArray();
 
-                ProjectTypeExporterFullName.Value = DefaultExporterName;
-
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+				ProjectTypeExporterFullName.Value = DefaultExporterName;
             });
-        }
+			this.assemblyRepo = assemblyRepo;
+		}
 
         public void OpenAssembly()
         {

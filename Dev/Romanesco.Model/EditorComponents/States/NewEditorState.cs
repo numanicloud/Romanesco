@@ -11,14 +11,12 @@ namespace Romanesco.Model.EditorComponents.States
         private readonly IProjectSaveService saveService;
         private readonly IProjectHistoryService historyService;
 		private readonly IServiceLocator serviceLocator;
-		private readonly IStateFactoryProvider stateFactoryProvider;
 
         public override string Title => "Romanesco - 新規プロジェクト";
 
         private EditorContext Context { get; }
 
-        public NewEditorState(IStateFactoryProvider stateFactoryProvider,
-            IProjectLoadService loadService,
+        public NewEditorState(IProjectLoadService loadService,
             IProjectHistoryService historyService,
             IServiceLocator serviceLocator,
             EditorContext context)
@@ -27,7 +25,6 @@ namespace Romanesco.Model.EditorComponents.States
             this.saveService = serviceLocator.CreateInstance<IProjectSaveService>(context.CurrentProject);
             this.historyService = historyService;
 			this.serviceLocator = serviceLocator;
-			this.stateFactoryProvider = stateFactoryProvider;
             Context = context;
 		}
 

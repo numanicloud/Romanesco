@@ -8,8 +8,8 @@ using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel.Factories;
 using Romanesco.BuiltinPlugin.ViewModel.Factories;
 using Romanesco.BuiltinPlugin.View.Factories;
-using Romanesco.Common.Model.Basics;
 using Romanesco.Common.View.Interfaces;
+using Romanesco.Common.Model.Basics;
 
 namespace Romanesco.BuiltinPlugin
 {
@@ -17,18 +17,22 @@ namespace Romanesco.BuiltinPlugin
 	{
 		public void ConfigureServices(IServiceCollection services)
 		{
-			var masterListContext = new MasterListContext();
+			var master = new MasterListContext();
 
 			// Model
-			services.AddSingleton<IStateFactory>(provider => new IdStateFactory(masterListContext))
-				.AddSingleton<IStateFactory>(provider => new ListStateFactory(masterListContext, provider.GetRequiredService<CommandHistory>()))
-				.AddSingletons<IStateFactory>(typeof(PrimitiveStateFactory),
+			services.AddSingleton<IStateFactory>(provider => new IdStateFactory(master))
+				.AddSingleton<IStateFactory>(provider => new ListStateFactory(master, provider.GetService<CommandHistory>()))
+				.AddSingletons<IStateFactory>(
+					typeof(IdStateFactory),
+					typeof(ListStateFactory),
+					typeof(PrimitiveStateFactory),
 					typeof(EnumStateFactory),
 					typeof(SubtypingStateFactory),
 					typeof(ClassStateFactory));
 
 			// ViewModel
-			services.AddSingletons<IStateViewModelFactory>(typeof(IdViewModelFactory),
+			services.AddSingletons<IStateViewModelFactory>(
+				typeof(IdViewModelFactory),
 				typeof(PrimitiveViewModelFactory),
 				typeof(EnumViewModelFactory),
 				typeof(SubtypingClassViewModelFactory),
@@ -36,7 +40,8 @@ namespace Romanesco.BuiltinPlugin
 				typeof(ListViewModelFactory));
 
 			// View
-			services.AddSingletons<IViewFactory>(typeof(IdViewFactory),
+			services.AddSingletons<IViewFactory>(
+				typeof(IdViewFactory),
 				typeof(PrimitiveViewFactory),
 				typeof(EnumViewFactory),
 				typeof(ClassViewFactory),

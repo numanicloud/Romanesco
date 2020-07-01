@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Services.History;
@@ -23,6 +24,9 @@ namespace Romanesco.Model
 			services.AddSingleton<IStateSerializer, NewtonsoftStateSerializer>();
 			services.AddSingleton<IStateDeserializer, NewtonsoftStateDeserializer>();
 			services.AddTransient<EditorContext>();
+			services.AddSingleton<ProjectSettingsEditor>();
+			services.AddSingleton<ObjectInterpreter>();
+			services.AddSingleton<IObjectInterpreter, ObjectInterpreter>();
 		}
 	}
 }

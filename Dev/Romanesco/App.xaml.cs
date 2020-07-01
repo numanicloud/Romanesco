@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Extensibility;
 using Romanesco.Model;
@@ -30,7 +31,8 @@ namespace Romanesco
 					services.AddSingleton<IHostServiceLocator>(provider => new HostServiceLocator(provider))
 						.AddSingleton<IServiceLocator>(provider => new HostServiceLocator(provider))
 						.AddTransient<PluginLoader>()
-						.AddSingleton<MainWindow>();
+						.AddSingleton<MainWindow>()
+						.AddSingleton<IDataAssemblyRepository, DataAssemblyRepository>();
 
 					new ModelServiceStartUp().ConfigureServices(services);
 					new ViewModelServiceStartUp().ConfigureServices(services);

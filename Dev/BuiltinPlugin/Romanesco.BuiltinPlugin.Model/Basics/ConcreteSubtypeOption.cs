@@ -15,15 +15,15 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 	{
 		private readonly Type derivedType;
 		private readonly ValueStorage subtypingStorage;
-		private readonly StateInterpretFunc interpreter;
+		private readonly IServiceLocator serviceLocator;
 
 		public string OptionName { get; }
 
-		public ConcreteSubtypeOption(Type derivedType, ValueStorage subtypingStorage, StateInterpretFunc interpreter)
+		public ConcreteSubtypeOption(Type derivedType, ValueStorage subtypingStorage, IServiceLocator serviceLocator)
 		{
 			this.derivedType = derivedType;
 			this.subtypingStorage = subtypingStorage;
-			this.interpreter = interpreter;
+			this.serviceLocator = serviceLocator;
 			if (derivedType.GetCustomAttribute<EditorSubtypeNameAttribute>() is { } attr)
 			{
 				OptionName = attr.OptionName;
@@ -38,7 +38,9 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 
 		public IFieldState MakeState()
 		{
-			if (Activator.CreateInstance(derivedType) is object instance)
+			var asmRepo = serviceLocator.GetService<IDataAssemblyRepository>();
+
+			if (asmRepo.CreateInstance(derivedType) is object instance)
 			{
 				var me = subtypingStorage;
 
@@ -55,7 +57,8 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 					concreteStorage.SetValue(value);
 				}
 
-				if (interpreter(concreteStorage) is ClassState state)
+				var interpreter = serviceLocator.GetService<IObjectInterpreter>();
+				if (interpreter.InterpretAsState(concreteStorage) is ClassState state)
 				{
 					me.SetValue(instance);
 					return state;
