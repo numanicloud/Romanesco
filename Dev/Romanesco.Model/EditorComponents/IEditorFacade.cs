@@ -9,8 +9,8 @@ namespace Romanesco.Model.EditorComponents
     public interface IEditorFacade
     {
         IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable { get; }
-        Task<ProjectContext> CreateAsync();
-        Task<ProjectContext> OpenAsync();
+        Task<ProjectContext?> CreateAsync();
+        Task<ProjectContext?> OpenAsync();
         Task SaveAsync();
         Task SaveAsAsync();
         Task ExportAsync();

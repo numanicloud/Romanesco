@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Romanesco.Extensibility
 {
-    class PluginExtentions
+    internal class PluginExtentions
     {
 		private readonly IPluginService[] pluginsServices;
 

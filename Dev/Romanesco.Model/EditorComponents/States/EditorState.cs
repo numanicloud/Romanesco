@@ -1,47 +1,60 @@
-﻿using Romanesco.Model.Services.History;
+﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 
 namespace Romanesco.Model.EditorComponents.States
 {
-    abstract class EditorState
-    {
-        public abstract string Title { get; }
+	abstract class EditorState
+	{
+		protected EditorStateChanger StateChanger { get; }
 
-        public abstract IProjectLoadService GetLoadService();
-        public abstract IProjectSaveService GetSaveService();
-        public abstract IProjectHistoryService GetHistoryService();
+		public abstract string Title { get; }
 
-        public virtual void OnCreate()
-        {
-        }
+		public abstract IProjectLoadService GetLoadService();
+		public abstract IProjectSaveService GetSaveService();
+		public abstract IProjectHistoryService GetHistoryService();
 
-        public virtual void OnOpen()
-        {
-        }
+		public EditorState(EditorStateChanger stateChanger)
+		{
+			this.StateChanger = stateChanger;
+		}
 
-        public virtual void OnSave()
-        {
-        }
+		public virtual void OnCreate(ProjectContext project)
+		{
+			StateChanger.ChangeToNew(project);
+		}
 
-        public virtual void OnSaveAs()
-        {
-        }
+		public virtual void OnOpen(ProjectContext project)
+		{
+			StateChanger.ChangeToClean(project);
+		}
 
-        public virtual void OnExport()
-        {
-        }
+		public virtual void OnSave()
+		{
+			StateChanger.ChangeToClean();
+		}
 
-        public virtual void OnUndo()
-        {
-        }
+		public virtual void OnSaveAs()
+		{
+			StateChanger.ChangeToClean();
+		}
 
-        public virtual void OnRedo()
-        {
-        }
+		public virtual void OnExport()
+		{
+		}
 
-        public virtual void OnEdit()
-        {
-        }
-    }
+		public virtual void OnUndo()
+		{
+		}
+
+		public virtual void OnRedo()
+		{
+		}
+
+		public virtual void OnEdit()
+		{
+			StateChanger.ChangeToDirty();
+		}
+	}
 }

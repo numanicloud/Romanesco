@@ -9,7 +9,7 @@ using Romanesco.Common.Model.Basics;
 
 namespace Romanesco.Model.Services.Save
 {
-	class WindowsSaveService : IProjectSaveService
+	internal class WindowsSaveService : IProjectSaveService
     {
         private readonly IStateSerializer saveSerializer;
 		private readonly ProjectContext context;

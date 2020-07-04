@@ -14,19 +14,22 @@ namespace Romanesco.Model
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddSingleton<IEditorFacade, Editor>();
+			services.AddSingleton<EditorStateChanger>();
 			services.AddSingleton<EmptyEditorState>();
 			services.AddSingleton<NewEditorState>();
 			services.AddSingleton<CleanEditorState>();
 			services.AddSingleton<DirtyEditorState>();
-			services.AddSingleton<IProjectLoadService, WindowsLoadService>();
-			services.AddSingleton<IProjectSaveService, WindowsSaveService>();
-			services.AddSingleton<IProjectHistoryService, SimpleHistoryService>();
 			services.AddSingleton<IStateSerializer, NewtonsoftStateSerializer>();
 			services.AddSingleton<IStateDeserializer, NewtonsoftStateDeserializer>();
-			services.AddTransient<EditorContext>();
+			services.AddSingleton<IProjectLoadService, WindowsLoadService>();
+			services.AddSingleton<IProjectHistoryService, SimpleHistoryService>();
 			services.AddSingleton<ProjectSettingsEditor>();
 			services.AddSingleton<ObjectInterpreter>();
 			services.AddSingleton<IObjectInterpreter, ObjectInterpreter>();
+
+			/*	ServiceProvider だけで依存解決できないオブジェクトのうち、
+				インターフェースとして注入したいものはファクトリを挟む		*/
+			services.AddSingleton<ProjectSaveServiceFactory>();
 		}
 	}
 }

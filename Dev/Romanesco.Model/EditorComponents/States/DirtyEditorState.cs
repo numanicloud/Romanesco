@@ -1,4 +1,5 @@
-﻿using Romanesco.Common.Model.Interfaces;
+﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
@@ -10,22 +11,21 @@ namespace Romanesco.Model.EditorComponents.States
         private readonly IProjectLoadService loadService;
         private readonly IProjectSaveService saveService;
         private readonly IProjectHistoryService historyService;
-		private readonly IServiceLocator serviceLocator;
+		private readonly ProjectContext projectContext;
 
-        public override string Title => $"Romanesco - {System.IO.Path.GetFileName(Context.CurrentProject.Project.DefaultSavePath)} (変更あり)";
-
-        public EditorContext Context { get; }
+		public override string Title => $"Romanesco - {System.IO.Path.GetFileName(projectContext.Project.DefaultSavePath)} (変更あり)";
 
         public DirtyEditorState(IProjectLoadService loadService,
             IProjectHistoryService historyService,
-            IServiceLocator serviceLocator,
-            EditorContext context)
+            IProjectSaveService saveService,
+            ProjectContext project,
+            EditorStateChanger stateChanger)
+            : base(stateChanger)
         {
-            Context = context;
+			this.projectContext = project;
+            this.saveService = saveService;
 			this.loadService = loadService;
-            this.saveService = serviceLocator.CreateInstance<IProjectSaveService>(context.CurrentProject);
             this.historyService = historyService;
-			this.serviceLocator = serviceLocator;
 		}
 
         public override IProjectHistoryService GetHistoryService() => historyService;
@@ -34,11 +34,9 @@ namespace Romanesco.Model.EditorComponents.States
 
         public override IProjectSaveService GetSaveService() => saveService;
 
-        public override void OnSave()
+		public override void OnEdit()
         {
-            Context.Editor.ChangeState(serviceLocator.CreateInstance<CleanEditorState>(Context));
+            // この状態自身へは遷移しない
         }
-
-        public override void OnSaveAs() => OnSave();
     }
 }

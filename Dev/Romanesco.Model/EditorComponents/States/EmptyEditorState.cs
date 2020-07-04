@@ -10,7 +10,9 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public override string Title => "Romanesco - プロジェクトなし";
 
-		public EmptyEditorState(IProjectLoadService loadService)
+		public EmptyEditorState(IProjectLoadService loadService,
+			EditorStateChanger stateChanger)
+			: base(stateChanger)
 		{
 			this.loadService = loadService;
 		}

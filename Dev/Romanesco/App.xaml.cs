@@ -32,14 +32,17 @@ namespace Romanesco
 						.AddSingleton<IServiceLocator>(provider => new HostServiceLocator(provider))
 						.AddTransient<PluginLoader>()
 						.AddSingleton<MainWindow>()
-						.AddSingleton<IDataAssemblyRepository, DataAssemblyRepository>();
+						.AddSingleton<IDataAssemblyRepository, DataAssemblyRepository>()
+						.AddSingleton<CommandHistory>()
+						.AddPlugin("Plugins");
 
 					new ModelServiceStartUp().ConfigureServices(services);
 					new ViewModelServiceStartUp().ConfigureServices(services);
 					new ViewServiceStartUp().ConfigureServices(services);
 
 					services.AddHostedService<StartUp>();
-				}).Build();
+				})
+				.Build();
 
 			base.OnStartup(e);
 		}
@@ -60,8 +63,10 @@ namespace Romanesco
 		{
 			if (host is IHost)
 			{
-				await host.StopAsync(TimeSpan.FromSeconds(1));
+				await host.StopAsync(TimeSpan.FromSeconds(5));
+				host.Dispose();
 			}
+			GC.Collect();
 		}
 	}
 }

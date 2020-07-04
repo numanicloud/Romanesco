@@ -23,8 +23,6 @@ namespace Romanesco.BuiltinPlugin
 			services.AddSingleton<IStateFactory>(provider => new IdStateFactory(master))
 				.AddSingleton<IStateFactory>(provider => new ListStateFactory(master, provider.GetService<CommandHistory>()))
 				.AddSingletons<IStateFactory>(
-					typeof(IdStateFactory),
-					typeof(ListStateFactory),
 					typeof(PrimitiveStateFactory),
 					typeof(EnumStateFactory),
 					typeof(SubtypingStateFactory),
