@@ -1,11 +1,9 @@
 ﻿using Reactive.Bindings;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Romanesco.Common.Model.Helpers
 {
-    public class BooleanUsingScopeSource
+	public class BooleanUsingScopeSource
     {
         public ReactiveProperty<bool> IsUsing { get; } = new ReactiveProperty<bool>();
 

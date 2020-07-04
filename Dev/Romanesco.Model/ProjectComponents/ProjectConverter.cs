@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using Newtonsoft.Json;
 using Romanesco.Annotations;
 using Romanesco.Common.Model.Basics;

@@ -4,12 +4,10 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel.States;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
 
 namespace Romanesco.BuiltinPlugin.ViewModel.States
 {

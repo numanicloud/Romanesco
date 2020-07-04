@@ -2,18 +2,15 @@
 using Reactive.Bindings;
 using Romanesco.Common.Model;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.ProjectComponents;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Romanesco.Model.EditorComponents
 {
-    public class ProjectSettingsEditor
+	public class ProjectSettingsEditor
     {
         private const string DefaultExporterName = "デフォルト エクスポートAPI";
 		private readonly IDataAssemblyRepository assemblyRepo;

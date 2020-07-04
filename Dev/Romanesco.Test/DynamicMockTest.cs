@@ -1,8 +1,5 @@
 ﻿using Microsoft.CSharp.RuntimeBinder;
 using Romanesco.Common.Model.Basics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Romanesco.Test

@@ -2,14 +2,11 @@
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace Romanesco.Sample
 {
-    class SampleProjectSettingProvider : IProjectSettingProvider
+	class SampleProjectSettingProvider : IProjectSettingProvider
     {
         public ProjectSettings? InputCreateSettings(ProjectSettingsEditor editor)
         {

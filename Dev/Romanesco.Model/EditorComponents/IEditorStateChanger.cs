@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Romanesco.Model.EditorComponents
+﻿namespace Romanesco.Model.EditorComponents
 {
 	internal interface IEditorStateChanger
 	{

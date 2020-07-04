@@ -1,12 +1,9 @@
-﻿using Romanesco.Annotations;
-using Romanesco.Common.Model.Basics;
-using System.Linq;
-using System.Reflection;
+﻿using Romanesco.Common.Model.Basics;
 using Romanesco.Model.ProjectComponents;
 
 namespace Romanesco.Common.Model.ProjectComponents
 {
-    public class ProjectDependency
+	public class ProjectDependency
     {
         public Project Project { get; }
         public string Path { get; }

@@ -1,13 +1,8 @@
 ﻿using Romanesco.Common.Model.Basics;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Loader;
-using System.Text;
 using Xunit;
 
 namespace Romanesco.Test

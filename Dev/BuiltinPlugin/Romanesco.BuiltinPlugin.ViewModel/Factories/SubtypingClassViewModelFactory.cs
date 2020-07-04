@@ -2,9 +2,6 @@
 using Romanesco.BuiltinPlugin.ViewModel.States;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Romanesco.BuiltinPlugin.ViewModel.Factories
 {

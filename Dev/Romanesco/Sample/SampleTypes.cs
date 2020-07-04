@@ -1,14 +1,12 @@
 ﻿using Romanesco.Annotations;
 using Romanesco.Common.Model.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Romanesco.Sample
 {
-    public class Fuga
+	public class Fuga
     {
         [EditorMember]
         public int Id { get; set; }

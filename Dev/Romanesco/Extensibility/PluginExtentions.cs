@@ -1,15 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Romanesco.Common.Extensibility.Interfaces;
-using Romanesco.Common.Model.Interfaces;
-using Romanesco.Common.View.Interfaces;
-using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.ProjectComponents;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Romanesco.Extensibility
 {
-    internal class PluginExtentions
+	internal class PluginExtentions
     {
 		private readonly IPluginService[] pluginsServices;
 

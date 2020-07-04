@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Romanesco.BuiltinPlugin.Model.Factories;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
-using Romanesco.Common.Extensibility.Interfaces;
+using Romanesco.BuiltinPlugin.View.Factories;
+using Romanesco.BuiltinPlugin.ViewModel.Factories;
 using Romanesco.Common.Extensibility;
+using Romanesco.Common.Extensibility.Interfaces;
+using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel.Factories;
-using Romanesco.BuiltinPlugin.ViewModel.Factories;
-using Romanesco.BuiltinPlugin.View.Factories;
-using Romanesco.Common.View.Interfaces;
-using Romanesco.Common.Model.Basics;
 
 namespace Romanesco.BuiltinPlugin
 {

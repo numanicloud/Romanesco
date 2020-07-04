@@ -7,10 +7,7 @@ using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services.Serialize;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Romanesco.Model.Services.Load

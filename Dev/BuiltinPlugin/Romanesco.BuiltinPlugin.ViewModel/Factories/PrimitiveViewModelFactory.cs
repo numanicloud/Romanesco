@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Romanesco.BuiltinPlugin.Model.States;
-using Romanesco.Common;
+﻿using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel.States;
 
 namespace Romanesco.ViewModel.Factories
 {
-    public class PrimitiveViewModelFactory : IStateViewModelFactory
+	public class PrimitiveViewModelFactory : IStateViewModelFactory
     {
         public IStateViewModel? InterpretAsViewModel(IFieldState state, ViewModelInterpretFunc interpretRecursively)
         {
