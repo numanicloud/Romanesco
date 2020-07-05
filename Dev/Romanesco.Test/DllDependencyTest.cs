@@ -21,19 +21,11 @@ namespace Romanesco.Test
 		}
 
 		[Fact]
-		public void 依存関係のあるアセンブリをロードできる2()
-		{
-			var loader = new MyAssemblyLoadContext("./Resources/Dependencies2.dll");
-			var asm = loader.MyLoad(new AssemblyName("Dependencies2"));
-			Assert.True(asm?.GetTypes().Length > 0);
-		}
-
-		[Fact]
 		public void 依存関係のあるアセンブリをロードできる()
 		{
 			var editor = new ProjectSettingsEditor(new DataAssemblyRepository());
 			editor.AssemblyPath.Value = Path.GetFullPath("./Resources/Dependencies2.dll");
-			Assert.True(editor.ProjectTypeMenu.Value.Length > 0);
+			Assert.NotNull(editor.Assembly);
 		}
 
 		[Fact]

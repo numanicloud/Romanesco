@@ -45,12 +45,22 @@ namespace Romanesco.Model.ProjectComponents
 
         public ProjectSettingsEditor(IDataAssemblyRepository assemblyRepo)
         {
-			AssemblyPath.Where(x => x != null).Subscribe(path =>
+	        bool IsEditorProjectType(Type t)
+	        {
+		        return t.GetCustomAttributesData()
+			        .Any(x =>
+			        {
+				        var attrType = typeof(Annotations.EditorProjectAttribute);
+				        return x.AttributeType == attrType;
+			        });
+	        }
+
+	        AssemblyPath.Where(x => x != null).Subscribe(path =>
             {
 				var types = assemblyRepo.LoadAssemblyFromPath(path).GetTypes();
 
 				ProjectTypeMenu.Value = types
-                    .Where(y => y.GetCustomAttribute<Annotations.EditorProjectAttribute>() != null)
+					.Where(IsEditorProjectType)
                     .Select(y => y.FullName ?? "<無効>")
                     .ToArray();
 
