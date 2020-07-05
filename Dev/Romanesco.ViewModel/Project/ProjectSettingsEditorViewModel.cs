@@ -2,7 +2,6 @@
 using Reactive.Bindings;
 using Romanesco.Common.Model;
 using Romanesco.Model.EditorComponents;
-using System;
 using System.Collections.ObjectModel;
 using Reactive.Bindings.Extensions;
 

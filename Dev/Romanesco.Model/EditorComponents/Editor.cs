@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using Reactive.Bindings.Extensions;
 
 namespace Romanesco.Model.EditorComponents

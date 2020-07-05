@@ -3,7 +3,6 @@ using Romanesco.BuiltinPlugin.ViewModel.States;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.ViewModel.States;
 using System;
-using System.Collections.Generic;
 using Reactive.Bindings.Extensions;
 
 namespace Romanesco.BuiltinPlugin.View.DataContext
