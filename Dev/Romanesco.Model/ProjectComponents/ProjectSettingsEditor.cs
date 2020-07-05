@@ -1,16 +1,16 @@
-﻿using Microsoft.Win32;
-using Reactive.Bindings;
-using Romanesco.Common.Model;
-using Romanesco.Common.Model.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using Microsoft.Win32;
+using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Romanesco.Common.Model.Helpers;
+using Romanesco.Common.Model.Interfaces;
 
-namespace Romanesco.Model.EditorComponents
+namespace Romanesco.Model.ProjectComponents
 {
 	public class ProjectSettingsEditor : IDisposable
     {

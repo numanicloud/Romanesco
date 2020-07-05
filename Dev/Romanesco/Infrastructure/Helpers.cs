@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Romanesco.Extensibility;
 
-namespace Romanesco
+namespace Romanesco.Infrastructure
 {
 	static class Helpers
 	{

@@ -1,8 +1,8 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.View.Basics;
 using Romanesco.Common.View.Interfaces;
-using Romanesco.ViewModel.States;
 using System.Windows.Controls;
+using Romanesco.BuiltinPlugin.ViewModel.States;
 
 namespace Romanesco.BuiltinPlugin.View.DataContext
 {

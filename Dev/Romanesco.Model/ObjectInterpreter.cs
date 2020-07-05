@@ -1,9 +1,9 @@
 ﻿using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.States;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.Model
 {

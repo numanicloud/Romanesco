@@ -1,9 +1,9 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.States;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.ViewModel.States
 {

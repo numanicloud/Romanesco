@@ -1,14 +1,14 @@
-﻿using Reactive.Bindings.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Reactive.Bindings.Extensions;
 using static System.Collections.Specialized.NotifyCollectionChangedAction;
 
-namespace Romanesco.Common.Model
+namespace Romanesco.Common.Model.Helpers
 {
     public static class Helper
     {

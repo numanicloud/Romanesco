@@ -2,10 +2,10 @@
 using Romanesco.Common.View.Basics;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.ViewModel.States;
 using System;
 using System.Linq;
 using Reactive.Bindings.Extensions;
+using Romanesco.BuiltinPlugin.ViewModel.States;
 
 namespace Romanesco.BuiltinPlugin.View.Factories
 {

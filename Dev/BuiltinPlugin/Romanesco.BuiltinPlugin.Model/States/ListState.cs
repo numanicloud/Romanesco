@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Romanesco.Common.Model.Helpers;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {

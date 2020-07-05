@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using Romanesco.Common.Model.Helpers;
 
 namespace Romanesco.Startup
 {
 	public class UnhandledExceptionHandler
 	{
-        private readonly MementoSola.Altseed.Debug.RootExceptionHandler logger = new MementoSola.Altseed.Debug.RootExceptionHandler();
+        private readonly RootExceptionHandler logger = new RootExceptionHandler();
 
 		public UnhandledExceptionHandler(Application app)
         {
@@ -14,7 +15,7 @@ namespace Romanesco.Startup
             app.Dispatcher.UnhandledException += Dispatcher_UnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-            Common.Model.Helper.OnUnhandledExceptionRaisedInSubscribe += Helper_OnUnhandledExceptionRaisedInSubscribe;
+            Helper.OnUnhandledExceptionRaisedInSubscribe += Helper_OnUnhandledExceptionRaisedInSubscribe;
         }
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

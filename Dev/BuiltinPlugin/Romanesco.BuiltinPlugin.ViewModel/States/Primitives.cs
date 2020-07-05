@@ -1,7 +1,7 @@
 ﻿using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.ViewModel.Implementations;
 
-namespace Romanesco.ViewModel.States
+namespace Romanesco.BuiltinPlugin.ViewModel.States
 {
     public class IntViewModel : PrimitiveTypeViewModel<int>
     {

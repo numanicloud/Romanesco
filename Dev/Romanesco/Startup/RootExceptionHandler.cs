@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MementoSola.Altseed.Debug
+namespace Romanesco.Startup
 {
 	class RootExceptionHandler
 	{

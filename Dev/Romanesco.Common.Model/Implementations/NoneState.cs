@@ -1,11 +1,11 @@
-﻿using Reactive.Bindings;
-using Romanesco.Common.Model.Basics;
-using Romanesco.Common.Model.Interfaces;
-using System;
+﻿using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using Reactive.Bindings;
+using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 
-namespace Romanesco.Model.States
+namespace Romanesco.Common.Model.Implementations
 {
     public class NoneState : IFieldState
     {

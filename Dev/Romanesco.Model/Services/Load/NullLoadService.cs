@@ -1,5 +1,6 @@
 ﻿using Romanesco.Common.Model.Basics;
 using System.Threading.Tasks;
+using Romanesco.Common.Model.ProjectComponent;
 
 namespace Romanesco.Model.Services.Load
 {

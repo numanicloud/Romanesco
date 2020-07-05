@@ -10,6 +10,7 @@ using Romanesco.View.Entry;
 using Romanesco.ViewModel;
 using System;
 using System.Windows;
+using Romanesco.Infrastructure;
 
 namespace Romanesco
 {

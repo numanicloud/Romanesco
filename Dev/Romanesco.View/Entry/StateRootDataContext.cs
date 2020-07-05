@@ -1,9 +1,9 @@
-﻿using Romanesco.Common.View.Basics;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reactive.Linq;
+using Romanesco.Common.View.Basics;
 
-namespace Romanesco.View
+namespace Romanesco.View.Entry
 {
     public class StateRootDataContext
     {

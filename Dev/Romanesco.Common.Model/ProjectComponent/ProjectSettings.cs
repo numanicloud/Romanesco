@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Romanesco.Model.ProjectComponents
+namespace Romanesco.Common.Model.ProjectComponent
 {
     public class ProjectSettings
     {

@@ -1,4 +1,4 @@
-﻿namespace Romanesco.View
+﻿namespace Romanesco.View.Entry
 {
 	public interface IEditorViewContext
 	{

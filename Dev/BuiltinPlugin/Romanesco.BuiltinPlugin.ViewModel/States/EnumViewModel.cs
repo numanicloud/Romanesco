@@ -1,11 +1,11 @@
-﻿using Reactive.Bindings;
-using Romanesco.BuiltinPlugin.Model.States;
-using Romanesco.Common.ViewModel.Interfaces;
-using System;
+﻿using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using Reactive.Bindings;
+using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.Common.ViewModel.Interfaces;
 
-namespace Romanesco.ViewModel.States
+namespace Romanesco.BuiltinPlugin.ViewModel.States
 {
     public class EnumViewModel : IStateViewModel
     {

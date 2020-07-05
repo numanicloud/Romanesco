@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Romanesco.Annotations;
 using Romanesco.Common.Model.Basics;
-using Romanesco.Common.Model.ProjectComponents;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Services.Serialize;
 
 namespace Romanesco.Model.ProjectComponents

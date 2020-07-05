@@ -1,7 +1,6 @@
 ﻿using Romanesco.Common.Model.Interfaces;
-using Romanesco.Common.Model.ProjectComponents;
 
-namespace Romanesco.Common.Model.Basics
+namespace Romanesco.Common.Model.ProjectComponent
 {
 	public class ProjectContext
 	{

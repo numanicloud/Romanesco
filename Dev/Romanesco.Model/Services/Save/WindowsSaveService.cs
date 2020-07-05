@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.ProjectComponent;
 
 namespace Romanesco.Model.Services.Save
 {

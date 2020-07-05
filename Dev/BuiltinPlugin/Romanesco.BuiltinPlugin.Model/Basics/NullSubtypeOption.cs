@@ -1,7 +1,7 @@
 ﻿using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.States;
 using System;
+using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.BuiltinPlugin.Model.Basics
 {

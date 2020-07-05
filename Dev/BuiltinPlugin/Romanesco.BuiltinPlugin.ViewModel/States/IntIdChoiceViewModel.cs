@@ -1,14 +1,14 @@
-﻿using Reactive.Bindings;
-using Romanesco.BuiltinPlugin.Model.States;
-using Romanesco.Common.Model.Interfaces;
-using Romanesco.Common.ViewModel.Interfaces;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
+using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.ViewModel.Interfaces;
 
-namespace Romanesco.ViewModel.States
+namespace Romanesco.BuiltinPlugin.ViewModel.States
 {
     public class IntIdChoiceViewModel : IStateViewModel
     {

@@ -1,12 +1,12 @@
-﻿using Reactive.Bindings;
+﻿using System;
+using System.Linq;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.View.States;
 using Romanesco.ViewModel.Editor;
-using System;
-using System.Linq;
-using Reactive.Bindings.Extensions;
 
-namespace Romanesco.View
+namespace Romanesco.View.Entry
 {
 	internal class MainDataContext : IEditorViewContext
     {

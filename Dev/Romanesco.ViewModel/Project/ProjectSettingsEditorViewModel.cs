@@ -1,11 +1,11 @@
-﻿using Livet.Messaging;
+﻿using System.Collections.ObjectModel;
+using Livet.Messaging;
 using Reactive.Bindings;
-using Romanesco.Common.Model;
-using Romanesco.Model.EditorComponents;
-using System.Collections.ObjectModel;
 using Reactive.Bindings.Extensions;
+using Romanesco.Common.Model.Helpers;
+using Romanesco.Model.ProjectComponents;
 
-namespace Romanesco.ViewModel
+namespace Romanesco.ViewModel.Project
 {
     public class ProjectSettingsEditorViewModel : Livet.ViewModel
     {

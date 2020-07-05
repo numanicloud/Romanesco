@@ -2,7 +2,7 @@
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 
-namespace Romanesco.ViewModel.Factories
+namespace Romanesco.BuiltinPlugin.ViewModel.Factories
 {
     public class IdViewModelFactory : IStateViewModelFactory
     {

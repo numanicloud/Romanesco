@@ -9,7 +9,6 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.ViewModel.Factories;
 
 namespace Romanesco.BuiltinPlugin
 {

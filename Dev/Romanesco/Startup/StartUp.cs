@@ -1,10 +1,10 @@
-﻿using Romanesco.View;
-using Microsoft.Extensions.Hosting;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Threading;
+using Microsoft.Extensions.Hosting;
 using Romanesco.Model.Services;
+using Romanesco.View.Entry;
 
-namespace Romanesco
+namespace Romanesco.Startup
 {
 	class StartUp : IHostedService
     {

@@ -1,4 +1,5 @@
-﻿using Romanesco.Model.EditorComponents;
+﻿using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 
 namespace Romanesco.Model.Services

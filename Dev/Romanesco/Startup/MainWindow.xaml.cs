@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Romanesco
+namespace Romanesco.Startup
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml

@@ -1,10 +1,10 @@
-﻿using Romanesco.BuiltinPlugin.Model.States;
+﻿using System.Linq;
+using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.BuiltinPlugin.ViewModel.States;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.ViewModel.States;
-using System.Linq;
 
-namespace Romanesco.ViewModel.Factories
+namespace Romanesco.BuiltinPlugin.ViewModel.Factories
 {
     public class ClassViewModelFactory : IStateViewModelFactory
     {

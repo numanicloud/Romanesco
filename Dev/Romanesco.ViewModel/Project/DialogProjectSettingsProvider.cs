@@ -1,12 +1,12 @@
-﻿using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.EditorComponents;
+﻿using System;
+using System.Linq;
+using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
 using Romanesco.ViewModel.Editor;
-using System;
-using System.Linq;
 
-namespace Romanesco.ViewModel
+namespace Romanesco.ViewModel.Project
 {
 	internal class VmProjectSettingsProvider : IProjectSettingProvider
     {

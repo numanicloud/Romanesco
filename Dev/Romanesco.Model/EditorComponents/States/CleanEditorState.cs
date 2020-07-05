@@ -1,4 +1,5 @@
 ﻿using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;

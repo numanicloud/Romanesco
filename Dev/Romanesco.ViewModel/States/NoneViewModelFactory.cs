@@ -1,6 +1,6 @@
-﻿using Romanesco.Common.Model.Interfaces;
+﻿using Romanesco.Common.Model.Implementations;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.States;
 
 namespace Romanesco.ViewModel.States
 {

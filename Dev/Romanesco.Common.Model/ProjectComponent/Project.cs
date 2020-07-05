@@ -1,7 +1,6 @@
 ﻿using Romanesco.Common.Model.Basics;
-using Romanesco.Model.ProjectComponents;
 
-namespace Romanesco.Common.Model.ProjectComponents
+namespace Romanesco.Common.Model.ProjectComponent
 {
 	public class ProjectDependency
     {

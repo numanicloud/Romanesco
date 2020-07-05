@@ -4,6 +4,7 @@ using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel.States;
 using System.Collections.Generic;
 using System.Linq;
+using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.View.States
 {
@@ -26,7 +27,7 @@ namespace Romanesco.View.States
                     return result;
                 }
             }
-            return new StateViewContext(new NoneView(), new NoneView(), new NoneViewModel(new Model.States.NoneState()));
+            return new StateViewContext(new NoneView(), new NoneView(), new NoneViewModel(new NoneState()));
         }
     }
 }

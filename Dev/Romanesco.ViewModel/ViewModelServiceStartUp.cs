@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Romanesco.Model.Services;
 using Romanesco.ViewModel.Editor;
+using Romanesco.ViewModel.Project;
 using Romanesco.ViewModel.States;
 
 namespace Romanesco.ViewModel

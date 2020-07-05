@@ -5,6 +5,7 @@ using Romanesco.Model.Services.Save;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Subjects;
+using Romanesco.Common.Model.ProjectComponent;
 
 namespace Romanesco.Model.EditorComponents
 {

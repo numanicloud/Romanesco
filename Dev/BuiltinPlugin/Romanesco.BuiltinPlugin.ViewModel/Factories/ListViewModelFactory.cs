@@ -1,9 +1,9 @@
 ﻿using Romanesco.BuiltinPlugin.Model.States;
+using Romanesco.BuiltinPlugin.ViewModel.States;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.ViewModel.States;
 
-namespace Romanesco.ViewModel.Factories
+namespace Romanesco.BuiltinPlugin.ViewModel.Factories
 {
     public class ListViewModelFactory : IStateViewModelFactory
     {

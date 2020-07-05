@@ -1,7 +1,6 @@
 ﻿using Reactive.Bindings;
 using Romanesco.BuiltinPlugin.ViewModel.States;
 using Romanesco.Common.View.Interfaces;
-using Romanesco.ViewModel.States;
 using System;
 using Reactive.Bindings.Extensions;
 
