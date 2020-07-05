@@ -1,6 +1,7 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.ViewModel.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Romanesco.Common.Model;
 using Romanesco.Model.EditorComponents;
 using Romanesco.ViewModel.States;
 using Livet.Messaging;
+using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.Helpers;
 using Romanesco.ViewModel.Editor;
 
@@ -30,6 +32,7 @@ namespace Romanesco.ViewModel
         public ReactiveCommand Undo { get; }
         public ReactiveCommand Redo { get; }
         public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
+        public List<IDisposable> Disposables => Editor.Disposables;
 
         public EditorViewModel(IEditorFacade editor, ViewModelInterpreter interpreter)
         {
@@ -54,15 +57,15 @@ namespace Romanesco.ViewModel
             Undo = ToEditorCommand(EditorCommandType.Undo);
             Redo = ToEditorCommand(EditorCommandType.Redo);
 
-            CreateCommand.SubscribeSafe(x => CreateAsync().Forget());
-            OpenCommand.SubscribeSafe(x => OpenAsync().Forget());
-            ExportCommand.SubscribeSafe(x => ExportAsync().Forget());
-            SaveCommand.SubscribeSafe(x => SaveAsync().Forget());
-            SaveAsCommand.SubscribeSafe(x => SaveAsAsync().Wait());
-            Undo.SubscribeSafe(x => Editor.Undo());
-            Redo.SubscribeSafe(x => Editor.Redo());
+            CreateCommand.SubscribeSafe(x => CreateAsync().Forget()).AddTo(editor.Disposables);
+            OpenCommand.SubscribeSafe(x => OpenAsync().Forget()).AddTo(editor.Disposables);
+            ExportCommand.SubscribeSafe(x => ExportAsync().Forget()).AddTo(editor.Disposables);
+            SaveCommand.SubscribeSafe(x => SaveAsync().Forget()).AddTo(editor.Disposables);
+            SaveAsCommand.SubscribeSafe(x => SaveAsAsync().Wait()).AddTo(editor.Disposables);
+            Undo.SubscribeSafe(x => Editor.Undo()).AddTo(editor.Disposables);
+            Redo.SubscribeSafe(x => Editor.Redo()).AddTo(editor.Disposables);
 
-            GcDebugCommand.SubscribeSafe(x => GC.Collect());
+            GcDebugCommand.SubscribeSafe(x => GC.Collect()).AddTo(editor.Disposables);
 
             //Messenger.Raise(new TransitionMessage())
         }

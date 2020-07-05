@@ -69,7 +69,7 @@ namespace Romanesco.Model.Services.Load
 
 		private async Task<Project?> CreateInternalAsync()
 		{
-			var editor = serviceLocator.GetService<ProjectSettingsEditor>();
+			using var editor = serviceLocator.GetService<ProjectSettingsEditor>();
 			var settings = projectSettingProvider.InputCreateSettings(editor);
 
 			if (settings != null)

@@ -34,6 +34,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public void ChangeToNew(ProjectContext context)
 		{
+			currentProjectContext?.Project.Root.Dispose();
 			currentProjectContext = context;
 
 			var save = saveServiceFactory.Create(currentProjectContext);
@@ -43,6 +44,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public void ChangeToClean(ProjectContext? context = null)
 		{
+			currentProjectContext?.Project.Root.Dispose();
 			if (context is { })
 			{
 				currentProjectContext = context;

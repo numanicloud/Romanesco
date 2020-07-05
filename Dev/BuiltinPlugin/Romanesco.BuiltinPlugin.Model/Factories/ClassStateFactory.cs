@@ -49,10 +49,10 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 							 let attr = GetMemberAttributeOrDefault(f)
 							 where attr != null
 							 select (state: interpret(new ValueStorage(subject, f)), attr);
-				var members = properties.Concat(fields).OrderBy(x => x.attr.Order).ToArray();
+				var members = properties.Concat(fields).OrderBy(x => x.attr!.Order).ToArray();
 
 				var memberStates = members.Select(x => x.state).ToArray();
-				return memberStates;
+				return memberStates!;
 			}
 
 			IFieldState[] MakeDynamicMockMembers(Type type, DynamicMock subject)

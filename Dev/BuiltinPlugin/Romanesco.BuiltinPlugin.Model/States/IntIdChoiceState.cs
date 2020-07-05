@@ -4,15 +4,18 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Exceptions;
 using Romanesco.Common.Model.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
     public class IntIdChoiceState : IFieldState
     {
         private readonly Subject<Exception> onErrorSubject = new Subject<Exception>();
+        public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
         public ReactiveProperty<string> Title { get; }
         public IReadOnlyReactiveProperty<string> FormattedString { get; }
@@ -30,7 +33,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
             // IDisposableをハンドリングするべき。リスト内にこれがある場合、要素削除のときにリークするおそれがある
             context.OnKeyAdded.Where(key => masterName == key)
-                .Subscribe(key => UpdateChoices(key, context));
+                .Subscribe(key => UpdateChoices(key, context))
+                .AddTo(Disposables);
 
             UpdateChoices(masterName, context);
 
@@ -54,7 +58,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
                     : x?.Storage.GetValue() is { } value ? Master.Value.GetId(value)
                     : -1;
                 Storage.SetValue(id);
-            });
+            }).AddTo(Disposables);
         }
 
         // 編集中は呼ばれないが、ロード中はこのStateより後にマスターが読み込まれる場合があるので遅延できるように
@@ -69,6 +73,18 @@ namespace Romanesco.BuiltinPlugin.Model.States
             else
             {
                 Master.Value = null;
+            }
+        }
+
+        public void Dispose()
+        {
+	        Title.Dispose();
+            FormattedString.Dispose();
+            Master.Dispose();
+            SelectedItem.Dispose();
+            foreach (var disposable in Disposables)
+            {
+	            disposable.Dispose();
             }
         }
     }

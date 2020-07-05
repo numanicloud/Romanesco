@@ -4,7 +4,7 @@ using System;
 
 namespace Romanesco.Model.Services
 {
-	public class HostServiceLocator : IServiceLocator, IHostServiceLocator
+	public class HostServiceLocator : IHostServiceLocator
 	{
 		private readonly IServiceProvider serviceProvider;
 
@@ -17,14 +17,14 @@ namespace Romanesco.Model.Services
 
 		public T GetService<T>() where T : class
 		{
-			return serviceProvider.GetService<T>() is T service ? service
-				: PluginServiceLocator?.GetService<T>() is T service2 ? service2
+			return serviceProvider.GetService<T>() is { } service ? service
+				: PluginServiceLocator?.GetService<T>() is { } service2 ? service2
 				: throw new InvalidOperationException();
 		}
 
 		public T? GetServiceOptional<T>() where T : class
 		{
-			return serviceProvider.GetService<T>() is T service ? service
+			return serviceProvider.GetService<T>() is { } service ? service
 				: PluginServiceLocator?.GetServiceOptional<T>();
 		}
 

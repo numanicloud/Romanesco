@@ -3,19 +3,22 @@ using Reactive.Bindings;
 using Romanesco.Common.Model;
 using Romanesco.Common.Model.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.Model.EditorComponents
 {
-	public class ProjectSettingsEditor
+	public class ProjectSettingsEditor : IDisposable
     {
         private const string DefaultExporterName = "デフォルト エクスポートAPI";
 		private readonly IDataAssemblyRepository assemblyRepo;
+		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
-		public bool Succeeded { get; set; }
+        public bool Succeeded { get; set; }
         public ReactiveProperty<string> AssemblyPath { get; } = new ReactiveProperty<string>();
         public ReactiveProperty<string> ProjectTypeFullName { get; } = new ReactiveProperty<string>();
         public ReactiveProperty<string[]> ProjectTypeMenu { get; } = new ReactiveProperty<string[]>();
@@ -58,7 +61,7 @@ namespace Romanesco.Model.EditorComponents
                     .ToArray();
 
 				ProjectTypeExporterFullName.Value = DefaultExporterName;
-            });
+            }).AddTo(Disposables);
 			this.assemblyRepo = assemblyRepo;
 		}
 
@@ -124,6 +127,19 @@ namespace Romanesco.Model.EditorComponents
                 return dialog.FileName;
             }
             return null;
+        }
+
+        public void Dispose()
+        {
+	        AssemblyPath.Dispose();
+	        ProjectTypeFullName.Dispose();
+	        ProjectTypeMenu.Dispose();
+	        ProjectTypeExporterFullName.Dispose();
+	        ProjectTypeExporterMenu.Dispose();
+	        foreach (var disposable in Disposables)
+	        {
+		        disposable.Dispose();
+	        }
         }
     }
 }

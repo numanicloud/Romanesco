@@ -4,6 +4,7 @@ using Romanesco.View.States;
 using Romanesco.ViewModel.Editor;
 using System;
 using System.Linq;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.View
 {
@@ -19,8 +20,11 @@ namespace Romanesco.View
         public MainDataContext(IEditorViewModel editor, ViewInterpreter interpreter)
         {
             Editor = editor;
-            editor.Roots.Subscribe(roots => LoadRoot(roots));
+            editor.Roots.Subscribe(roots => LoadRoot(roots))
+	            .AddTo(editor.Disposables);
 			this.interpreter = interpreter;
+
+            editor.Disposables.Add(rootProperty);
 		}
 
         private void LoadRoot(IStateViewModel[] vmRoots)
@@ -38,7 +42,7 @@ namespace Romanesco.View
             errorSubscription = rootProperty.Value.OnError.Subscribe(x =>
             {
                 throw x;
-            });
+            }).AddTo(Editor.Disposables);
         }
     }
 }

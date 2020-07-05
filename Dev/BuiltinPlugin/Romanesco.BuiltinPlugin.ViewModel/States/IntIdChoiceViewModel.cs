@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.ViewModel.States
 {
@@ -34,7 +35,7 @@ namespace Romanesco.ViewModel.States
                 {
                     Choices = list.State.Elements;
                 }
-            });
+            }).AddTo(state.Disposables);
         }
     }
 }

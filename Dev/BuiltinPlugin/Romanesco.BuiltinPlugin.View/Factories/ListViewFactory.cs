@@ -9,6 +9,7 @@ using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows.Controls;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.BuiltinPlugin.View.Factories
 {
@@ -31,7 +32,7 @@ namespace Romanesco.BuiltinPlugin.View.Factories
                     {
                         onError.OnNext(ContentAccessException.GetListError(ex));
                     }
-                });
+                }).AddTo(array.Disposables);
 
                 array.RemoveCommand.Where(i => i < array.Elements.Count)
                     .Subscribe(index =>
@@ -44,7 +45,7 @@ namespace Romanesco.BuiltinPlugin.View.Factories
                     {
                         onError.OnNext(ContentAccessException.GetListError(ex));
                     }
-                });
+                }).AddTo(array.Disposables);
 
                 context.SelectedIndex.Where(i => i < context.Elements.Count)
                     .Subscribe(index =>
@@ -64,7 +65,7 @@ namespace Romanesco.BuiltinPlugin.View.Factories
                     {
                         onError.OnNext(ContentAccessException.GetListError(ex));
                     }
-                });
+                }).AddTo(array.Disposables);
 
                 var blockControl = GetBlockControl(array.ElementType, context);
                 var inlineControl = new ListInlineView()

@@ -7,14 +7,16 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
     public class EnumState : IFieldState
     {
         private readonly Subject<Exception> onError_ = new Subject<Exception>();
+        private readonly List<IDisposable> disposables = new List<IDisposable>();
 
-        public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
+        public ReactiveProperty<string> Title { get; }
 
         public IReadOnlyReactiveProperty<string> FormattedString { get; }
 
@@ -38,7 +40,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
             // Enum変数は初期値がnullでないので !演算子で済ませる
             Content = new ReactiveProperty<object>(storage.GetValue()!);
-            Content.Subscribe(x => Storage.SetValue(x));
+            Content.Subscribe(x => Storage.SetValue(x))
+	            .AddTo(disposables);
 
             FormattedString = storage.OnValueChanged
                 .Select(x => x?.ToString() ?? "")
@@ -47,7 +50,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
             var values = new List<object>();
             foreach (var value in Enum.GetValues(Type))
             {
-                if (value is object)
+                if (value != null)
                 {
                     values.Add(value);
                 }
@@ -64,7 +67,19 @@ namespace Romanesco.BuiltinPlugin.Model.States
             storage.OnValueChangedWithOldValue
                 .Where(_ => !history.IsOperating)
                 .Select(t => new ContentEditCommandMemento(x => Storage.SetValue(x), t.old, t.value))
-                .Subscribe(history.PushMemento);
+                .Subscribe(history.PushMemento)
+                .AddTo(disposables);
+        }
+
+        public void Dispose()
+        {
+            Title.Dispose();
+            FormattedString.Dispose();
+            Content.Dispose();
+            foreach (var disposable in disposables)
+            {
+	            disposable.Dispose();
+            }
         }
     }
 }

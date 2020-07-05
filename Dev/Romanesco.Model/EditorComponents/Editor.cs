@@ -3,16 +3,21 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Services.Load;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.Model.EditorComponents
 {
-	internal class Editor : IEditorFacade
+	internal sealed class Editor : IEditorFacade, IDisposable
     {
         private EditorState editorState;
+        public List<IDisposable> Disposables { get; } = new List<IDisposable>();
+
         private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
             = new ReplaySubject<(EditorCommandType command, bool canExecute)>();
 
@@ -22,7 +27,8 @@ namespace Romanesco.Model.EditorComponents
 
 		public Editor(EditorStateChanger stateChanger)
 		{
-            stateChanger.OnChange.Subscribe(x => ChangeState(x));
+            stateChanger.OnChange.Subscribe(x => ChangeState(x))
+	            .AddTo(Disposables);
             stateChanger.InitializeState(ref editorState);
         }
 
@@ -57,7 +63,8 @@ namespace Romanesco.Model.EditorComponents
             UpdateTitle();
 
             Observable.Merge(projectContext.Project.Root.States.Select(x => x.OnEdited))
-                .Subscribe(x => OnEdit());
+                .Subscribe(x => OnEdit())
+                .AddTo(Disposables);
 
             return projectContext;
         }
@@ -127,6 +134,16 @@ namespace Romanesco.Model.EditorComponents
             observer.OnNext((EditorCommandType.Export, save.CanExport));
             observer.OnNext((EditorCommandType.Undo, history.CanUndo));
             observer.OnNext((EditorCommandType.Redo, history.CanRedo));
+        }
+
+        public void Dispose()
+        {
+	        canExecuteSubject.Dispose();
+	        ApplicationTitle.Dispose();
+	        foreach (var disposable in Disposables)
+	        {
+		        disposable.Dispose();
+	        }
         }
     }
 }

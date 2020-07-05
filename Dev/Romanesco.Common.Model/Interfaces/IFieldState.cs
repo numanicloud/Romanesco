@@ -8,7 +8,7 @@ namespace Romanesco.Common.Model.Interfaces
     /// <summary>
     /// 編集対象となるメンバーのドメイン モデル。
     /// </summary>
-    public interface IFieldState
+    public interface IFieldState : IDisposable
     {
         /// <summary>
         /// 編集用のUIを説明するラベルのためのテキスト。

@@ -4,15 +4,19 @@ using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
 	public class SubtypingClassState : IFieldState
 	{
+		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
+
 		private ReactiveProperty<IFieldState> CurrentState { get; set; } = new ReactiveProperty<IFieldState>();
 
 		public ObservableCollection<ISubtypeOption> Choices { get; } = new ObservableCollection<ISubtypeOption>();
@@ -42,7 +46,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			{
 				Choices.Add(new ConcreteSubtypeOption(item, storage, serviceLocator));
 			}
-			subtypingList.OnNewEntry.Subscribe(x => Choices.Add(new ConcreteSubtypeOption(x, storage, serviceLocator)));
+			subtypingList.OnNewEntry.Subscribe(x => Choices.Add(new ConcreteSubtypeOption(x, storage, serviceLocator)))
+				.AddTo(Disposables);
 
 			// 型の初期値をセット
 			var initialType = storage.GetValue()?.GetType();
@@ -68,7 +73,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 					SelectedType.Value = Choices[0];
 					Choices.Remove(x);
 				}
-			});
+			}).AddTo(Disposables);
 
 			Title.Value = storage.MemberName;
 
@@ -80,6 +85,18 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			var typeEdited = SelectedType.Select(x => Unit.Default);
 			var concreteEdited = CurrentState.SelectMany(x => x.OnEdited);
 			OnEdited = typeEdited.Merge(concreteEdited);
+		}
+
+		public void Dispose()
+		{
+			CurrentState.Dispose();
+			SelectedType.Dispose();
+			Title.Dispose();
+			FormattedString.Dispose();
+			foreach (var disposable in Disposables)
+			{
+				disposable.Dispose();
+			}
 		}
 	}
 }

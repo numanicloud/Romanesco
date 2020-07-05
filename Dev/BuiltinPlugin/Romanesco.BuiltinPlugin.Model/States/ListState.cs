@@ -14,7 +14,7 @@ using System.Reactive.Subjects;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
-	public class ListState : IFieldState
+	public sealed class ListState : IFieldState
 	{
 		private readonly Subject<Unit> onContentsChanged = new Subject<Unit>();
 		private readonly ObservableCollection<(IFieldState state, IDisposable disposable)> elementsMutable;
@@ -23,13 +23,14 @@ namespace Romanesco.BuiltinPlugin.Model.States
 		private readonly IList listInstance;
 
 		public ReactiveProperty<string> Title { get; }
-		public IReadOnlyReactiveProperty<string> FormattedString { get; } = new ReactiveProperty<string>();
+		public IReadOnlyReactiveProperty<string> FormattedString { get; }
 		public Type Type => Storage.Type;
 		public Type ElementType { get; }
 		public ValueStorage Storage { get; }
 		public ObservableCollection<IFieldState> Elements { get; }
 		public IObservable<Exception> OnError => Observable.Never<Exception>();
 		public IObservable<Unit> OnEdited => onContentsChanged;
+		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
 		public ListState(ValueStorage storage, StateInterpretFunc interpret, CommandHistory history)
 		{
@@ -165,6 +166,22 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			{
 				var memento = new RemoveElementToListCommandMemento(this, state, index);
 				history.PushMemento(memento);
+			}
+		}
+
+		public void Dispose()
+		{
+			onContentsChanged.Dispose();
+			Title.Dispose();
+			FormattedString.Dispose();
+			foreach (var tuple in elementsMutable)
+			{
+				tuple.state.Dispose();
+				tuple.disposable.Dispose();
+			}
+			foreach (var disposable in Disposables)
+			{
+				disposable.Dispose();
 			}
 		}
 	}

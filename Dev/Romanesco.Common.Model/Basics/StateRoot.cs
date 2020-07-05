@@ -1,8 +1,9 @@
-﻿using Romanesco.Common.Model.Interfaces;
+﻿using System;
+using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.Common.Model.Basics
 {
-    public class StateRoot
+    public sealed class StateRoot : IDisposable
     {
         public object RootInstance { get; }
         public IFieldState[] States { get; }
@@ -11,6 +12,14 @@ namespace Romanesco.Common.Model.Basics
         {
             RootInstance = rootInstance;
             States = states;
+        }
+
+        public void Dispose()
+        {
+	        foreach (var fieldState in States)
+	        {
+		        fieldState.Dispose();
+	        }
         }
     }
 }

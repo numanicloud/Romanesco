@@ -16,5 +16,12 @@ namespace Romanesco.Model.States
         public ValueStorage Storage { get; } = new ValueStorage(typeof(int), "None", (value, args) => { }, 0);
         public IObservable<Exception> OnError => Observable.Never<Exception>();
         public IObservable<Unit> OnEdited => Observable.Never<Unit>();
+
+        public void Dispose()
+        {
+	        Title.Dispose();
+	        Content.Dispose();
+	        FormattedString.Dispose();
+        }
     }
 }

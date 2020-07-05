@@ -4,6 +4,7 @@ using Romanesco.Common.Model;
 using Romanesco.Model.EditorComponents;
 using System;
 using System.Collections.ObjectModel;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.ViewModel
 {
@@ -26,8 +27,10 @@ namespace Romanesco.ViewModel
             AddCommand = new ReactiveCommand<object>();
             RemoveCommand = new ReactiveCommand<object>();
 
-            AddCommand.SubscribeSafe(x => AddDependencyProject());
-            RemoveCommand.SubscribeSafe(x => RemoveDependencyProject((string)x));
+            AddCommand.SubscribeSafe(x => AddDependencyProject())
+	            .AddTo(editor.Disposables);
+            RemoveCommand.SubscribeSafe(x => RemoveDependencyProject((string)x))
+	            .AddTo(editor.Disposables);
         }
 
         public void OpenAssembly() => editor.OpenAssembly();

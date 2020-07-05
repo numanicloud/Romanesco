@@ -23,7 +23,7 @@ namespace Romanesco.Model
 			services.AddSingleton<IStateDeserializer, NewtonsoftStateDeserializer>();
 			services.AddSingleton<IProjectLoadService, WindowsLoadService>();
 			services.AddSingleton<IProjectHistoryService, SimpleHistoryService>();
-			services.AddSingleton<ProjectSettingsEditor>();
+			services.AddTransient<ProjectSettingsEditor>();
 			services.AddSingleton<ObjectInterpreter>();
 			services.AddSingleton<IObjectInterpreter, ObjectInterpreter>();
 

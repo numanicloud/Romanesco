@@ -3,6 +3,8 @@ using Romanesco.BuiltinPlugin.ViewModel.States;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.ViewModel.States;
 using System;
+using System.Collections.Generic;
+using Reactive.Bindings.Extensions;
 
 namespace Romanesco.BuiltinPlugin.View.DataContext
 {
@@ -17,22 +19,24 @@ namespace Romanesco.BuiltinPlugin.View.DataContext
 			ViewModel = vm;
 
 			SetCurrentContext(vm.CurrentViewModel.Value, interpreter);
-			vm.CurrentViewModel.Subscribe(x => SetCurrentContext(x, interpreter));
+			vm.CurrentViewModel.Subscribe(x => SetCurrentContext(x, interpreter))
+				.AddTo(vm.Disposables);
+
+			vm.Disposables.Add(CurrentContext);
 		}
 
 		private void SetCurrentContext(ClassViewModel? vm, ViewInterpretFunc interpreter)
 		{
-			if (vm is ClassViewModel classVM)
+			if (vm is null) return;
+
+			var stateContext = interpreter(vm);
+			if (stateContext.BlockControl.DataContext is ClassContext context)
 			{
-				var stateContext = interpreter(classVM);
-				if (stateContext.BlockControl.DataContext is ClassContext context)
-				{
-					CurrentContext.Value = context;
-				}
-				else
-				{
-					throw new Exception("予期せぬエラーが発生しました。 ClassViewModel から ClassContext が生成されませんでした。");
-				}
+				CurrentContext.Value = context;
+			}
+			else
+			{
+				throw new Exception("予期せぬエラーが発生しました。 ClassViewModel から ClassContext が生成されませんでした。");
 			}
 		}
 	}
