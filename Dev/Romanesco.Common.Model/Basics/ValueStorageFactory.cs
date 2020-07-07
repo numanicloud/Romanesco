@@ -16,16 +16,19 @@ namespace Romanesco.Common.Model.Basics
 			return new ValueStorage(subject, property);
 		}
 
-		public ValueStorage FromListElement(Type elementType, IList list, int index, object? initialValue)
+		public ValueStorage FromListElement(Type elementType, IList list, string title, object? initialValue)
 		{
 			return new ValueStorage(
 				elementType,
-				$"{index}",
+				title,
 				(value, oldValue) =>
 				{
-					var index = list.IndexOf(oldValue);
-					list[index] = value;
-				}, list[index] ?? throw new IndexOutOfRangeException());
+					var i = list.IndexOf(oldValue);
+					if (i != -1)
+					{
+						list[i] = value;
+					}
+				}, initialValue);
 		}
 
 		public ValueStorage FromDynamicMocksMember(dynamic subject, string key)

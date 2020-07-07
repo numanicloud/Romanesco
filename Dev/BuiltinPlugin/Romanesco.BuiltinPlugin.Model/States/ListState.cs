@@ -1,144 +1,119 @@
 ﻿using Reactive.Bindings;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
-using Romanesco.Common.Model;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Romanesco.Common.Model.Helpers;
+using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
-	public sealed class ListState : IFieldState
+	public sealed class ListState : SimpleStateBase
 	{
+		private class Element : IDisposable
+		{
+			private Element(IFieldState state, IDisposable subscription)
+			{
+				State = state;
+				Subscription = subscription;
+			}
+
+			public IFieldState State { get; }
+			public IDisposable Subscription { get; }
+
+			public void Dispose()
+			{
+				State.Dispose();
+				Subscription.Dispose();
+			}
+
+			public static Element Create(IFieldState state, IObserver<Unit> onContentsChanged)
+			{
+				var disposable = state.OnEdited
+					.Where(value => value != null)
+					.Subscribe(value => onContentsChanged.OnNext(Unit.Default));
+				return new Element(state, disposable);
+			}
+		}
+
 		private readonly Subject<Unit> onContentsChanged = new Subject<Unit>();
-		private readonly ObservableCollection<(IFieldState state, IDisposable disposable)> elementsMutable;
+		private readonly ObservableCollection<Element> elementsMutable;
 		private readonly StateInterpretFunc interpret;
 		private readonly CommandHistory history;
 		private readonly IList listInstance;
+		private readonly ValueStorageFactory valueStorageFactory = new ValueStorageFactory();
 
-		public ReactiveProperty<string> Title { get; }
-		public IReadOnlyReactiveProperty<string> FormattedString { get; }
-		public Type Type => Storage.Type;
-		public Type ElementType { get; }
-		public ValueStorage Storage { get; }
+		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
+		public Type ElementType { get; set; }
 		public ObservableCollection<IFieldState> Elements { get; }
-		public IObservable<Exception> OnError => Observable.Never<Exception>();
-		public IObservable<Unit> OnEdited => onContentsChanged;
-		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
-		public ListState(ValueStorage storage, StateInterpretFunc interpret, CommandHistory history)
+		public ListState(ValueStorage storage, IList listInstance, StateInterpretFunc interpret, CommandHistory history) : base(storage)
 		{
-			Title = new ReactiveProperty<string>(storage.MemberName);
-			elementsMutable = new ObservableCollection<(IFieldState state, IDisposable disposable)>();
-			Elements = elementsMutable.ToObservableCollection(t => t.state).result;
-
-			Storage = storage;
+			this.listInstance = listInstance;
 			this.interpret = interpret;
 			this.history = history;
-
+			elementsMutable = new ObservableCollection<Element>();
+			Elements = elementsMutable.ToObservableCollection(t => t.State).result;
 			ElementType = Storage.Type.GetGenericArguments()[0];
 
 			FormattedString = onContentsChanged.Select(_ => $"Count = {elementsMutable.Count}")
 				.ToReadOnlyReactiveProperty("Count = 0");
 
-			// 初期値を読み込み。初期値が無かったら生成
-			if (Storage.GetValue() is IList li)
-			{
-				listInstance = li;
-				LoadInitialValue(listInstance, interpret);
-			}
-			else if (Activator.CreateInstance(typeof(List<>).MakeGenericType(ElementType)) is IList newList)
-			{
-				listInstance = newList;
-				Storage.SetValue(listInstance);
-			}
-			else
-			{
-				throw new InvalidOperationException($"{storage.Type.FullName}のインスタンスを生成できませんでした。");
-			}
+			LoadInitialValue(listInstance);
 		}
 
-		private void LoadInitialValue(IList loadedListInstance, StateInterpretFunc interpret)
+		private void LoadInitialValue(IList loadedListInstance)
 		{
 			for (int i = 0; i < loadedListInstance.Count; i++)
 			{
-				MakeState(loadedListInstance, interpret, i);
+				var state = MakeState(i.ToString(), loadedListInstance[i]);
+				if (state is null)
+				{
+					continue;
+				}
+				elementsMutable.Add(Element.Create(state, onContentsChanged));
 			}
 			onContentsChanged.OnNext(Unit.Default);
 		}
 
-		public IFieldState AddNewElement()
+		public IFieldState? AddNewElement()
 		{
+			object? defaultValue = ElementType.IsValueType ? Activator.CreateInstance(ElementType) : null;
 			var i = elementsMutable.Count;
-			listInstance.Add(GetDefaultValue());
+			var state = MakeState(i.ToString(), defaultValue);
 
-			var state = MakeState(listInstance, interpret, i);
-
-			onContentsChanged.OnNext(Unit.Default);
-
-			if (!history.IsOperating)
+			if (state is null)
 			{
-				var memento = new AddElementToListCommandMemento(this, state, i);
-				history.PushMemento(memento);
+				return null;
 			}
 
+			Insert(state, i);
 			return state;
 		}
 
-		private IFieldState MakeState(IList listInstance, StateInterpretFunc interpret, int stateIndex)
+		private IFieldState? MakeState(string title, object? initialValue)
 		{
-			var storage = new ValueStorage(
-				ElementType,
-				$"{stateIndex}",
-				(value, oldValue) =>
-				{
-					var index = listInstance.IndexOf(oldValue);
-					listInstance[index] = value;
-				},
-				listInstance[stateIndex] ?? throw new IndexOutOfRangeException());
-
+			var storage = valueStorageFactory.FromListElement(ElementType, listInstance, title, initialValue);
 			var state = interpret(storage);
 			if (state == null)
 			{
-				throw new InvalidOperationException($"{ElementType}型のデータモデルを生成できませんでした。");
+				OnErrorSubject.OnNext(new InvalidOperationException($"{ElementType}型のデータモデルを生成できませんでした。"));
+				return null;
 			}
-
-			var disposable = SubscribeElementState(state);
-			elementsMutable.Add((state, disposable));
 
 			return state;
-		}
-
-		private object? GetDefaultValue()
-		{
-			if (ElementType.IsValueType)
-			{
-				return Activator.CreateInstance(ElementType);
-			}
-
-			return null;
-		}
-
-		private IDisposable SubscribeElementState(IFieldState state)
-		{
-			return state.OnEdited
-				.Where(value => value != null)
-				.Subscribe(value => onContentsChanged.OnNext(Unit.Default));
 		}
 
 		public void Insert(IFieldState state, int index)
 		{
+			elementsMutable.Insert(index, Element.Create(state, onContentsChanged));
 			listInstance.Insert(index, state.Storage.GetValue());
-
-			var disposable = SubscribeElementState(state);
-			elementsMutable.Insert(index, (state, disposable));
-
 			onContentsChanged.OnNext(Unit.Default);
 
 			if (!history.IsOperating)
@@ -150,16 +125,17 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 		public void RemoveAt(int index)
 		{
-			var state = elementsMutable[index].state;
+			var state = elementsMutable[index].State;
 
-			elementsMutable[index].disposable.Dispose();
+			elementsMutable[index].Subscription.Dispose();	// StateはUndo時に使うかもしれない
+
 			elementsMutable.RemoveAt(index);
 			listInstance.RemoveAt(index);
 			onContentsChanged.OnNext(Unit.Default);
 
 			for (int i = index; i < elementsMutable.Count; i++)
 			{
-				elementsMutable[i].state.Title.Value = i.ToString();
+				elementsMutable[i].State.Title.Value = i.ToString();
 			}
 
 			if (!history.IsOperating)
@@ -169,20 +145,12 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			}
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			onContentsChanged.Dispose();
-			Title.Dispose();
-			FormattedString.Dispose();
-			foreach (var tuple in elementsMutable)
-			{
-				tuple.state.Dispose();
-				tuple.disposable.Dispose();
-			}
-			foreach (var disposable in Disposables)
-			{
-				disposable.Dispose();
-			}
+			elementsMutable.ForEach(x => x.Dispose());
+			base.Dispose();
 		}
 	}
+
 }

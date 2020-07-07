@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Romanesco.BuiltinPlugin.Model.Factories;
 using Xunit;
 
 namespace Romanesco.BuiltinPlugin.Test.Model
@@ -20,13 +21,19 @@ namespace Romanesco.BuiltinPlugin.Test.Model
             return typeof(Project).GetProperty(propertyName) ?? throw new Exception();
         }
 
+        private ListState GetIntArrayState(string propertyName)
+        {
+            var project = new Project();
+	        var storage = new ValueStorage(project, GetProperty("Array"));
+	        var list = new List<int>();
+	        storage.SetValue(list);
+	        return new ListState(storage, list, s => new IntState(s, new CommandHistory()), new CommandHistory());
+        }
+
         [Fact]
         public void 新規要素を追加するとStateが増える()
         {
-            var project = new Project();
-            var settability = new ValueStorage(project, GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
-
+	        var state = GetIntArrayState(nameof(Project.Array));
             state.AddNewElement();
 
             Assert.Single(state.Elements);
@@ -36,10 +43,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 新規要素を追加すると実配列の要素が増える()
         {
-            var project = new Project();
-            var settability = new ValueStorage(project, GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
-
+	        var state = GetIntArrayState(nameof(Project.Array));
             state.AddNewElement();
 
             var array = (state.Storage.GetValue() as IList)!;
@@ -51,9 +55,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 新規要素の値を書き換えると実配列の中身が書き換わる()
         {
-            var project = new Project();
-            var settability = new ValueStorage(project, GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
+	        var state = GetIntArrayState(nameof(Project.Array));
             var notified = 0;
 
             var element = (state.AddNewElement() as IntState)!;
@@ -70,10 +72,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 新規要素を追加すると文字列形式が変化する()
         {
-            var project = new Project();
-            var settability = new ValueStorage(project, GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
-
+	        var state = GetIntArrayState(nameof(Project.Array));
             state.AddNewElement();
 
             Assert.Equal("Count = 1", state.FormattedString.Value);
@@ -82,10 +81,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 要素を削除するとStateの要素数が減る()
         {
-            var project = new Project();
-            var settability = new ValueStorage(project, GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
-
+	        var state = GetIntArrayState(nameof(Project.Array));
             state.AddNewElement();
             state.RemoveAt(0);
 
@@ -95,10 +91,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
         [Fact]
         public void 要素を削除すると実配列の要素数が減る()
         {
-            var project = new Project();
-            var settability = new ValueStorage(project, GetProperty("Array"));
-            var state = new ListState(settability, s => new IntState(s, new CommandHistory()), new CommandHistory());
-
+	        var state = GetIntArrayState(nameof(Project.Array));
             state.AddNewElement();
             state.RemoveAt(0);
 

@@ -17,7 +17,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 	{
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
-		private ReactiveProperty<IFieldState> CurrentState { get; set; } = new ReactiveProperty<IFieldState>();
+		private ReactiveProperty<IFieldState> CurrentState { get; } = new ReactiveProperty<IFieldState>();
 
 		public ObservableCollection<ISubtypeOption> Choices { get; } = new ObservableCollection<ISubtypeOption>();
 
