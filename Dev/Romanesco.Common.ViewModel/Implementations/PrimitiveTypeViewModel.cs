@@ -4,30 +4,17 @@ using Romanesco.Common.ViewModel.Interfaces;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.Common.ViewModel.Implementations
 {
-    public class PrimitiveTypeViewModel<T> : IStateViewModel
-    {
-        public IReadOnlyReactiveProperty<string> Title { get; }
+	public class PrimitiveTypeViewModel<TModel, TInstance> : ProxyViewModelBase<TModel>
+		where TModel : PrimitiveTypeState<TInstance>
+	{
+		public ReactiveProperty<TInstance> PrimitiveContent => State.PrimitiveContent;
 
-        public IReadOnlyReactiveProperty<string> FormattedString { get; }
-
-        public IFieldState State { get; }
-
-        public ReactiveProperty<T> PrimitiveContent { get; }
-
-        public IObservable<Unit> ShowDetail { get; }
-
-        public IObservable<Exception> OnError => State.OnError;
-
-        public PrimitiveTypeViewModel(IFieldState state, ReactiveProperty<T> primitiveContent)
-        {
-            State = state;
-            PrimitiveContent = primitiveContent;
-            Title = state.Title;
-            FormattedString = state.FormattedString;
-            ShowDetail = Observable.Never<Unit>();
-        }
-    }
+        public PrimitiveTypeViewModel(TModel state) : base(state)
+		{
+		}
+	}
 }

@@ -3,58 +3,58 @@ using Romanesco.Common.ViewModel.Implementations;
 
 namespace Romanesco.BuiltinPlugin.ViewModel.States
 {
-    public class IntViewModel : PrimitiveTypeViewModel<int>
+    public class IntViewModel : PrimitiveTypeViewModel<IntState, int>
     {
-        public IntViewModel(IntState state) : base(state, state.PrimitiveContent)
+        public IntViewModel(IntState state) : base(state)
         {
         }
     }
 
-    public class ByteViewModel : PrimitiveTypeViewModel<byte>
+    public class ByteViewModel : PrimitiveTypeViewModel<ByteState, byte>
     {
-        public ByteViewModel(ByteState state) : base(state, state.PrimitiveContent)
+        public ByteViewModel(ByteState state) : base(state)
         {
         }
     }
 
-    public class ShortViewModel : PrimitiveTypeViewModel<short>
+    public class ShortViewModel : PrimitiveTypeViewModel<ShortState, short>
     {
-        public ShortViewModel(ShortState state) : base(state, state.PrimitiveContent)
+        public ShortViewModel(ShortState state) : base(state)
         {
         }
     }
 
-    public class LongViewModel : PrimitiveTypeViewModel<long>
+    public class LongViewModel : PrimitiveTypeViewModel<LongState, long>
     {
-        public LongViewModel(LongState state) : base(state, state.PrimitiveContent)
+        public LongViewModel(LongState state) : base(state)
         {
         }
     }
 
-    public class FloatViewModel : PrimitiveTypeViewModel<float>
+    public class FloatViewModel : PrimitiveTypeViewModel<FloatState, float>
     {
-        public FloatViewModel(FloatState state) : base(state, state.PrimitiveContent)
+        public FloatViewModel(FloatState state) : base(state)
         {
         }
     }
 
-    public class DoubleViewModel : PrimitiveTypeViewModel<double>
+    public class DoubleViewModel : PrimitiveTypeViewModel<DoubleState, double>
     {
-        public DoubleViewModel(DoubleState state) : base(state, state.PrimitiveContent)
+        public DoubleViewModel(DoubleState state) : base(state)
         {
         }
     }
 
-    public class StringViewModel : PrimitiveTypeViewModel<string>
+    public class StringViewModel : PrimitiveTypeViewModel<StringState, string>
     {
-        public StringViewModel(StringState state) : base(state, state.PrimitiveContent)
+        public StringViewModel(StringState state) : base(state)
         {
         }
     }
 
-    public class BoolViewModel : PrimitiveTypeViewModel<bool>
+    public class BoolViewModel : PrimitiveTypeViewModel<BoolState, bool>
     {
-        public BoolViewModel(BoolState state) : base(state, state.PrimitiveContent)
+        public BoolViewModel(BoolState state) : base(state)
         {
         }
     }

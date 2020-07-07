@@ -1,41 +1,24 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Reactive;
-using System.Reactive.Linq;
+using NacHelpers.Extensions;
 using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Common.ViewModel.Interfaces;
+using Romanesco.Common.ViewModel.Implementations;
 
 namespace Romanesco.BuiltinPlugin.ViewModel.States
 {
-    public class IntIdChoiceViewModel : IStateViewModel
+    public class IntIdChoiceViewModel : ProxyViewModelBase<IntIdChoiceState>
     {
-        private readonly IntIdChoiceState state;
+	    public ObservableCollection<IFieldState>? Choices { get; private set; }
 
-        public IReadOnlyReactiveProperty<string> Title => state.Title;
+	    public ReactiveProperty<IFieldState> SelectedItem => State.SelectedItem;
 
-        public IReadOnlyReactiveProperty<string> FormattedString => state.FormattedString;
-
-        public IObservable<Unit> ShowDetail => Observable.Never<Unit>();
-
-        public IObservable<Exception> OnError => state.OnError;
-
-        public ObservableCollection<IFieldState>? Choices { get; private set; }
-
-        public ReactiveProperty<IFieldState> SelectedItem => state.SelectedItem;
-
-        public IntIdChoiceViewModel(IntIdChoiceState state)
+        public IntIdChoiceViewModel(IntIdChoiceState state) : base(state)
         {
-            this.state = state;
-            state.Master.Subscribe(list =>
-            {
-                if (list != null)
-                {
-                    Choices = list.State.Elements;
-                }
-            }).AddTo(state.Disposables);
+	        state.Master.FilterNullRef()
+		        .Subscribe(list => Choices = list.State.Elements)
+		        .AddTo(state.Disposables);
         }
     }
 }

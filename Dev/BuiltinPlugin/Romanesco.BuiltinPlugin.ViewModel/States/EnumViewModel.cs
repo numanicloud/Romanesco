@@ -1,31 +1,16 @@
-﻿using System;
-using System.Reactive;
-using System.Reactive.Linq;
-using Reactive.Bindings;
+﻿using Reactive.Bindings;
 using Romanesco.BuiltinPlugin.Model.States;
-using Romanesco.Common.ViewModel.Interfaces;
+using Romanesco.Common.ViewModel.Implementations;
 
 namespace Romanesco.BuiltinPlugin.ViewModel.States
 {
-    public class EnumViewModel : IStateViewModel
+    public class EnumViewModel : ProxyViewModelBase<EnumState>
     {
-        private readonly EnumState state;
+	    public ReactiveProperty<object> Content => State.Content;
+	    public object[] Choices => State.Choices;
 
-        public IReadOnlyReactiveProperty<string> Title => state.Title;
-    
-        public IReadOnlyReactiveProperty<string> FormattedString => state.FormattedString;
-
-        public ReactiveProperty<object> Content => state.Content;
-
-        public IObservable<Unit> ShowDetail => Observable.Never<Unit>();
-
-        public IObservable<Exception> OnError => state.OnError;
-
-        public object[] Choices => state.Choices;
-
-        public EnumViewModel(EnumState state)
-        {
-            this.state = state;
-        }
+	    public EnumViewModel(EnumState state) : base(state)
+	    {
+	    }
     }
 }
