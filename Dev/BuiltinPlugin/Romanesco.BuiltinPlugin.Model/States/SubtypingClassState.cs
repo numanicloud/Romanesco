@@ -26,16 +26,17 @@ namespace Romanesco.BuiltinPlugin.Model.States
 		public SubtypingClassState(ValueStorage storage, SubtypingList subtypingList, IServiceLocator serviceLocator)
 			: base(new NoneState())
 		{
+			void AddChoice(Type type)
+			{
+				Choices.Add(new ConcreteSubtypeOption(type, storage, serviceLocator));
+			}
+
 			Title = new ReactiveProperty<string>(storage.MemberName);
 
-			// 型の選択肢を設定
+			// 型の選択肢を設定。0番目の選択肢はNoneStateを生成する
 			Choices.Add(new NullSubtypeOption());
-			foreach (var item in subtypingList.DerivedTypes)
-			{
-				Choices.Add(new ConcreteSubtypeOption(item, storage, serviceLocator));
-			}
-			subtypingList.OnNewEntry.Subscribe(x => Choices.Add(new ConcreteSubtypeOption(x, storage, serviceLocator)))
-				.AddTo(Disposables);
+			subtypingList.DerivedTypes.ForEach(AddChoice);
+			subtypingList.OnNewEntry.Subscribe(AddChoice).AddTo(Disposables);
 
 			// 型の初期値をセット
 			SelectedType.Value = storage.GetValue()?.GetType() is { } initialType
