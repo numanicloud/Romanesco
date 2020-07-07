@@ -19,10 +19,12 @@ namespace Romanesco.BuiltinPlugin
 			var master = new MasterListContext();
 
 			// Model
-			services.AddSingleton<IStateFactory>(provider => new IdStateFactory(master))
+			services.AddSingleton<IStateFactory, DynamicStateFactory>()
+				.AddSingleton<IStateFactory>(provider => new IdStateFactory(master))
 				.AddSingleton<IStateFactory>(provider => new ListStateFactory(master, provider.GetService<CommandHistory>()))
+				.AddSingleton<PrimitiveStateFactory>()
+				.AddTransient<IStateFactory, PrimitiveStateFactory>(provider => provider.GetService<PrimitiveStateFactory>())
 				.AddSingletons<IStateFactory>(
-					typeof(PrimitiveStateFactory),
 					typeof(EnumStateFactory),
 					typeof(SubtypingStateFactory),
 					typeof(ClassStateFactory));

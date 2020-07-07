@@ -26,7 +26,7 @@ namespace Romanesco.Model
 			return InterpretAsState(new ValueStorage(projectObject, field));
 		}
 
-		private IFieldState InterpretAsState(ValueStorage settability)
+		public IFieldState InterpretAsState(ValueStorage settability)
 		{
 			foreach (var factory in Factories)
 			{

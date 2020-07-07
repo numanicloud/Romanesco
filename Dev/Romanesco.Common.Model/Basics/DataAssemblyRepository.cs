@@ -1,13 +1,17 @@
 ﻿using Romanesco.Common.Model.Interfaces;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 
 namespace Romanesco.Common.Model.Basics
 {
 	public class DataAssemblyRepository : IDataAssemblyRepository
 	{
+		private bool isInitialized = false;
+
 		public object? CreateInstance(Type type, params object?[]? args)
 		{
 			if (type.Assembly.ReflectionOnly)
@@ -33,8 +37,8 @@ namespace Romanesco.Common.Model.Basics
 				else
 				{
 					var fullPath = Path.GetFullPath(path);
-					var resolver = new PathAssemblyResolver(new[] { fullPath, typeof(object).Assembly.Location });
-					var loader = new MetadataLoadContext(resolver, name);
+					var resolver = GetResolver(fullPath);
+					var loader = new MetadataLoadContext(resolver, typeof(object).Assembly.GetName().Name);
 					return loader.LoadFromAssemblyPath(fullPath);
 				}
 			}
@@ -42,6 +46,20 @@ namespace Romanesco.Common.Model.Basics
 			{
 				throw new InvalidOperationException("AssemblyName が無効です");
 			}
+		}
+
+		private MetadataAssemblyResolver GetResolver(string entryAssemblyPath)
+		{
+			var fileName = Path.GetFileName(entryAssemblyPath);
+			var entryAssemblyDir = entryAssemblyPath.Replace(fileName, "");
+			var romanescoDir = Environment.CurrentDirectory;
+			var runtimeDir = RuntimeEnvironment.GetRuntimeDirectory();
+
+			var annotationAsm = Path.Combine(romanescoDir, "Romanesco.Annotations.dll");
+			var entryDirAsms = Directory.EnumerateFiles(entryAssemblyDir, "*.dll");
+			var runtimeDirAsms = Directory.GetFiles(runtimeDir, "*.dll");
+
+			return new PathAssemblyResolver(entryDirAsms.Concat(runtimeDirAsms));
 		}
 	}
 }

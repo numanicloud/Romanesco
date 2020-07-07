@@ -5,6 +5,7 @@ using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Linq;
 using System.Reflection;
+using NacHelpers.Extensions;
 
 namespace Romanesco.BuiltinPlugin.Model.Factories
 {
@@ -19,6 +20,26 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 
         public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
 		{
+			EditorMemberAttribute? GetMemberAttributeOrDefault(MemberInfo member)
+			{
+				return member.GetCustomAttribute<EditorMemberAttribute>();
+			}
+			IFieldState[] MakeClassMembers(Type t, object o)
+			{
+				var properties = from p in t.GetProperties()
+					let attr = GetMemberAttributeOrDefault(p)
+					select (state: interpret(new ValueStorage(o, p)), attr);
+				var fields = from f in t.GetFields()
+					let attr = GetMemberAttributeOrDefault(f)
+					select (state: interpret(new ValueStorage(o, f)), attr);
+				return properties.Concat(fields)
+					.Where(x => x.attr != null)
+					.OrderBy(x => x.attr!.Order)
+					.Select(x => x.state)
+					.FilterNullRef()
+					.ToArray();
+			}
+
 			var type = settability.Type;
 			if (!type.IsClass)
 			{
@@ -27,42 +48,8 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 
 			// 新規作成時は null である場合がある。逆にロード時は値が入ってるので上書き禁止
 			object subject = GetOrCreateInstance(settability);
-
-			IFieldState[] memberStates = subject is DynamicMock mock
-				? MakeDynamicMockMembers(type, mock)
-				: MakeClassMembers(type, subject);
-
+			IFieldState[] memberStates = MakeClassMembers(type, subject);
 			return new ClassState(settability, memberStates);
-
-			EditorMemberAttribute? GetMemberAttributeOrDefault(MemberInfo member)
-			{
-				return member.GetCustomAttribute<EditorMemberAttribute>();
-			}
-
-			IFieldState[] MakeClassMembers(Type type, object subject)
-			{
-				var properties = from p in type.GetProperties()
-								 let attr = GetMemberAttributeOrDefault(p)
-								 where attr != null
-								 select (state: interpret(new ValueStorage(subject, p)), attr);
-				var fields = from f in type.GetFields()
-							 let attr = GetMemberAttributeOrDefault(f)
-							 where attr != null
-							 select (state: interpret(new ValueStorage(subject, f)), attr);
-				var members = properties.Concat(fields).OrderBy(x => x.attr!.Order).ToArray();
-
-				var memberStates = members.Select(x => x.state).ToArray();
-				return memberStates!;
-			}
-
-			IFieldState[] MakeDynamicMockMembers(Type type, DynamicMock subject)
-			{
-				var factory = new ValueStorageFactory();
-				return subject.Keys
-					.Select(x => interpret(factory.FromDynamicMocksMember(subject, x)))
-					.Where(x => x != null)
-					.ToArray()!;
-			}
 		}
 
 		private object GetOrCreateInstance(ValueStorage settability)

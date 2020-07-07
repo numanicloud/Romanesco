@@ -6,11 +6,13 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 {
     public class PrimitiveStateFactory : IStateFactory
     {
+	    private static int Counter = 0;
         private readonly CommandHistory history;
 
         public PrimitiveStateFactory(CommandHistory history)
         {
             this.history = history;
+            ++Counter;
         }
 
         public IFieldState? InterpretAsState(ValueStorage settability,

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Romanesco.Annotations;
 using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Services.Serialize;
 
@@ -26,6 +27,20 @@ namespace Romanesco.Model.ProjectComponents
 			};
 		}
 
+		public static async Task<Project> FromDynamicMockAsync(
+			ProjectSettings settings,
+			IStateDeserializer deserializer,
+			ObjectInterpreter interpreter,
+			DynamicMock mock)
+		{
+			var factory = new ValueStorageFactory();
+			var members = mock.Keys
+				.Where(p => mock.GetAttributeData<EditorMemberAttribute>(p) != null)
+				.Select(p => interpreter.InterpretAsState(factory.FromDynamicMocksMember(mock, p)))
+				.ToArray();
+			return await MakeProject(members, settings, deserializer, interpreter);
+		}
+
 		public static async Task<Project> FromInstanceAsync(ProjectSettings settings, IStateDeserializer deserializer, ObjectInterpreter interpreter, object instance)
 		{
 			var properties = settings.ProjectType.GetProperties()
@@ -36,30 +51,7 @@ namespace Romanesco.Model.ProjectComponents
 				.Select(f => interpreter.InterpretRootAsState(instance, f));
 			var states = properties.Concat(fields).ToArray();
 
-			// àÀë∂ä÷åWÇì«Ç›çûÇﬁ
-			var list = new List<ProjectDependency>();
-			foreach (var item in settings.DependencyProjects)
-			{
-				using (var file = new StreamReader(item))
-				{
-					try
-					{
-						var contents = await file.ReadToEndAsync();
-						var data = JsonConvert.DeserializeObject<ProjectData>(contents);
-						var project = await FromDataAsync(data, deserializer, interpreter);
-						list.Add(new ProjectDependency(project, item));
-					}
-					catch (System.Exception)
-					{
-
-						throw;
-					}
-				}
-			}
-
-			var root = new StateRoot(instance, states);
-
-			return new Project(settings, root, list.ToArray());
+			return await MakeProject(states, settings, deserializer, interpreter);
 		}
 
 		public static async Task<Project> FromDataAsync(ProjectData data, IStateDeserializer deserializer, ObjectInterpreter interpreter)
@@ -76,6 +68,28 @@ namespace Romanesco.Model.ProjectComponents
 			var settings = new ProjectSettings(assembly, type, exporter, data.DependencyProjects);
 			var instance = deserializer.Deserialize(data.EncodedMaster, type);
 			return await FromInstanceAsync(settings, deserializer, interpreter, instance);
+		}
+
+		private static async Task<Project> MakeProject(
+			IFieldState[] topFields,
+			ProjectSettings settings,
+			IStateDeserializer deserializer,
+			ObjectInterpreter interpreter)
+		{
+			// àÀë∂ä÷åWÇì«Ç›çûÇﬁ
+			var list = new List<ProjectDependency>();
+			foreach (var item in settings.DependencyProjects)
+			{
+				using var file = new StreamReader(item);
+				var contents = await file.ReadToEndAsync();
+				var data = JsonConvert.DeserializeObject<ProjectData>(contents);
+				var project = await FromDataAsync(data, deserializer, interpreter);
+				list.Add(new ProjectDependency(project, item));
+			}
+
+			var root = new StateRoot(topFields, topFields);
+
+			return new Project(settings, root, list.ToArray());
 		}
 	}
 }

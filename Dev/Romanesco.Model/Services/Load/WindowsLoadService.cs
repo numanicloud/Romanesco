@@ -2,11 +2,12 @@
 using Newtonsoft.Json;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services.Serialize;
 using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.ProjectComponent;
 
@@ -56,15 +57,11 @@ namespace Romanesco.Model.Services.Load
 				{
 					return new ProjectContext(project, exporter);
 				}
-				else
-				{
-					throw new InvalidOperationException($"{project.Settings.ExporterType}をインスタンス化できませんでした。");
-				}
+
+				throw new InvalidOperationException($"{project.Settings.ExporterType}をインスタンス化できませんでした。");
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		private async Task<Project?> CreateInternalAsync()
@@ -74,14 +71,20 @@ namespace Romanesco.Model.Services.Load
 
 			if (settings != null)
 			{
-				if (assemblyRepo.CreateInstance(settings.ProjectType) is object instance)
+				if (settings.ProjectType.Assembly.ReflectionOnly)
+				{
+					var mock = new DynamicMock(
+						settings.ProjectType.GetTypeInfo().DeclaredProperties.ToArray(),
+						settings.ProjectType.GetTypeInfo().DeclaredFields.ToArray());
+					return await ProjectConverter.FromDynamicMockAsync(settings, deserializer, interpreter, mock);
+				}
+
+				if (assemblyRepo.CreateInstance(settings.ProjectType) is { } instance)
 				{
 					return await ProjectConverter.FromInstanceAsync(settings, deserializer, interpreter, instance);
 				}
-				else
-				{
-					throw new InvalidOperationException($"プロジェクト型 {settings.ProjectType} のインスタンスを作成できませんでした。");
-				}
+
+				throw new InvalidOperationException($"プロジェクト型 {settings.ProjectType} のインスタンスを作成できませんでした。");
 			}
 			return null;
 		}
@@ -106,10 +109,8 @@ namespace Romanesco.Model.Services.Load
 				project.DefaultSavePath = dialog.FileName;
 				return project;
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 	}
 }

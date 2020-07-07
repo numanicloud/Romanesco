@@ -48,11 +48,7 @@ namespace Romanesco.Model.ProjectComponents
 	        bool IsEditorProjectType(Type t)
 	        {
 		        return t.GetCustomAttributesData()
-			        .Any(x =>
-			        {
-				        var attrType = typeof(Annotations.EditorProjectAttribute);
-				        return x.AttributeType == attrType;
-			        });
+			        .Any(x => x.AttributeType.Name == nameof(Annotations.EditorProjectAttribute));
 	        }
 
 	        AssemblyPath.Where(x => x != null).Subscribe(path =>
