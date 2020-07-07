@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
 using Reactive.Bindings;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
