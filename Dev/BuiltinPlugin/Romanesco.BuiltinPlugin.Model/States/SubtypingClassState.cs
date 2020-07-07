@@ -10,36 +10,24 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using Reactive.Bindings.Extensions;
+using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
-	public class SubtypingClassState : IFieldState
+	public class SubtypingClassState : DecorationStateBase
 	{
-		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
-
-		private ReactiveProperty<IFieldState> CurrentState { get; } = new ReactiveProperty<IFieldState>();
-
 		public ObservableCollection<ISubtypeOption> Choices { get; } = new ObservableCollection<ISubtypeOption>();
-
 		public ReactiveProperty<ISubtypeOption> SelectedType { get; } = new ReactiveProperty<ISubtypeOption>();
-
-		public IReactiveProperty<IFieldState> CurrentStateReadOnly => CurrentState;
-
-
-		public ReactiveProperty<string> Title { get; } = new ReactiveProperty<string>();
-
-		public IReadOnlyReactiveProperty<string> FormattedString { get; }
-
-		public Type Type => CurrentState.Value.Type;
-
-		public ValueStorage Storage => CurrentState.Value.Storage;
-
-		public IObservable<Exception> OnError => CurrentState.Value.OnError;
-
-		public IObservable<Unit> OnEdited { get; }
+		public IReactiveProperty<IFieldState> CurrentStateReadOnly => BaseField;
+		public override ReactiveProperty<string> Title { get; }
+		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
+		public override IObservable<Unit> OnEdited { get; }
 
 		public SubtypingClassState(ValueStorage storage, SubtypingList subtypingList, IServiceLocator serviceLocator)
+			: base(new NoneState())
 		{
+			Title = new ReactiveProperty<string>(storage.MemberName);
+
 			// 型の選択肢を設定
 			Choices.Add(new NullSubtypeOption());
 			foreach (var item in subtypingList.DerivedTypes)
@@ -50,22 +38,15 @@ namespace Romanesco.BuiltinPlugin.Model.States
 				.AddTo(Disposables);
 
 			// 型の初期値をセット
-			var initialType = storage.GetValue()?.GetType();
-			if (initialType is { })
-			{
-				SelectedType.Value = Choices.First(x => x.IsTypeOf(initialType));
-			}
-			else
-			{
-				// 上記のように、 0 番目は NullSubtypeOption
-				SelectedType.Value = Choices[0];
-			}
+			SelectedType.Value = storage.GetValue()?.GetType() is { } initialType
+				? Choices.First(x => x.IsTypeOf(initialType))
+				: Choices[0];
 
 			// 型が変更されたら更新
 			SelectedType.Subscribe(x =>
 			{
 				var state = x.MakeState();
-				CurrentState.Value = state;
+				BaseField.Value = state;
 
 				if (!(state is ClassState || x is NullSubtypeOption))
 				{
@@ -75,28 +56,21 @@ namespace Romanesco.BuiltinPlugin.Model.States
 				}
 			}).AddTo(Disposables);
 
-			Title.Value = storage.MemberName;
-
-			FormattedString = CurrentState
-				.SelectMany(x => x.FormattedString)
+			FormattedString = BaseField.SelectMany(x => x.FormattedString)
 				.ToReadOnlyReactiveProperty("");
 
 			// 型の変更と、中身の変更は上に通知される
 			var typeEdited = SelectedType.Select(x => Unit.Default);
-			var concreteEdited = CurrentState.SelectMany(x => x.OnEdited);
+			var concreteEdited = BaseField.SelectMany(x => x.OnEdited);
 			OnEdited = typeEdited.Merge(concreteEdited);
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
-			CurrentState.Dispose();
 			SelectedType.Dispose();
 			Title.Dispose();
 			FormattedString.Dispose();
-			foreach (var disposable in Disposables)
-			{
-				disposable.Dispose();
-			}
+			base.Dispose();
 		}
 	}
 }
