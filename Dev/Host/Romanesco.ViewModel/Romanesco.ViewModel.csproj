@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
-    <ProjectReference Include="..\Romanesco.Common.ViewModel\Romanesco.Common.ViewModel.csproj" />
+    <ProjectReference Include="..\..\Common\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
+    <ProjectReference Include="..\..\Common\Romanesco.Common.ViewModel\Romanesco.Common.ViewModel.csproj" />
     <ProjectReference Include="..\Romanesco.Model\Romanesco.Model.csproj" />
   </ItemGroup>
 

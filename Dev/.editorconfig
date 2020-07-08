@@ -2,3 +2,5 @@
 
 # CS1998: 非同期メソッドは、'await' 演算子がないため、同期的に実行されます
 dotnet_diagnostic.CS1998.severity = none
+
+dotnet_diagnostic.NU1701.severity = none

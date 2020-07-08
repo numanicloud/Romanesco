@@ -1,5 +1,4 @@
-﻿using Romanesco.Common.Model.Basics;
-using Romanesco.Common.Model.ProjectComponent;
+﻿using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Services.Serialize;
 
 namespace Romanesco.Model.Services.Save

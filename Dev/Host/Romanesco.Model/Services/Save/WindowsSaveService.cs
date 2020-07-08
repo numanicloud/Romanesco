@@ -5,7 +5,6 @@ using Romanesco.Model.Services.Serialize;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.ProjectComponent;
 
 namespace Romanesco.Model.Services.Save
@@ -83,13 +82,9 @@ namespace Romanesco.Model.Services.Save
             var data = ProjectConverter.ToData(context.Project, saveSerializer);
             var json = JsonConvert.SerializeObject(data);
 
-            using (var file = File.Create(path))
-            {
-                using (var writer = new StreamWriter(file))
-                {
-                    await writer.WriteAsync(json);
-                }
-            }
+            await using var file = File.Create(path);
+            await using var writer = new StreamWriter(file);
+            await writer.WriteAsync(json);
         }
     }
 }

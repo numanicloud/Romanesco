@@ -12,9 +12,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Romanesco.BuiltinPlugin.Model\Romanesco.BuiltinPlugin.Model.csproj" />
-    <ProjectReference Include="..\..\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
-    <ProjectReference Include="..\..\Romanesco.Common.ViewModel\Romanesco.Common.ViewModel.csproj" />
-    <ProjectReference Include="..\..\Romanesco.Annotations\Romanesco.Annotations.csproj">
+    <ProjectReference Include="..\..\Common\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
+    <ProjectReference Include="..\..\Common\Romanesco.Common.ViewModel\Romanesco.Common.ViewModel.csproj" />
+    <ProjectReference Include="..\..\Common\Romanesco.Annotations\Romanesco.Annotations.csproj">
       <Private>false</Private>
     </ProjectReference>
   </ItemGroup>

@@ -68,6 +68,12 @@ namespace Romanesco.Model.ProjectComponents
 
 			var settings = new ProjectSettings(assembly, type, exporter, data.DependencyProjects);
 			var instance = deserializer.Deserialize(data.EncodedMaster, type);
+
+			if (instance == null)
+			{
+				throw new Exception($"アセンブリからプロジェクト型 {data.ProjectTypeQualifier} を取得できませんでした。");
+			}
+
 			return await FromInstanceAsync(settings, deserializer, interpreter, instance);
 		}
 

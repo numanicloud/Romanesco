@@ -13,10 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Romanesco.Annotations\Romanesco.Annotations.csproj">
+    <ProjectReference Include="..\..\Common\Romanesco.Annotations\Romanesco.Annotations.csproj">
       <Private>false</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
+    <ProjectReference Include="..\..\Common\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
     <ProjectReference Include="..\..\submodules\NacHelper\NacHelpers\NacHelpers.csproj" />
   </ItemGroup>
 
