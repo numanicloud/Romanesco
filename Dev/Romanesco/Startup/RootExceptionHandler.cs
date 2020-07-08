@@ -1,13 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using NacHelpers.Extensions;
 
 namespace Romanesco.Startup
 {
-	class RootExceptionHandler
+	internal class RootExceptionHandler
 	{
 		public void ProcessError(Exception exception)
 		{
 #if DEBUG
+			var exceptionList = CrawlExceptions(exception, 0)
+				.ToLinear()
+				.OrderBy(x => x.Item2)
+				.Select(x => x.Item1)
+				.ToArray();
 			throw exception;
 #else
 			if (exception is AggregateException aggregated)
@@ -27,6 +36,40 @@ namespace Romanesco.Startup
 				ProcessError(exception, (stream, e) => WriteException(stream, e));
 			}
 #endif
+		}
+
+		private static IEnumerable<IEnumerable<(Exception, int)>> CrawlExceptions(Exception exception, int depth)
+		{
+			IEnumerable<(Exception, int)> Recurse(Exception e) => CrawlExceptions(e, depth + 1).ToLinear();
+
+			yield return new []{ (exception, depth) };
+
+			if (exception is AggregateException aException)
+			{
+				foreach (var innerException in aException.InnerExceptions)
+				{
+					if (innerException is {})
+					{
+						yield return Recurse(innerException);
+					}
+				}
+			}
+			else if (exception.InnerException is { } inner)
+			{
+				yield return Recurse(inner);
+			}
+
+			if (exception is ReflectionTypeLoadException rtlException
+			    && rtlException.LoaderExceptions is { })
+			{
+				foreach (var loaderException in rtlException.LoaderExceptions)
+				{
+					if (loaderException is { })
+					{
+						yield return Recurse(loaderException);
+					}
+				}
+			}
 		}
 
 		private void ProcessError<TException>(TException ex, Action<StreamWriter, TException> write)

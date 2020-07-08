@@ -8,7 +8,7 @@ using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.View.States
 {
-    class ViewInterpreter
+	internal class ViewInterpreter
     {
         private readonly IViewFactory[] factories;
 

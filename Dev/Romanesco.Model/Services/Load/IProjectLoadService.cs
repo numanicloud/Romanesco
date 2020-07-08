@@ -4,7 +4,7 @@ using Romanesco.Common.Model.ProjectComponent;
 
 namespace Romanesco.Model.Services.Load
 {
-	interface IProjectLoadService
+	internal interface IProjectLoadService
     {
         bool CanCreate { get; }
         bool CanOpen { get; }

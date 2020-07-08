@@ -3,6 +3,8 @@ using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 using System.IO;
 using System.Reflection;
+using Romanesco.Common.Model.Reflections;
+using Romanesco.Model;
 using Xunit;
 
 namespace Romanesco.Test

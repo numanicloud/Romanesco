@@ -7,7 +7,7 @@ using Romanesco.Common.Model.ProjectComponent;
 
 namespace Romanesco.Sample
 {
-	class SampleProjectSettingProvider : IProjectSettingProvider
+	internal class SampleProjectSettingProvider : IProjectSettingProvider
     {
         public ProjectSettings? InputCreateSettings(ProjectSettingsEditor editor)
         {

@@ -6,7 +6,7 @@ using Romanesco.View.Entry;
 
 namespace Romanesco.Startup
 {
-	class StartUp : IHostedService
+	internal class StartUp : IHostedService
     {
 		private readonly IHostServiceLocator serviceLocator;
 		private MainWindow? mainWindow;

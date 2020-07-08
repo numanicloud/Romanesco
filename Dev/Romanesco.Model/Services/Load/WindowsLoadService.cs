@@ -10,10 +10,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Common.Model.Reflections;
 
 namespace Romanesco.Model.Services.Load
 {
-	class WindowsLoadService : IProjectLoadService
+	internal class WindowsLoadService : IProjectLoadService
 	{
 		private readonly IProjectSettingProvider projectSettingProvider;
 		private readonly IStateDeserializer deserializer;

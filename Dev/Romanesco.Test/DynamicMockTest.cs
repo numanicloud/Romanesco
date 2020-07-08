@@ -1,12 +1,13 @@
 ﻿using Microsoft.CSharp.RuntimeBinder;
 using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Reflections;
 using Xunit;
 
 namespace Romanesco.Test
 {
 	public class DynamicMockTest
 	{
-		class Hoge
+		private class Hoge
 		{
 			public int X { get; set; }
 			public int Y { get; set; }

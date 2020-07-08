@@ -6,7 +6,7 @@ using Romanesco.Model.Services.Save;
 
 namespace Romanesco.Model.EditorComponents.States
 {
-	abstract class EditorState
+	internal abstract class EditorState
 	{
 		protected EditorStateChanger StateChanger { get; }
 

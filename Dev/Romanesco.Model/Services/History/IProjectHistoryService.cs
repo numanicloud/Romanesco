@@ -1,6 +1,6 @@
 ﻿namespace Romanesco.Model.Services.History
 {
-    interface IProjectHistoryService
+	internal interface IProjectHistoryService
     {
         public bool CanUndo { get; }
         public bool CanRedo { get; }

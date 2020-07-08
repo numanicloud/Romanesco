@@ -3,7 +3,7 @@ using System;
 
 namespace Romanesco.Model.Services.Serialize
 {
-    class NewtonsoftStateDeserializer : IStateDeserializer
+	internal class NewtonsoftStateDeserializer : IStateDeserializer
     {
         public object? Deserialize(string encoded, Type type)
         {

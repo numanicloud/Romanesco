@@ -7,6 +7,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject />
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +31,7 @@
     <ProjectReference Include="..\Romanesco.Styles\Romanesco.Styles.csproj" />
     <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.ViewModel.csproj" />
     <ProjectReference Include="..\Romanesco.View\Romanesco.View.csproj" />
+    <ProjectReference Include="..\submodules\NacHelper\NacHelpers\NacHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

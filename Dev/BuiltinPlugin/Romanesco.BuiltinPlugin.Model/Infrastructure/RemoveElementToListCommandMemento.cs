@@ -3,7 +3,7 @@ using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.BuiltinPlugin.Model.Infrastructure
 {
-    class RemoveElementToListCommandMemento : ICommandMemento
+	internal class RemoveElementToListCommandMemento : ICommandMemento
     {
         private readonly ListState list;
         private readonly IFieldState state;

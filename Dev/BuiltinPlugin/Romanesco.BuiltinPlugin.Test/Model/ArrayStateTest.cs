@@ -11,7 +11,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 {
     public class ArrayStateTest
     {
-        class Project
+	    private class Project
         {
             public List<int> Array { get; set; } = new List<int>();
         }

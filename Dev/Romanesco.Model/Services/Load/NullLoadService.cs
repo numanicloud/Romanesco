@@ -4,7 +4,7 @@ using Romanesco.Common.Model.ProjectComponent;
 
 namespace Romanesco.Model.Services.Load
 {
-	class NullLoadService : IProjectLoadService
+	internal class NullLoadService : IProjectLoadService
     {
         public bool CanCreate => false;
 

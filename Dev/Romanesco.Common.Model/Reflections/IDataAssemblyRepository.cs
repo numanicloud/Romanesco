@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Romanesco.Common.Model.Interfaces
+namespace Romanesco.Common.Model.Reflections
 {
 	public interface IDataAssemblyRepository
 	{

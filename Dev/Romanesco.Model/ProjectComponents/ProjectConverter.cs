@@ -9,11 +9,12 @@ using Romanesco.Annotations;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Common.Model.Reflections;
 using Romanesco.Model.Services.Serialize;
 
 namespace Romanesco.Model.ProjectComponents
 {
-	public static class ProjectConverter
+	internal static class ProjectConverter
 	{
 		public static ProjectData ToData(Project project, IStateSerializer serializer)
 		{

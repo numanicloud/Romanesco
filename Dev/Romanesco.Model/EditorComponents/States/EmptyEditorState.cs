@@ -4,7 +4,7 @@ using Romanesco.Model.Services.Save;
 
 namespace Romanesco.Model.EditorComponents.States
 {
-	class EmptyEditorState : EditorState
+	internal class EmptyEditorState : EditorState
 	{
 		private readonly IProjectLoadService loadService;
 

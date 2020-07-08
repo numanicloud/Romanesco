@@ -2,7 +2,7 @@
 
 namespace Romanesco.Model.Services.Save
 {
-    class NullSaveService : IProjectSaveService
+	internal class NullSaveService : IProjectSaveService
     {
         public bool CanSave => false;
 

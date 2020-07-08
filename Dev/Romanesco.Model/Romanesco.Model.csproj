@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj" />
     <ProjectReference Include="..\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
+    <ProjectReference Include="..\submodules\NacHelper\NacHelpers\NacHelpers.csproj" />
   </ItemGroup>
 
 </Project>

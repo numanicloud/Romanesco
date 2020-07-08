@@ -5,7 +5,7 @@ using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.Model.Services.Export
 {
-    public class NewtonsoftJsonProjectTypeExporter : IProjectTypeExporter
+	internal sealed class NewtonsoftJsonProjectTypeExporter : IProjectTypeExporter
     {
         public bool DoExportIntoSingleFile => true;
 

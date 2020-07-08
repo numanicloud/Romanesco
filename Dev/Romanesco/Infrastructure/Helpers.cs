@@ -3,7 +3,7 @@ using Romanesco.Extensibility;
 
 namespace Romanesco.Infrastructure
 {
-	static class Helpers
+	internal static class Helpers
 	{
 		public static IServiceCollection AddPlugin(this IServiceCollection services, string pluginDirPath)
 		{

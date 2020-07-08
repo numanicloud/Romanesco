@@ -1,6 +1,6 @@
 ﻿namespace Romanesco.Model.Services.History
 {
-    class NullHistoryService : IProjectHistoryService
+    internal sealed class NullHistoryService : IProjectHistoryService
     {
         public bool CanUndo => false;
 

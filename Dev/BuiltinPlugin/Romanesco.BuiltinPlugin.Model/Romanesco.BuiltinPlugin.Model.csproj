@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Romanesco.BuiltinPlugin.Model</AssemblyName>
     <RootNamespace>Romanesco.BuiltinPlugin.Model</RootNamespace>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

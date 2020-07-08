@@ -2,7 +2,7 @@
 
 namespace Romanesco.Model.Services.Serialize
 {
-    class NewtonsoftStateSerializer : IStateSerializer
+	internal class NewtonsoftStateSerializer : IStateSerializer
     {
         public string Serialize(object state)
         {

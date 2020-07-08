@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace Romanesco.Extensibility
 {
-	class PluginLoader
+	internal class PluginLoader
 	{
 		public PluginExtentions Load(string dirPath)
 		{

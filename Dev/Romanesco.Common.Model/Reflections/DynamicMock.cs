@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Romanesco.Common.Model.Basics
+namespace Romanesco.Common.Model.Reflections
 {
 	public class DynamicMock : DynamicObject
 	{
