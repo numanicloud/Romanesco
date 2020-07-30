@@ -1,13 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>Romanesco.BuiltinPlugin.Model</AssemblyName>
     <RootNamespace>Romanesco.BuiltinPlugin.Model</RootNamespace>
     <Platforms>AnyCPU;x64</Platforms>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Copyright>Copyright Ⓒ2020 NumAniCloud</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NacHelpers" Version="1.0.0-1" />
     <PackageReference Include="ReactiveProperty" Version="7.1.0" />
     <PackageReference Include="System.Interactive" Version="3.2.0" />
   </ItemGroup>
@@ -17,7 +20,6 @@
       <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
-    <ProjectReference Include="..\..\submodules\NacHelper\NacHelpers\NacHelpers.csproj" />
   </ItemGroup>
 
 </Project>

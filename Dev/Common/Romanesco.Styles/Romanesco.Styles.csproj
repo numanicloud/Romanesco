@@ -10,6 +10,8 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <Platforms>AnyCPU;x64</Platforms>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Copyright>Copyright Ⓒ2020 NumAniCloud</Copyright>
   </PropertyGroup>
   
   <ItemGroup>
