@@ -75,7 +75,7 @@ namespace Romanesco.BuiltinPlugin
 
 		public SubtypingStateFactory ResolveSubtypingStateFactory()
 		{
-			return _ResolveSubtypingStateFactoryCache ??= new SubtypingStateFactory(Host.ResolveDataAssemblyRepository(), Host.ResolveObjectInterpreter());
+			return _ResolveSubtypingStateFactoryCache ??= new SubtypingStateFactory(Host);
 		}
 
 		public ClassStateFactory ResolveClassStateFactory()
@@ -175,6 +175,7 @@ namespace Romanesco.BuiltinPlugin
 				ResolveIdViewFactory(),
 				ResolvePrimitiveViewFactory(),
 				ResolveEnumViewFactory(),
+				ResolveClassViewFactory(),
 				ResolveArrayViewFactory(),
 				ResolveSubtypingViewFactory()
 			};
@@ -218,6 +219,7 @@ namespace Romanesco.BuiltinPlugin
 			services.AddTransient<IViewFactory>(provider => ResolveIdViewFactory());
 			services.AddTransient<IViewFactory>(provider => ResolvePrimitiveViewFactory());
 			services.AddTransient<IViewFactory>(provider => ResolveEnumViewFactory());
+			services.AddTransient<IViewFactory>(provider => ResolveClassViewFactory());
 			services.AddTransient<IViewFactory>(provider => ResolveArrayViewFactory());
 			services.AddTransient<IViewFactory>(provider => ResolveSubtypingViewFactory());
 		}

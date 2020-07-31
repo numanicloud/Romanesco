@@ -6,20 +6,17 @@ using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Linq;
 using System.Reflection;
-using Romanesco.Common.Model.Reflections;
 
 namespace Romanesco.BuiltinPlugin.Model.Factories
 {
 	public class SubtypingStateFactory : IStateFactory
 	{
-		private readonly IDataAssemblyRepository asmRepo;
-		private readonly IObjectInterpreter interpreter;
+		private readonly IApiFactory api;
 		private readonly SubtypingContext context = new SubtypingContext();
 
-		public SubtypingStateFactory(IDataAssemblyRepository asmRepo, IObjectInterpreter interpreter)
+		public SubtypingStateFactory(IApiFactory api)
 		{
-			this.asmRepo = asmRepo;
-			this.interpreter = interpreter;
+			this.api = api;
 		}
 
 		public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
@@ -45,7 +42,8 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			}
 
 
-			return new SubtypingClassState(settability, new SubtypingStateContext(list, asmRepo, interpreter));
+			var stateContext = new SubtypingStateContext(list, api.ResolveDataAssemblyRepository(), api.ResolveObjectInterpreter());
+			return new SubtypingClassState(settability, stateContext);
 		}
 	}
 }

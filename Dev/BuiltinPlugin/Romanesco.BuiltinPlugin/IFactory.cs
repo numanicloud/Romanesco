@@ -58,6 +58,7 @@ namespace Romanesco.BuiltinPlugin
 		[Resolution(typeof(IdViewFactory))]
 		[Resolution(typeof(PrimitiveViewFactory))]
 		[Resolution(typeof(EnumViewFactory))]
+		[Resolution(typeof(ClassViewFactory))]
 		[Resolution(typeof(ArrayViewFactory))]
 		[Resolution(typeof(SubtypingViewFactory))]
 		IEnumerable<IViewFactory> ResolveViewFactories();
