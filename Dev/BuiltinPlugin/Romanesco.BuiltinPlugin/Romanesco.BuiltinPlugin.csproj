@@ -10,6 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Deptorygen" Version="1.0.0-16" />
+    <PackageReference Include="Deptorygen.GenericHost" Version="1.0.0-16" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Romanesco.BuiltinPlugin.Model\Romanesco.BuiltinPlugin.Model.csproj" />
     <ProjectReference Include="..\Romanesco.BuiltinPlugin.ViewModel\Romanesco.BuiltinPlugin.ViewModel.csproj" />
     <ProjectReference Include="..\Romanesco.BuiltinPlugin.View\Romanesco.BuiltinPlugin.View.csproj" />

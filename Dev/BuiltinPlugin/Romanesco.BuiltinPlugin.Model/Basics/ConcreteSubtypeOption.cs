@@ -4,6 +4,7 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Reflection;
+using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Model.Reflections;
 
 namespace Romanesco.BuiltinPlugin.Model.Basics
@@ -12,15 +13,16 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 	{
 		private readonly Type derivedType;
 		private readonly ValueStorage subtypingStorage;
-		private readonly IServiceLocator serviceLocator;
+		private readonly SubtypingStateContext context;
 
 		public string OptionName { get; }
 
-		public ConcreteSubtypeOption(Type derivedType, ValueStorage subtypingStorage, IServiceLocator serviceLocator)
+		public ConcreteSubtypeOption(Type derivedType, ValueStorage subtypingStorage,
+			SubtypingStateContext context)
 		{
 			this.derivedType = derivedType;
 			this.subtypingStorage = subtypingStorage;
-			this.serviceLocator = serviceLocator;
+			this.context = context;
 			if (derivedType.GetCustomAttribute<EditorSubtypeNameAttribute>() is { } attr)
 			{
 				OptionName = attr.OptionName;
@@ -35,40 +37,33 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 
 		public IFieldState MakeState()
 		{
-			var asmRepo = serviceLocator.GetService<IDataAssemblyRepository>();
-
-			if (asmRepo.CreateInstance(derivedType) is object instance)
-			{
-				var me = subtypingStorage;
-
-				// 元の ValueStorage とは型の抽象度が異なる新しい ValueStorage
-				var concreteStorage = new ValueStorage(derivedType,
-					me.MemberName,
-					(value, old) => me.SetValue(value),
-					instance);
-
-				if (me.GetValue() is { } value
-					&& value.GetType() is Type loadedType
-					&& loadedType == derivedType)
-				{
-					concreteStorage.SetValue(value);
-				}
-
-				var interpreter = serviceLocator.GetService<IObjectInterpreter>();
-				if (interpreter.InterpretAsState(concreteStorage) is ClassState state)
-				{
-					me.SetValue(instance);
-					return state;
-				}
-				else
-				{
-					throw MakeException($"型 {derivedType.FullName} はクラス型ではありません。");
-				}
-			}
-			else
+			if (!(context.AsmRepo.CreateInstance(derivedType) is { } instance))
 			{
 				throw MakeException($"型 {derivedType.FullName} のインスタンスを作成できません。");
 			}
+
+			var me = subtypingStorage;
+
+			// 元の ValueStorage とは型の抽象度が異なる新しい ValueStorage
+			var concreteStorage = new ValueStorage(derivedType,
+				me.MemberName,
+				(v, old) => me.SetValue(v),
+				instance);
+
+			if (me.GetValue() is { } value
+			    && value.GetType() is { } loadedType
+			    && loadedType == derivedType)
+			{
+				concreteStorage.SetValue(value);
+			}
+
+			if (!(context.Interpreter.InterpretAsState(concreteStorage) is ClassState state))
+			{
+				throw MakeException($"型 {derivedType.FullName} はクラス型ではありません。");
+			}
+
+			me.SetValue(instance);
+			return state;
 		}
 		
 		private Exception MakeException(string message) => new InvalidOperationException(message

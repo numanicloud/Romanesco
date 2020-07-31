@@ -23,20 +23,20 @@ namespace Romanesco.BuiltinPlugin.Model.States
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
 		public override IObservable<Unit> OnEdited { get; }
 
-		public SubtypingClassState(ValueStorage storage, SubtypingList subtypingList, IServiceLocator serviceLocator)
+		public SubtypingClassState(ValueStorage storage, SubtypingStateContext context)
 			: base(new NoneState())
 		{
 			void AddChoice(Type type)
 			{
-				Choices.Add(new ConcreteSubtypeOption(type, storage, serviceLocator));
+				Choices.Add(new ConcreteSubtypeOption(type, storage, context));
 			}
 
 			Title = new ReactiveProperty<string>(storage.MemberName);
 
 			// 型の選択肢を設定。0番目の選択肢はNoneStateを生成する
 			Choices.Add(new NullSubtypeOption());
-			subtypingList.DerivedTypes.ForEach(AddChoice);
-			subtypingList.OnNewEntry.Subscribe(AddChoice).AddTo(Disposables);
+			context.List.DerivedTypes.ForEach(AddChoice);
+			context.List.OnNewEntry.Subscribe(AddChoice).AddTo(Disposables);
 
 			// 型の初期値をセット
 			SelectedType.Value = storage.GetValue()?.GetType() is { } initialType

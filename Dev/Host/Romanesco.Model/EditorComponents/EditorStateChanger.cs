@@ -1,26 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Subjects;
-using System.Text;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.EditorComponents
 {
-	internal class EditorStateChanger2
+	internal class EditorStateChanger
 	{
 		private readonly IModelFactory factory;
 		private readonly Subject<EditorState> onChangeSubject = new Subject<EditorState>();
 		
 		public IObservable<EditorState> OnChange => onChangeSubject;
 
-		public EditorStateChanger2(IModelFactory factory)
+		public EditorStateChanger(IModelFactory factory)
 		{
 			this.factory = factory;
 		}
 		
-		public void InitializeState([NotNull]ref EditorState store)
+		public void InitializeState([NotNull]out EditorState store)
 		{
 			var state = factory.ResolveEmptyEditorStateAsTransient();
 			store = state;

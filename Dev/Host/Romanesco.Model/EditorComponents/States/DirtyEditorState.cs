@@ -20,7 +20,7 @@ namespace Romanesco.Model.EditorComponents.States
             IProjectSaveService saveService,
             ProjectContext project,
             IProjectModelFactory factory,
-            EditorStateChanger2 stateChanger)
+            EditorStateChanger stateChanger)
             : base(factory, stateChanger)
         {
 			this.projectContext = project;

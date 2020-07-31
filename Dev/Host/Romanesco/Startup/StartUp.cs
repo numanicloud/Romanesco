@@ -1,9 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Automation.Provider;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Extensibility;
 using Romanesco.Infrastructure;
+using Romanesco.Model.Infrastructure;
+using Romanesco.View.Infrastructure;
 
 namespace Romanesco.Startup
 {
@@ -19,10 +23,12 @@ namespace Romanesco.Startup
 
 		public async Task StartAsync(CancellationToken cancellationToken)
 		{
-			var viewFactory = ResolveFactory(GetPluginServices());
+			var api = new ApiFactory(host);
+			var (model, view) = ResolveFactory(GetPluginServices(api));
+			api.ModelFactory = model;
 
 			mainWindow = host.ResolveMainWindow();
-			mainWindow.DataContext = viewFactory.ResolveEditorViewContext();
+			mainWindow.DataContext = view.ResolveEditorViewContext();
 			mainWindow.Show();
 		}
 
@@ -31,7 +37,7 @@ namespace Romanesco.Startup
 			mainWindow?.Close();
 		}
 
-		private View.Infrastructure.IOpenViewFactory ResolveFactory(PluginFactory pluginFactory)
+		private (IOpenModelFactory, IOpenViewFactory) ResolveFactory(PluginFactory pluginFactory)
 		{
 			var modelRequirement = new ModelRequirementFactory(host);
 			var modelFactory = Model.Infrastructure.FactoryProvider
@@ -47,15 +53,17 @@ namespace Romanesco.Startup
 
 			modelRequirement.ViewModel = viewModelFactory;
 
-			return viewFactory;
+			return (modelFactory, viewFactory);
 		}
 
-		public PluginFactory GetPluginServices()
+		public PluginFactory GetPluginServices(IApiFactory api)
 		{
 			var pluginLoader = new PluginLoader();
 			var extensions = pluginLoader.Load("Plugins");
+
 			var serviceCollection = new ServiceCollection();
-			extensions.ConfigureServices(serviceCollection);
+			extensions.ConfigureServices(serviceCollection, api);
+
 			return new PluginFactory(serviceCollection);
 		}
 	}

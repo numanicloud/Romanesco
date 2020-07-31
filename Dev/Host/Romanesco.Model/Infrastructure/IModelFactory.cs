@@ -52,7 +52,7 @@ namespace Romanesco.Model.Infrastructure
 		IModelRequirementFactory Requirement { get; }
 		IPluginFactory Plugin { get; }
 
-		EditorStateChanger2 ResolveEditorStateChanger2();
+		EditorStateChanger ResolveEditorStateChanger2();
 		EmptyEditorState ResolveEmptyEditorStateAsTransient();
 		[Resolution(typeof(WindowsLoadService))]
 		IProjectLoadService ResolveProjectLoadService();

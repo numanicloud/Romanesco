@@ -25,10 +25,10 @@ namespace Romanesco.Model.EditorComponents
         public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable
             => canExecuteSubject;
 
-		public Editor(EditorStateChanger2 stateChanger)
+		public Editor(EditorStateChanger stateChanger)
 		{
             stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
-            stateChanger.InitializeState(ref editorState);
+            stateChanger.InitializeState(out editorState);
         }
 
 		public async Task<ProjectContext?> CreateAsync()

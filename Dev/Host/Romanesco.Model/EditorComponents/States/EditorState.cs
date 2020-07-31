@@ -9,7 +9,7 @@ namespace Romanesco.Model.EditorComponents.States
 	internal abstract class EditorState
 	{
 		private readonly IModelFactory factory;
-		protected EditorStateChanger2 StateChanger { get; }
+		protected EditorStateChanger StateChanger { get; }
 
 		public abstract string Title { get; }
 
@@ -17,7 +17,7 @@ namespace Romanesco.Model.EditorComponents.States
 		public abstract IProjectSaveService GetSaveService();
 		public abstract IProjectHistoryService GetHistoryService();
 
-		protected EditorState(IModelFactory factory, EditorStateChanger2 stateChanger)
+		protected EditorState(IModelFactory factory, EditorStateChanger stateChanger)
 		{
 			this.factory = factory;
 			this.StateChanger = stateChanger;
