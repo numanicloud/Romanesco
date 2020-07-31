@@ -1,5 +1,4 @@
-﻿using Romanesco.Model.EditorComponents;
-using Romanesco.Model.ProjectComponents;
+﻿using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
 using System;
 using System.Linq;

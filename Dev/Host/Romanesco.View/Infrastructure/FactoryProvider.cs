@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Romanesco.View.Infrastructure
+﻿namespace Romanesco.View.Infrastructure
 {
 	public static class FactoryProvider
 	{

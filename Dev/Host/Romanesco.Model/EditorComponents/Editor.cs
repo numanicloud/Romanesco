@@ -9,7 +9,6 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.ProjectComponent;
-using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.EditorComponents
 {

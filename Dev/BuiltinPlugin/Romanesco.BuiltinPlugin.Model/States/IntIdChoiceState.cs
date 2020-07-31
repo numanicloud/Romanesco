@@ -1,7 +1,6 @@
 using Reactive.Bindings;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Model.Basics;
-using Romanesco.Common.Model.Exceptions;
 using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Reactive.Linq;
@@ -27,7 +26,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			FormattedString = SelectedItem.Select(SanitizeNewFormattedString)
 				.ToReactiveProperty(storage.GetValue()?.ToString() ?? "");
 
-			// ’l‚Ì•Ï‰»‚ğ¶ƒf[ƒ^‚Ö”½‰f
+			// ï¿½lï¿½Ì•Ï‰ï¿½ï¿½ğ¶ƒfï¿½[ï¿½^ï¿½Ö”ï¿½ï¿½f
 			SelectedItem.Subscribe(x =>
 			{
 				var id = Master.Value == null ? -1
@@ -37,13 +36,13 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			}).AddTo(Disposables);
 		}
 
-		// •ÒW’†‚ÍŒÄ‚Î‚ê‚È‚¢‚ªAƒ[ƒh’†‚Í‚±‚ÌState‚æ‚èŒã‚Éƒ}ƒXƒ^[‚ª“Ç‚İ‚Ü‚ê‚éê‡‚ª‚ ‚é‚Ì‚Å’x‰„‚Å‚«‚é‚æ‚¤‚É
+		// ï¿½ÒWï¿½ï¿½ï¿½ÍŒÄ‚Î‚ï¿½È‚ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½Í‚ï¿½ï¿½ï¿½Stateï¿½ï¿½ï¿½ï¿½Éƒ}ï¿½Xï¿½^ï¿½[ï¿½ï¿½ï¿½Ç‚İï¿½ï¿½Ü‚ï¿½ï¿½ê‡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Å’xï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½æ‚¤ï¿½ï¿½
 		private void UpdateChoices(string masterName, MasterListContext context)
 		{
 			if (context.Masters.TryGetValue(masterName, out var list) && list.IdType == typeof(int))
 			{
 				Master.Value = list;
-				// ‰Šú’l‚ğƒ[ƒh
+				// ï¿½ï¿½ï¿½ï¿½ï¿½lï¿½ï¿½ï¿½ï¿½[ï¿½h
 				SelectedItem.Value = list.GetById(Storage.GetValue() ?? -1);
 			}
 			else

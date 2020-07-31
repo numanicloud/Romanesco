@@ -1,8 +1,6 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.Model.Basics;
-using Romanesco.Common.Model.Exceptions;
 using Romanesco.Common.Model.Interfaces;
-using System;
 using System.Linq;
 using System.Reactive.Linq;
 using Romanesco.Common.Model.Implementations;

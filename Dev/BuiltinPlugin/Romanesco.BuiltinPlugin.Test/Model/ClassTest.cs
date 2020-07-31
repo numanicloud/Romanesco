@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Basics;
-using Romanesco.Common.Model.Interfaces;
 using Xunit;
 
 namespace Romanesco.BuiltinPlugin.Test.Model

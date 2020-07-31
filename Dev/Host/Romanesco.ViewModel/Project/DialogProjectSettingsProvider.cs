@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
-using Romanesco.ViewModel.Editor;
 using Romanesco.ViewModel.Infrastructure;
 
 namespace Romanesco.ViewModel.Project

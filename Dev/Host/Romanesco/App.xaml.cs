@@ -1,17 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Romanesco.Common.Model.Basics;
-using Romanesco.Common.Model.Interfaces;
-using Romanesco.Extensibility;
-using Romanesco.Model;
-using Romanesco.Model.Services;
 using Romanesco.Startup;
-using Romanesco.View.Entry;
-using Romanesco.ViewModel;
 using System;
 using System.Windows;
 using Deptorygen.GenericHost;
-using Romanesco.Common.Model.Reflections;
 using Romanesco.Infrastructure;
 
 namespace Romanesco

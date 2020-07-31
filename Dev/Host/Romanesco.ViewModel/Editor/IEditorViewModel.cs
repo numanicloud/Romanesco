@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Reactive.Bindings;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
 
 namespace Romanesco.ViewModel.Editor

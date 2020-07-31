@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Romanesco.BuiltinPlugin.Model.Factories;
 using Xunit;
 
 namespace Romanesco.BuiltinPlugin.Test.Model

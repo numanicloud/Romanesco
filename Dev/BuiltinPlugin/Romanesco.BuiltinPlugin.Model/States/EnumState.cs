@@ -1,12 +1,9 @@
 ﻿using Reactive.Bindings;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Implementations;
-using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using Reactive.Bindings.Extensions;
 
 namespace Romanesco.BuiltinPlugin.Model.States
