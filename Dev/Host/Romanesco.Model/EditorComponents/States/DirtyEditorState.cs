@@ -1,11 +1,12 @@
 ﻿using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 
 namespace Romanesco.Model.EditorComponents.States
 {
-	internal class DirtyEditorState : EditorState
+	internal class DirtyEditorState : ProjectSpecifiedEditorState
     {
         private readonly IProjectLoadService loadService;
         private readonly IProjectSaveService saveService;
@@ -18,8 +19,9 @@ namespace Romanesco.Model.EditorComponents.States
             IProjectHistoryService historyService,
             IProjectSaveService saveService,
             ProjectContext project,
-            EditorStateChanger stateChanger)
-            : base(stateChanger)
+            IProjectModelFactory factory,
+            EditorStateChanger2 stateChanger)
+            : base(factory, stateChanger)
         {
 			this.projectContext = project;
             this.saveService = saveService;

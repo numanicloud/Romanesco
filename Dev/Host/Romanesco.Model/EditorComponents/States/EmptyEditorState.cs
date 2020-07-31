@@ -1,4 +1,5 @@
-﻿using Romanesco.Model.Services.History;
+﻿using Romanesco.Model.Infrastructure;
+using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 
@@ -11,8 +12,9 @@ namespace Romanesco.Model.EditorComponents.States
 		public override string Title => "Romanesco - プロジェクトなし";
 
 		public EmptyEditorState(IProjectLoadService loadService,
-			EditorStateChanger stateChanger)
-			: base(stateChanger)
+			IModelFactory factory,
+			EditorStateChanger2 stateChanger)
+			: base(factory, stateChanger)
 		{
 			this.loadService = loadService;
 		}

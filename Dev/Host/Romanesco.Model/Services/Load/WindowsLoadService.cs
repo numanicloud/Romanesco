@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
+using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.Services.Load
 {
@@ -18,19 +19,19 @@ namespace Romanesco.Model.Services.Load
 		private readonly IProjectSettingProvider projectSettingProvider;
 		private readonly IStateDeserializer deserializer;
 		private readonly IDataAssemblyRepository assemblyRepo;
-		private readonly IServiceLocator serviceLocator;
+		private readonly IModelFactory factory;
 		private readonly ObjectInterpreter interpreter;
 
 		public WindowsLoadService(IProjectSettingProvider projectSettingProvider,
 			IStateDeserializer deserializer,
 			IDataAssemblyRepository assemblyRepo,
-			IServiceLocator serviceLocator,
+			IModelFactory factory,
 			ObjectInterpreter interpreter)
 		{
 			this.projectSettingProvider = projectSettingProvider;
 			this.deserializer = deserializer;
 			this.assemblyRepo = assemblyRepo;
-			this.serviceLocator = serviceLocator;
+			this.factory = factory;
 			this.interpreter = interpreter;
 		}
 
@@ -66,7 +67,7 @@ namespace Romanesco.Model.Services.Load
 
 		private async Task<Project?> CreateInternalAsync()
 		{
-			using var editor = serviceLocator.GetService<ProjectSettingsEditor>();
+			using var editor = factory.ResolveProjectSettingsEditorAsTransient();
 			var settings = projectSettingProvider.InputCreateSettings(editor);
 
 			if (settings != null)

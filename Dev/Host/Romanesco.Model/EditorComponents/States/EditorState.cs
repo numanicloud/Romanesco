@@ -1,4 +1,5 @@
 ﻿using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
@@ -7,7 +8,8 @@ namespace Romanesco.Model.EditorComponents.States
 {
 	internal abstract class EditorState
 	{
-		protected EditorStateChanger StateChanger { get; }
+		private readonly IModelFactory factory;
+		protected EditorStateChanger2 StateChanger { get; }
 
 		public abstract string Title { get; }
 
@@ -15,29 +17,30 @@ namespace Romanesco.Model.EditorComponents.States
 		public abstract IProjectSaveService GetSaveService();
 		public abstract IProjectHistoryService GetHistoryService();
 
-		public EditorState(EditorStateChanger stateChanger)
+		protected EditorState(IModelFactory factory, EditorStateChanger2 stateChanger)
 		{
+			this.factory = factory;
 			this.StateChanger = stateChanger;
 		}
 
 		public virtual void OnCreate(ProjectContext project)
 		{
-			StateChanger.ChangeToNew(project);
+			var projectFactory = factory.ResolveProjectModelFactory(project);
+			StateChanger.ChangeState(projectFactory.ResolveNewEditorStateAsTransient());
 		}
 
 		public virtual void OnOpen(ProjectContext project)
 		{
-			StateChanger.ChangeToClean(project);
+			var projectFactory = factory.ResolveProjectModelFactory(project);
+			StateChanger.ChangeState(projectFactory.ResolveCleanEditorStateAsTransient());
 		}
 
 		public virtual void OnSave()
 		{
-			StateChanger.ChangeToClean();
 		}
 
 		public virtual void OnSaveAs()
 		{
-			StateChanger.ChangeToClean();
 		}
 
 		public virtual void OnExport()
@@ -54,7 +57,6 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public virtual void OnEdit()
 		{
-			StateChanger.ChangeToDirty();
 		}
 	}
 }

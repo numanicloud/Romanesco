@@ -9,6 +9,7 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.EditorComponents
 {
@@ -24,10 +25,9 @@ namespace Romanesco.Model.EditorComponents
         public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable
             => canExecuteSubject;
 
-		public Editor(EditorStateChanger stateChanger)
+		public Editor(EditorStateChanger2 stateChanger)
 		{
-            stateChanger.OnChange.Subscribe(x => ChangeState(x))
-	            .AddTo(Disposables);
+            stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
             stateChanger.InitializeState(ref editorState);
         }
 
@@ -61,7 +61,9 @@ namespace Romanesco.Model.EditorComponents
 
             UpdateTitle();
 
-            Observable.Merge(projectContext.Project.Root.States.Select(x => x.OnEdited))
+            projectContext.Project.Root.States
+	            .Select(x => x.OnEdited)
+	            .Merge()
                 .Subscribe(x => OnEdit())
                 .AddTo(Disposables);
 

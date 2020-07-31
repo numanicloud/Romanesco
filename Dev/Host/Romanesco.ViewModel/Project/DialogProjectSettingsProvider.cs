@@ -5,22 +5,22 @@ using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model.Services;
 using Romanesco.ViewModel.Editor;
+using Romanesco.ViewModel.Infrastructure;
 
 namespace Romanesco.ViewModel.Project
 {
 	internal class VmProjectSettingsProvider : IProjectSettingProvider
     {
-		private readonly IServiceLocator serviceLocator;
+	    private readonly IViewModelFactory factory;
 
-		public VmProjectSettingsProvider(IServiceLocator serviceLocator)
+		public VmProjectSettingsProvider(IViewModelFactory factory)
 		{
-			this.serviceLocator = serviceLocator;
+			this.factory = factory;
 		}
 
         public ProjectSettings? InputCreateSettings(ProjectSettingsEditor editor)
         {
-            serviceLocator.GetService<IEditorViewModel>()
-                .ShowProjectSetting(editor);
+            factory.ResolveEditorViewModel().ShowProjectSetting(editor);
 
             if (editor.Succeeded)
             {

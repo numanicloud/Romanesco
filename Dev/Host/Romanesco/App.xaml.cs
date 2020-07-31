@@ -10,6 +10,7 @@ using Romanesco.View.Entry;
 using Romanesco.ViewModel;
 using System;
 using System.Windows;
+using Deptorygen.GenericHost;
 using Romanesco.Common.Model.Reflections;
 using Romanesco.Infrastructure;
 
@@ -30,19 +31,8 @@ namespace Romanesco
 			host = new HostBuilder()
 				.ConfigureServices((context, services) =>
 				{
-					services.AddSingleton<IHostServiceLocator>(provider => new HostServiceLocator(provider))
-						.AddSingleton<IServiceLocator>(provider => new HostServiceLocator(provider))
-						.AddTransient<PluginLoader>()
-						.AddSingleton<MainWindow>()
-						.AddSingleton<IDataAssemblyRepository, DataAssemblyRepository>()
-						.AddSingleton<CommandHistory>()
-						.AddPlugin("Plugins");
-
-					new ModelServiceStartUp().ConfigureServices(services);
-					new ViewModelServiceStartUp().ConfigureServices(services);
-					new ViewServiceStartUp().ConfigureServices(services);
-
-					services.AddHostedService<StartUp>();
+					services.UseDeprovgenFactory(new HostFactory())
+						.AddHostedService<StartUp>();
 				})
 				.Build();
 
