@@ -6,7 +6,7 @@
 
 $CommonProjects1 = "Annotations","Styles"
 $CommonProjects2 = "Extensibility","Model","ViewModel","View"
-$BuiltinPlugins = "",".Model",".Test",".ViewModel",".View"
+$BuiltinPlugins = ".Model",".Test",".ViewModel",".View",""
 
 $path1 = $CommonProjects1 | foreach { "Common\Romanesco.${_}\Romanesco.${_}.csproj" }
 $path2 = $CommonProjects2 | foreach { "Common\Romanesco.Common.${_}\Romanesco.Common.${_}.csproj" }
