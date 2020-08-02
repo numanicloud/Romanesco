@@ -1,5 +1,6 @@
 ﻿function pack([string]$path) {
     Write-Host "==== ${path} をパッケージ化します" -ForegroundColor Cyan;
+    dotnet build $_ -c Debug
     dotnet pack $_ -c Debug -o bin\nupkgs\ --version-suffix $ver --include-source -v minimal;
     sleep 2
 }

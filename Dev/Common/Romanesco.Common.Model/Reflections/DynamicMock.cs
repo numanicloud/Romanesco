@@ -28,13 +28,8 @@ namespace Romanesco.Common.Model.Reflections
 				{
 					return Activator.CreateInstance(type);
 				}
-				else
-				{
-					return null;
-				}
+				return null;
 			}
-
-			Debug.WriteLine("DynamicMock.ctor");
 
 			var p = properties.Where(x => x.CanWrite && x.CanRead)
 				.Select(x => new

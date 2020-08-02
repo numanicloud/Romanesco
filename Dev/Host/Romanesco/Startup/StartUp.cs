@@ -23,8 +23,10 @@ namespace Romanesco.Startup
 		public async Task StartAsync(CancellationToken cancellationToken)
 		{
 			var api = new ApiFactory(host);
-			var (model, view) = ResolveFactory(GetPluginServices(api));
+			var pluginServices = GetPluginServices(api);
+			var (model, view) = ResolveFactory(new PluginFactory(pluginServices));
 			api.ModelFactory = model;
+			api.Provider = pluginServices;
 
 			mainWindow = host.ResolveMainWindow();
 			mainWindow.DataContext = view.ResolveEditorViewContext();
@@ -55,7 +57,7 @@ namespace Romanesco.Startup
 			return (modelFactory, viewFactory);
 		}
 
-		public PluginFactory GetPluginServices(IApiFactory api)
+		public ServiceProvider GetPluginServices(IApiFactory api)
 		{
 			var pluginLoader = new PluginLoader();
 			var extensions = pluginLoader.Load("Plugins");
@@ -63,7 +65,7 @@ namespace Romanesco.Startup
 			var serviceCollection = new ServiceCollection();
 			extensions.ConfigureServices(serviceCollection, api);
 
-			return new PluginFactory(serviceCollection);
+			return serviceCollection.BuildServiceProvider();
 		}
 	}
 }

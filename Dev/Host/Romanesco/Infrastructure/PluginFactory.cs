@@ -12,9 +12,9 @@ namespace Romanesco.Infrastructure
 	{
 		private readonly ServiceProvider provider;
 
-		public PluginFactory(IServiceCollection genericHost)
+		public PluginFactory(ServiceProvider provider)
 		{
-			provider = genericHost.BuildServiceProvider();
+			this.provider = provider;
 		}
 
 		public IEnumerable<IStateFactory> ResolveStateFactories()

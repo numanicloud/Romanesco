@@ -10,5 +10,6 @@ namespace Romanesco.Common.Model.Interfaces
 		IDataAssemblyRepository ResolveDataAssemblyRepository();
 		CommandHistory ResolveCommandHistory();
 		IObjectInterpreter ResolveObjectInterpreter();
+		TService ResolveByPlugins<TService>() where TService : class;
 	}
 }

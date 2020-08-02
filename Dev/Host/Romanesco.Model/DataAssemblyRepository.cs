@@ -20,8 +20,7 @@ namespace Romanesco.Model
 		{
 			if (type.Assembly.ReflectionOnly)
 			{
-				// TODO: DynamicObjectで生成する
-				return null;
+				return new DynamicMock(type.GetProperties(), type.GetFields());
 			}
 			else
 			{
@@ -109,7 +108,8 @@ namespace Romanesco.Model
 
 			var runtimeDirAsms = RuntimeEnvironment.GetRuntimeDirectory()
 				.AsAbsoluteDirectoryPath()
-				.EnumerateFile();
+				.EnumerateFile()
+				.Where(x => x.GetExtension() == ".dll");
 
 			return new PathAssemblyResolver(entryDirAsms.Concat(runtimeDirAsms)
 				.Select(x => x.ToStringRepresentation()));

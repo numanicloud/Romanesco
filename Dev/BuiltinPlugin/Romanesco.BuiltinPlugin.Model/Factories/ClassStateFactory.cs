@@ -3,6 +3,7 @@ using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NacHelpers.Extensions;
@@ -10,6 +11,12 @@ using Romanesco.Common.Model.Reflections;
 
 namespace Romanesco.BuiltinPlugin.Model.Factories
 {
+	class Hoge
+	{
+		[EditorMember(order:99)]
+		public int I { get; set; }
+	}
+
     public class ClassStateFactory : IStateFactory
     {
 		private readonly IDataAssemblyRepository asmRepo;
@@ -19,51 +26,54 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			this.asmRepo = asmRepo;
 		}
 
-        public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
+        public IFieldState? InterpretAsState(ValueStorage storage, StateInterpretFunc interpret)
 		{
-			EditorMemberAttribute? GetMemberAttributeOrDefault(MemberInfo member)
-			{
-				return member.GetCustomAttribute<EditorMemberAttribute>();
-			}
-			IFieldState[] MakeClassMembers(Type t, object o)
-			{
-				var properties = from p in t.GetProperties()
-					let attr = GetMemberAttributeOrDefault(p)
-					select (state: interpret(new ValueStorage(o, p)), attr);
-				var fields = from f in t.GetFields()
-					let attr = GetMemberAttributeOrDefault(f)
-					select (state: interpret(new ValueStorage(o, f)), attr);
-				return properties.Concat(fields)
-					.Where(x => x.attr != null)
-					.OrderBy(x => x.attr!.Order)
-					.Select(x => x.state)
-					.FilterNullRef()
-					.ToArray();
-			}
-
-			var type = settability.Type;
+			var type = storage.Type;
 			if (!type.IsClass)
 			{
 				return null;
 			}
 
 			// 新規作成時は null である場合がある。逆にロード時は値が入ってるので上書き禁止
-			object subject = GetOrCreateInstance(settability);
-			IFieldState[] memberStates = MakeClassMembers(type, subject);
-			return new ClassState(settability, memberStates);
+			object subject = GetOrCreateInstance(storage);
+
+			IFieldState[] MakeClassMembers()
+			{
+				var properties = from p in type.GetProperties()
+					let order = GetMemberAttributesOrder(p)
+					select (state: interpret(new ValueStorage(subject, p)), order);
+
+				var fields = from f in type.GetFields()
+					let order = GetMemberAttributesOrder(f)
+					select (state: interpret(new ValueStorage(subject, f)), order);
+
+				var members = from m in properties.Concat(fields)
+					orderby m.order switch
+					{
+						Ordered ordered => ordered.Order,
+						Nothing _ => -1,
+						_ => throw new Exception()
+					}
+					where m.order is Nothing
+					select m.state;
+
+				return members.FilterNullRef().ToArray();
+			}
+
+			return new ClassState(storage, MakeClassMembers());
 		}
 
-		private object GetOrCreateInstance(ValueStorage settability)
+		private object GetOrCreateInstance(ValueStorage storage)
 		{
-			var type = settability.Type;
-			if (settability.GetValue() is { } subject)
+			var type = storage.Type;
+			if (storage.GetValue() is { } subject)
 			{
 			}
 			else
 			{
-				if (asmRepo.CreateInstance(type) is object classInstance)
+				if (asmRepo.CreateInstance(type) is { } classInstance)
 				{
-					settability.SetValue(classInstance);
+					storage.SetValue(classInstance);
 					subject = classInstance;
 				}
 				else
@@ -73,6 +83,48 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			}
 
 			return subject;
+		}
+		
+		private static IEditorMemberValue GetMemberAttributesOrder(MemberInfo member)
+		{
+			var attribute = member.GetCustomAttributesData()
+				.FirstOrDefault(x =>
+				{
+					return x.AttributeType.FullName == typeof(EditorMemberAttribute).FullName;
+				});
+
+			if (attribute is null)
+			{
+				return new Nothing();
+			}
+
+			var argument = attribute.ConstructorArguments
+				.FirstOrDefault(x => x.ArgumentType == typeof(int));
+
+			if (argument.Value is null)
+			{
+				return new Ordered(default);
+			}
+
+			var orderValue = (int) argument.Value;
+			return new Ordered(orderValue);
+		}
+		
+		private interface IEditorMemberValue
+		{
+		}
+		private struct Ordered : IEditorMemberValue
+		{
+			public Ordered(int order)
+			{
+				Order = order;
+			}
+
+			public int Order { get; }
+		}
+
+		private struct Nothing : IEditorMemberValue
+		{	
 		}
 	}
 }
