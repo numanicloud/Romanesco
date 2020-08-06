@@ -6,7 +6,7 @@ using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.EditorComponents
 {
-	internal class EditorStateChanger
+	internal class EditorStateChanger : IEditorStateChanger
 	{
 		private readonly IModelFactory factory;
 		private readonly Subject<EditorState> onChangeSubject = new Subject<EditorState>();
@@ -17,12 +17,10 @@ namespace Romanesco.Model.EditorComponents
 		{
 			this.factory = factory;
 		}
-		
-		public void InitializeState([NotNull]out EditorState store)
+
+		public EditorState GetInitialState()
 		{
-			var state = factory.ResolveEmptyEditorStateAsTransient();
-			store = state;
-			onChangeSubject.OnNext(state);
+			return factory.ResolveEmptyEditorStateAsTransient();
 		}
 
 		public void ChangeState(EditorState state)

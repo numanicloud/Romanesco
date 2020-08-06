@@ -3,13 +3,14 @@ using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
+using System.Threading.Tasks;
 
 namespace Romanesco.Model.EditorComponents.States
 {
 	internal abstract class EditorState
 	{
 		private readonly IModelFactory factory;
-		protected EditorStateChanger StateChanger { get; }
+		protected IEditorStateChanger StateChanger { get; }
 
 		public abstract string Title { get; }
 
@@ -17,11 +18,14 @@ namespace Romanesco.Model.EditorComponents.States
 		public abstract IProjectSaveService GetSaveService();
 		public abstract IProjectHistoryService GetHistoryService();
 
-		protected EditorState(IModelFactory factory, EditorStateChanger stateChanger)
+		protected EditorState(IModelFactory factory, IEditorStateChanger stateChanger)
 		{
 			this.factory = factory;
 			this.StateChanger = stateChanger;
 		}
+
+		// 怠けでvirtualにしているが、このクラスに更に基底の IEditorState とかが必要かもしれない
+		public virtual async Task<ProjectContext?> CreateAsync() => await GetLoadService().CreateAsync();
 
 		public virtual void OnCreate(ProjectContext project)
 		{

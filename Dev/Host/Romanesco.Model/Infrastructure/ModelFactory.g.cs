@@ -21,7 +21,7 @@ namespace Romanesco.Model.Infrastructure
 		public IModelRequirementFactory Requirement { get; }
 		public IPluginFactory Plugin { get; }
 
-		private EditorStateChanger? _ResolveEditorStateChanger2Cache;
+		private EditorStateChanger? _ResolveEditorStateChangerCache;
 		private WindowsLoadService? _ResolveProjectLoadServiceCache;
 		private SimpleHistoryService? _ResolveProjectHistoryServiceCache;
 		private ProjectSaveServiceFactory? _ResolveProjectSaveServiceFactoryCache;
@@ -38,14 +38,14 @@ namespace Romanesco.Model.Infrastructure
 			Plugin = plugin;
 		}
 
-		public EditorStateChanger ResolveEditorStateChanger2()
+		public IEditorStateChanger ResolveEditorStateChanger()
 		{
-			return _ResolveEditorStateChanger2Cache ??= new EditorStateChanger(this);
+			return _ResolveEditorStateChangerCache ??= new EditorStateChanger(this);
 		}
 
 		public EmptyEditorState ResolveEmptyEditorStateAsTransient()
 		{
-			return new EmptyEditorState(ResolveProjectLoadService(), this, ResolveEditorStateChanger2());
+			return new EmptyEditorState(ResolveProjectLoadService(), this, ResolveEditorStateChanger());
 		}
 
 		public IProjectLoadService ResolveProjectLoadService()
@@ -70,7 +70,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public IEditorFacade ResolveEditorFacade()
 		{
-			return _ResolveEditorFacadeCache ??= new Editor(ResolveEditorStateChanger2());
+			return _ResolveEditorFacadeCache ??= new Editor(ResolveEditorStateChanger());
 		}
 
 		public IStateSerializer ResolveStateSerializer()

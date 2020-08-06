@@ -24,25 +24,58 @@ namespace Romanesco.Model.EditorComponents
         public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable
             => canExecuteSubject;
 
-		public Editor(EditorStateChanger stateChanger)
+		public Editor(IEditorStateChanger stateChanger)
 		{
             stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
-            stateChanger.InitializeState(out editorState);
+
+            editorState = stateChanger.GetInitialState();
+            ChangeState(editorState);
         }
 
 		public async Task<ProjectContext?> CreateAsync()
-        {
-            var projectContext = await ResetProject(x => x.CreateAsync());
-            if (projectContext is { } c)
-			{
-                editorState.OnCreate(projectContext);
-			}
-            return projectContext;
-        }
+		{
+			// ResetProjectメソッドの中では、結局EditorStateが持っているLoadServiceにメッセージを投げてる
+			// EditorState自体にCreate/Loadのメソッドを用意すればよいだけでは？
 
-        public async Task<ProjectContext?> OpenAsync()
+			if (!(await editorState.CreateAsync() is { } projectContext))
+			{
+				return null;
+			}
+
+			UpdateTitle();
+			ObserveEdit(projectContext);
+			editorState.OnCreate(projectContext);
+
+			return projectContext;
+		}
+
+		private void ObserveEdit(ProjectContext projectContext)
+		{
+			projectContext.Project.Root.States
+				.Select(x => x.OnEdited)
+				.Merge()
+				.Subscribe(x => OnEdit())
+				.AddTo(Disposables);
+		}
+
+		public async Task<ProjectContext?> OpenAsync()
         {
-            var projectContext = await ResetProject(x => x.OpenAsync());
+	        Func<IProjectLoadService, Task<ProjectContext?>> generator = x => x.OpenAsync();
+            
+	        var projectContext = await editorState.GetLoadService().OpenAsync();
+	        if (projectContext is null)
+	        {
+		        return null;
+	        }
+
+	        UpdateTitle();
+
+	        projectContext.Project.Root.States
+		        .Select(x => x.OnEdited)
+		        .Merge()
+		        .Subscribe(x => OnEdit())
+		        .AddTo(Disposables);
+
             if (projectContext is { } c)
             {
                 editorState.OnOpen(projectContext);

@@ -13,7 +13,7 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public EmptyEditorState(IProjectLoadService loadService,
 			IModelFactory factory,
-			EditorStateChanger stateChanger)
+			IEditorStateChanger stateChanger)
 			: base(factory, stateChanger)
 		{
 			this.loadService = loadService;
