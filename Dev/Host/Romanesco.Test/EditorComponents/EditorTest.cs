@@ -128,8 +128,8 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
 				.Callback((IObserver<(EditorCommandType, bool)> observer, CommandAvailability av) =>
 				{
-					observer.OnNext((EditorCommandType.Undo, true));
-					observer.OnNext((EditorCommandType.Redo, true));
+					av.Observer.OnNext((EditorCommandType.Undo, true));
+					av.Observer.OnNext((EditorCommandType.Redo, true));
 				});
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
@@ -154,7 +154,7 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.Undo(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
 				.Callback((IObserver<(EditorCommandType, bool)> observer, CommandAvailability av) =>
 				{
-					observer.OnNext((EditorCommandType.Undo, false));
+					av.Observer.OnNext((EditorCommandType.Undo, false));
 				});
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
@@ -175,7 +175,7 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.Redo(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
 				.Callback((IObserver<(EditorCommandType, bool)> observer, CommandAvailability av) =>
 				{
-					observer.OnNext((EditorCommandType.Redo, false));
+					av.Observer.OnNext((EditorCommandType.Redo, false));
 				});
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
