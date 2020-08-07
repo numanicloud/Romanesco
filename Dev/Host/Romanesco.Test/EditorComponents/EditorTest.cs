@@ -26,24 +26,6 @@ namespace Romanesco.Test.EditorComponents
 			this.neverEditorStateChanger = editorStateChanger.Object;
 		}
 
-		private Mock<IProjectLoadService> GetMockProjectLoadService()
-		{
-			var loadService = new Mock<IProjectLoadService>();
-
-			loadService.Setup(x => x.CreateAsync())
-				.Returns(async () => null);
-
-			return loadService;
-		}
-
-		private IEditorState GetMockEditorState(IProjectLoadService loadService)
-		{
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetLoadService())
-				.Returns(loadService);
-			return editorState.Object;
-		}
-
 		[Fact]
 		public void プロジェクトを作成する命令をエディターが現在のステートに割り振る()
 		{
