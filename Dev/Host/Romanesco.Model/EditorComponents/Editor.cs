@@ -47,7 +47,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task<IProjectContext?> OpenAsync()
 		{
-			if (!(await editorState.GetLoadService().OpenAsync() is {} projectContext))
+			if (!(await editorState.OpenAsync() is {} projectContext))
 			{
 				return null;
 			}
