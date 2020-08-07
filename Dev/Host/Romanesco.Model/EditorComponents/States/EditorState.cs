@@ -3,9 +3,7 @@ using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
-using System.Threading.Tasks;
 using Romanesco.Model.Commands;
-using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Model.EditorComponents.States
 {
@@ -78,19 +76,14 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public void UpdateHistoryAvailability(CommandAvailability availability)
 		{
-			availability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
-			availability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
+			availability.UpdateCanExecute(GetHistoryService());
 		}
 		
 		public void UpdateCanExecute(CommandAvailability availability)
 		{
-			availability.UpdateCanExecute(Create, GetLoadService().CanCreate);
-			availability.UpdateCanExecute(Open, GetLoadService().CanOpen);
-			availability.UpdateCanExecute(Save, GetSaveService().CanSave);
-			availability.UpdateCanExecute(SaveAs, GetSaveService().CanSave);
-			availability.UpdateCanExecute(Export, GetSaveService().CanExport);
-			availability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
-			availability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
+			availability.UpdateCanExecute(GetLoadService());
+			availability.UpdateCanExecute(GetSaveService());
+			availability.UpdateCanExecute(GetHistoryService());
 		}
 	}
 }
