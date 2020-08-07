@@ -49,7 +49,7 @@ namespace Romanesco.Model.EditorComponents.States
 		{
 		}
 		
-		public void OnEdit_Refactor(CommandAvailability commandAvailability)
+		public void NotifyEdit(CommandAvailability commandAvailability)
 		{
 			OnEdit();
 			UpdateHistoryAvailability(commandAvailability);

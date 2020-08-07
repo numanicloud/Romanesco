@@ -155,7 +155,7 @@ namespace Romanesco.Test.EditorComponents
 				.Where(x => x.command == EditorCommandType.Undo)
 				.Subscribe(x => raised = true);
 
-			editorState.OnEdit_Refactor(commandAvailability);
+			editorState.NotifyEdit(commandAvailability);
 
 			Assert.True(raised);
 		}
@@ -172,7 +172,7 @@ namespace Romanesco.Test.EditorComponents
 				.Where(x => x.command == EditorCommandType.Redo)
 				.Subscribe(x => raised = true);
 
-			editorState.OnEdit_Refactor(commandAvailability);
+			editorState.NotifyEdit(commandAvailability);
 
 			Assert.True(raised);
 		}

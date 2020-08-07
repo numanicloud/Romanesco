@@ -66,8 +66,7 @@ namespace Romanesco.Model.EditorComponents
 
 		private void OnEdit()
 		{
-			editorState.OnEdit();
-			editorState.UpdateHistoryAvailability(commandAvailability);
+			editorState.NotifyEdit(commandAvailability);
 		}
 
 		public async Task SaveAsync()

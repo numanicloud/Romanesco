@@ -15,8 +15,8 @@ namespace Romanesco.Model.EditorComponents.States
 
 		void OnCreate(IProjectContext project);
 		void OnOpen(IProjectContext project);
-		void OnEdit();
 
+		void NotifyEdit(CommandAvailability commandAvailability);
 		Task SaveAsync();
 		Task SaveAsAsync();
 		Task ExportAsync();
@@ -27,7 +27,6 @@ namespace Romanesco.Model.EditorComponents.States
 		// その場合EditorViewModelにもCommandAvailabilityを注入すれば実装可能そう
 		void Undo(CommandAvailability availability);
 		void Redo(CommandAvailability availability);
-		void UpdateHistoryAvailability(CommandAvailability availability);
 		void UpdateCanExecute(CommandAvailability availability);
 	}
 }

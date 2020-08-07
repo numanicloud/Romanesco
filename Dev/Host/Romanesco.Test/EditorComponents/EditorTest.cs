@@ -75,7 +75,6 @@ namespace Romanesco.Test.EditorComponents
 		public void プロジェクトが作成されるとHistoryの更新をステートに要求する()
 		{
 			// これはもはやEditorStateのテストかも
-			// Editor.OnEdit の中身を EditorState で行うようにすればいいかな
 
 			var editSubject = new Subject<Unit>();
 			var loader = new Mock<IProjectLoadService>();
@@ -89,65 +88,15 @@ namespace Romanesco.Test.EditorComponents
 			}
 
 			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.OnEdit()).Callback(() => { });
 			editorState.Setup(x => x.GetLoadService()).Returns(loader.Object);
-			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<CommandAvailability>()))
-				.Callback(() => { });
+			editorState.Setup(x => x.NotifyEdit(It.IsAny<CommandAvailability>()))
+				.Callback((CommandAvailability x) => { });
 			
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 			var projectResult = editor.CreateAsync().Result;
 			editSubject.OnNext(Unit.Default);
 
-			editorState.Verify(x => x.UpdateHistoryAvailability(It.IsAny<CommandAvailability>()), Times.Once);
-		}
-
-		[Theory]
-		[InlineData(Undo)]
-		[InlineData(Redo)]
-		internal void UndoまたはRedo可能になったときにイベントが発行される(EditorCommandType commandType)
-		{
-			// 2つの部分に分解できるテスト
-			// - プロジェクトが作成されると、Undo/Redoの状態が更新される
-			// - Undo/Redoが可能になるとイベントを発行する
-
-			// これはCanExecuteObservableのテストということになるが、
-			// CanExecuteObservableは他のメンバーにリダイレクトしてるだけなので不要かも？
-
-			// Arrange
-			var editSubject = new Subject<Unit>();
-			var loader = new Mock<IProjectLoadService>();
-			{
-				var iprojectContext = new Mock<IProjectContext>();
-				iprojectContext.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
-					.Returns((Action action) => editSubject.Subscribe(x => action()));
-
-				loader.Setup(x => x.CreateAsync())
-					.Returns(async () => iprojectContext.Object);
-			}
-
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.OnEdit()).Callback(() => { });
-			editorState.Setup(x => x.GetLoadService()).Returns(loader.Object);
-			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<CommandAvailability>()))
-				.Callback((CommandAvailability av) =>
-				{
-					av.UpdateCanExecute(Undo, true);
-					av.UpdateCanExecute(Redo, true);
-				});
-
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
-
-			var raised = false;
-			editor.CanExecuteObservable.Where(x => x.command == commandType)
-				.Where(x => x.canExecute)
-				.Subscribe(x => raised = true);
-
-			// Act
-			var projectResult = editor.CreateAsync().Result;
-			editSubject.OnNext(Unit.Default);
-
-			// Assert
-			Assert.True(raised);
+			editorState.Verify(x => x.NotifyEdit(It.IsAny<CommandAvailability>()), Times.Once);
 		}
 
 		[Fact]
