@@ -37,7 +37,7 @@ namespace Romanesco.Test.EditorComponents
 
 			var editorState = new Mock<IEditorState>();
 			editorState.Setup(x => x.GetLoadService()).Returns(loadService.Object);
-			editorState.Setup(x => x.UpdateCanExecute(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
+			editorState.Setup(x => x.UpdateCanExecute(It.IsAny<CommandAvailability>()))
 				.Callback(() => { });
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
@@ -58,7 +58,7 @@ namespace Romanesco.Test.EditorComponents
 			
 			var editorState = new Mock<IEditorState>();
 			editorState.Setup(x => x.GetLoadService()).Returns(loadService.Object);
-			editorState.Setup(x => x.UpdateCanExecute(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
+			editorState.Setup(x => x.UpdateCanExecute(It.IsAny<CommandAvailability>()))
 				.Callback(() => { });
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
@@ -88,14 +88,14 @@ namespace Romanesco.Test.EditorComponents
 			var editorState = new Mock<IEditorState>();
 			editorState.Setup(x => x.OnEdit()).Callback(() => { });
 			editorState.Setup(x => x.GetLoadService()).Returns(loader.Object);
-			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
+			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<CommandAvailability>()))
 				.Callback(() => { });
 			
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 			var projectResult = editor.CreateAsync().Result;
 			editSubject.OnNext(Unit.Default);
 
-			editorState.Verify(x => x.UpdateHistoryAvailability(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()), Times.Once);
+			editorState.Verify(x => x.UpdateHistoryAvailability(It.IsAny<CommandAvailability>()), Times.Once);
 		}
 
 		[Theory]
@@ -125,8 +125,8 @@ namespace Romanesco.Test.EditorComponents
 			var editorState = new Mock<IEditorState>();
 			editorState.Setup(x => x.OnEdit()).Callback(() => { });
 			editorState.Setup(x => x.GetLoadService()).Returns(loader.Object);
-			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
-				.Callback((IObserver<(EditorCommandType, bool)> observer, CommandAvailability av) =>
+			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<CommandAvailability>()))
+				.Callback((CommandAvailability av) =>
 				{
 					av.Observer.OnNext((EditorCommandType.Undo, true));
 					av.Observer.OnNext((EditorCommandType.Redo, true));
@@ -151,8 +151,8 @@ namespace Romanesco.Test.EditorComponents
 		public void UndoするとUndo可能性が更新される()
 		{
 			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.Undo(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
-				.Callback((IObserver<(EditorCommandType, bool)> observer, CommandAvailability av) =>
+			editorState.Setup(x => x.Undo(It.IsAny<CommandAvailability>()))
+				.Callback((CommandAvailability av) =>
 				{
 					av.Observer.OnNext((EditorCommandType.Undo, false));
 				});
@@ -172,8 +172,8 @@ namespace Romanesco.Test.EditorComponents
 		public void RedoするとRedo可能性が更新される()
 		{
 			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.Redo(It.IsAny<IObserver<(EditorCommandType, bool)>>(), It.IsAny<CommandAvailability>()))
-				.Callback((IObserver<(EditorCommandType, bool)> observer, CommandAvailability av) =>
+			editorState.Setup(x => x.Redo(It.IsAny<CommandAvailability>()))
+				.Callback((CommandAvailability av) =>
 				{
 					av.Observer.OnNext((EditorCommandType.Redo, false));
 				});

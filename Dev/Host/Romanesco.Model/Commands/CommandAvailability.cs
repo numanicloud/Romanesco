@@ -11,7 +11,12 @@ namespace Romanesco.Model.Commands
 
 		public CommandAvailability(IObserver<(EditorCommandType, bool)> observer)
 		{
-			Observer = observer;
+			Observer = observer; 
+		}
+		
+		public void UpdateCanExecute(EditorCommandType commandType, bool canExecute)
+		{
+			Observer.OnNext((commandType, canExecute));
 		}
 	}
 }

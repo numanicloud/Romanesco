@@ -72,7 +72,7 @@ namespace Romanesco.Model.EditorComponents
 		private void OnEdit()
 		{
 			editorState.OnEdit();
-			editorState.UpdateHistoryAvailability(canExecuteSubject, CommandAvailability);
+			editorState.UpdateHistoryAvailability(CommandAvailability);
 		}
 
 		public async Task SaveAsync()
@@ -96,19 +96,19 @@ namespace Romanesco.Model.EditorComponents
 
 		public void Undo()
 		{
-			editorState.Undo(canExecuteSubject, CommandAvailability);
+			editorState.Undo(CommandAvailability);
 		}
 
 		public void Redo()
 		{
-			editorState.Redo(canExecuteSubject, CommandAvailability);
+			editorState.Redo(CommandAvailability);
 		}
 
 		public void ChangeState(IEditorState state)
 		{
 			editorState = state;
 			UpdateTitle();
-			editorState.UpdateCanExecute(canExecuteSubject, CommandAvailability);
+			editorState.UpdateCanExecute(CommandAvailability);
 		}
 
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;

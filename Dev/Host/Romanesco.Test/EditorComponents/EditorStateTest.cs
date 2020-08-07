@@ -29,7 +29,7 @@ namespace Romanesco.Test.EditorComponents
 			subject.Where(x => x.Item1 == EditorCommandType.Undo)
 				.Subscribe(x => raised = true);
 
-			editorState.Undo(subject, availability);
+			editorState.Undo(availability);
 
 			Assert.True(raised);
 		}
@@ -45,7 +45,7 @@ namespace Romanesco.Test.EditorComponents
 			subject.Where(x => x.Item1 == EditorCommandType.Redo)
 				.Subscribe(x => raised = true);
 
-			editorState.Redo(subject, availability);
+			editorState.Redo(availability);
 
 			Assert.True(raised);
 		}
@@ -63,7 +63,7 @@ namespace Romanesco.Test.EditorComponents
 			subject.Where(x => x.Item1 == type)
 				.Subscribe(x => raised = true);
 
-			editorState.UpdateHistoryAvailability(subject, availability);
+			editorState.UpdateHistoryAvailability(availability);
 
 			Assert.True(raised);
 		}

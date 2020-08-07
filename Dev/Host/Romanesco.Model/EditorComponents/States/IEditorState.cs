@@ -31,9 +31,9 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnRedo();
 		void OnEdit();
 
-		void Undo(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability);
-		void Redo(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability);
-		void UpdateHistoryAvailability(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability);
-		void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability);
+		void Undo(CommandAvailability availability);
+		void Redo(CommandAvailability availability);
+		void UpdateHistoryAvailability(CommandAvailability availability);
+		void UpdateCanExecute(CommandAvailability availability);
 	}
 }
