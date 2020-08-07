@@ -3,13 +3,10 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Moq;
-using Romanesco.Common.Model.Basics;
-using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
-using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Xunit;
 

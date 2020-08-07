@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
 using Moq;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
