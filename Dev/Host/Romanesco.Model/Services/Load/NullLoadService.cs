@@ -9,12 +9,12 @@ namespace Romanesco.Model.Services.Load
 
         public bool CanOpen => false;
 
-        public async Task<ProjectContext?> CreateAsync()
+        public async Task<IProjectContext?> CreateAsync()
         {
             return null;
         }
 
-        public async Task<ProjectContext?> OpenAsync()
+        public async Task<IProjectContext?> OpenAsync()
         {
             return null;
         }

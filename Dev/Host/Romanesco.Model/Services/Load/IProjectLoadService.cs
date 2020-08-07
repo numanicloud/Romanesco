@@ -7,7 +7,7 @@ namespace Romanesco.Model.Services.Load
     {
         bool CanCreate { get; }
         bool CanOpen { get; }
-        Task<ProjectContext?> CreateAsync();
-        Task<ProjectContext?> OpenAsync();
+        Task<IProjectContext?> CreateAsync();
+        Task<IProjectContext?> OpenAsync();
     }
 }

@@ -26,15 +26,15 @@ namespace Romanesco.Model.EditorComponents.States
 		}
 
 		// 怠けでvirtualにしているが、このクラスに更に基底の IEditorState とかが必要かもしれない
-		public virtual async Task<ProjectContext?> CreateAsync() => await GetLoadService().CreateAsync();
+		public virtual async Task<IProjectContext?> CreateAsync() => await GetLoadService().CreateAsync();
 
-		public virtual void OnCreate(ProjectContext project)
+		public virtual void OnCreate(IProjectContext project)
 		{
 			var projectFactory = factory.ResolveProjectModelFactory(project);
 			StateChanger.ChangeState(projectFactory.ResolveNewEditorStateAsTransient());
 		}
 
-		public virtual void OnOpen(ProjectContext project)
+		public virtual void OnOpen(IProjectContext project)
 		{
 			var projectFactory = factory.ResolveProjectModelFactory(project);
 			StateChanger.ChangeState(projectFactory.ResolveCleanEditorStateAsTransient());

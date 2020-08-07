@@ -11,14 +11,14 @@ namespace Romanesco.Model.EditorComponents.States
 		private readonly IProjectLoadService loadService;
 		private readonly IProjectSaveService saveService;
 		private readonly IProjectHistoryService historyService;
-		private readonly ProjectContext projectContext;
+		private readonly IProjectContext projectContext;
 
 		public override string Title => $"Romanesco - {System.IO.Path.GetFileName(projectContext.Project.DefaultSavePath ?? "")}";
 
 		public CleanEditorState(IProjectLoadService loadService,
 			IProjectHistoryService historyService,
 			IProjectSaveService saveService,
-			ProjectContext projectContext,
+			IProjectContext projectContext,
 			IProjectModelFactory factory,
 			IEditorStateChanger stateChanger)
 			: base(factory, stateChanger)

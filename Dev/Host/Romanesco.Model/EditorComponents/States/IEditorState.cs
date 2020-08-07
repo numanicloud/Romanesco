@@ -19,10 +19,10 @@ namespace Romanesco.Model.EditorComponents.States
 		IProjectHistoryService GetHistoryService();
 
 		// 怠けでvirtualにしているが、このクラスに更に基底の IEditorState とかが必要かもしれない
-		Task<ProjectContext?> CreateAsync();
+		Task<IProjectContext?> CreateAsync();
 
-		void OnCreate(ProjectContext project);
-		void OnOpen(ProjectContext project);
+		void OnCreate(IProjectContext project);
+		void OnOpen(IProjectContext project);
 		void OnSave();
 		void OnSaveAs();
 		void OnExport();

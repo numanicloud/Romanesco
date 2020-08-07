@@ -69,7 +69,7 @@ namespace Romanesco.Model.Infrastructure
 			return _ResolveProjectSaveServiceFactoryCache ??= new ProjectSaveServiceFactory(ResolveStateSerializer());
 		}
 
-		public IProjectModelFactory ResolveProjectModelFactory(ProjectContext projectContext)
+		public IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext)
 		{
 			return _ResolveProjectModelFactoryCache ??= new ProjectModelFactory(projectContext, this, Requirement, Plugin);
 		}

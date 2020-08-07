@@ -132,18 +132,12 @@ namespace Romanesco.Test.EditorComponents
 			var editSubject = new Subject<Unit>();
 			var loader = new Mock<IProjectLoadService>();
 			{
-				var rootState = new Mock<IFieldState>();
-				rootState.Setup(x => x.OnEdited)
-					.Returns(editSubject);
-
-				var project = new Mock<IProject>();
-				project.Setup(x => x.Root)
-					.Returns(() => new StateRoot(new object(), new []{ rootState.Object }));
-
-				var projectContext = new ProjectContext(project.Object, new Mock<IProjectTypeExporter>().Object);
+				var iprojectContext = new Mock<IProjectContext>();
+				iprojectContext.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
+					.Returns((Action action) => editSubject.Subscribe(x => action()));
 
 				loader.Setup(x => x.CreateAsync())
-					.Returns(async () => projectContext);
+					.Returns(async () => iprojectContext.Object);
 			}
 
 			/* ここでぶったぎりたい */

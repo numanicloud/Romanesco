@@ -39,12 +39,12 @@ namespace Romanesco.Model.Services.Load
 
 		public bool CanOpen => true;
 
-		public async Task<ProjectContext?> CreateAsync()
+		public async Task<IProjectContext?> CreateAsync()
 		{
 			return await ResetProject(CreateInternalAsync);
 		}
 
-		public async Task<ProjectContext?> OpenAsync()
+		public async Task<IProjectContext?> OpenAsync()
 		{
 			return await ResetProject(OpenInternalAsync);
 		}

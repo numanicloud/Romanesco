@@ -62,6 +62,6 @@ namespace Romanesco.Model.Infrastructure
 		ProjectSaveServiceFactory ResolveProjectSaveServiceFactory();
 
 		[Resolution(typeof(ProjectModelFactory))]
-		IProjectModelFactory ResolveProjectModelFactory(ProjectContext projectContext);
+		IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext);
 	}
 }

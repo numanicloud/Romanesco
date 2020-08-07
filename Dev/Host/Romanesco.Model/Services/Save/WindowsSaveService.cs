@@ -12,14 +12,14 @@ namespace Romanesco.Model.Services.Save
 	internal class WindowsSaveService : IProjectSaveService
     {
         private readonly IStateSerializer saveSerializer;
-		private readonly ProjectContext context;
+		private readonly IProjectContext context;
 
         public bool CanSave => true;
 
         public bool CanExport => true;
 
         public WindowsSaveService(IStateSerializer saveSerializer,
-            ProjectContext context)
+            IProjectContext context)
         {
             this.saveSerializer = saveSerializer;
 			this.context = context;

@@ -32,7 +32,7 @@ namespace Romanesco.Model.EditorComponents
             ChangeState(editorState);
         }
 
-		public async Task<ProjectContext?> CreateAsync()
+		public async Task<IProjectContext?> CreateAsync()
 		{
 			if (!(await editorState.GetLoadService().CreateAsync() is { } projectContext))
 			{
@@ -46,7 +46,7 @@ namespace Romanesco.Model.EditorComponents
 			return projectContext;
 		}
 
-		public async Task<ProjectContext?> OpenAsync()
+		public async Task<IProjectContext?> OpenAsync()
         {
 	        if (!(await editorState.GetLoadService().OpenAsync() is {} projectContext))
 	        {
