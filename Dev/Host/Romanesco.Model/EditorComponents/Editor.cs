@@ -34,9 +34,6 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task<ProjectContext?> CreateAsync()
 		{
-			// ResetProjectメソッドの中では、結局EditorStateが持っているLoadServiceにメッセージを投げてる
-			// EditorState自体にCreate/Loadのメソッドを用意すればよいだけでは？
-
 			if (!(await editorState.GetLoadService().CreateAsync() is { } projectContext))
 			{
 				return null;
@@ -122,7 +119,7 @@ namespace Romanesco.Model.EditorComponents
         {
             editorState = state;
             UpdateTitle();
-            UpdateCanExecute(canExecuteSubject);
+            editorState.UpdateCanExecute(canExecuteSubject);
         }
 
         private void OnEdit()
@@ -134,12 +131,6 @@ namespace Romanesco.Model.EditorComponents
         }
 
         private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
-
-        private void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer)
-        {
-            editorState.UpdateCanExecute(observer);
-        }
-
         public void Dispose()
         {
 	        canExecuteSubject.Dispose();
