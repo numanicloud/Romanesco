@@ -16,7 +16,7 @@ namespace Romanesco.Model.ProjectComponents
 {
 	internal static class ProjectConverter
 	{
-		public static ProjectData ToData(Project project, IStateSerializer serializer)
+		public static ProjectData ToData(IProject project, IStateSerializer serializer)
 		{
 			return new ProjectData
 			{

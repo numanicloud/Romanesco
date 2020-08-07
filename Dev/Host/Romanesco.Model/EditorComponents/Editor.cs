@@ -39,7 +39,7 @@ namespace Romanesco.Model.EditorComponents
 				return null;
 			}
 
-			UpdateTitle();
+            UpdateTitle();
 			ObserveEdit(projectContext);
 			editorState.OnCreate(projectContext);
 

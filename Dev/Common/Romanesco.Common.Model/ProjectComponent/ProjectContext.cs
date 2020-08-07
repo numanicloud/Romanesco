@@ -5,9 +5,9 @@ namespace Romanesco.Common.Model.ProjectComponent
 	public class ProjectContext
 	{
 		public IProjectTypeExporter Exporter { get; }
-		public Project Project { get; }
+		public IProject Project { get; }
 
-		public ProjectContext(Project project, IProjectTypeExporter exporter)
+		public ProjectContext(IProject project, IProjectTypeExporter exporter)
 		{
 			Project = project;
 			Exporter = exporter;

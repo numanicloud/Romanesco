@@ -14,7 +14,7 @@ namespace Romanesco.Common.Model.ProjectComponent
         }
     }
 
-    public class Project
+    public class Project : IProject
     {
         public ProjectSettings Settings { get; }
         public StateRoot Root { get; }

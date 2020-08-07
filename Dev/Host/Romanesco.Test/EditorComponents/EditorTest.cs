@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Moq;
+using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
@@ -12,7 +16,7 @@ namespace Romanesco.Test.EditorComponents
 {
 	public class EditorTest
 	{
-		private IEditorStateChanger neverEditorStateChanger;
+		private readonly IEditorStateChanger neverEditorStateChanger;
 
 		public EditorTest()
 		{
@@ -119,13 +123,35 @@ namespace Romanesco.Test.EditorComponents
 			Assert.True(raised);
 		}
 
-		public void Undo可能になったときにイベントが発行される()
+		[Theory]
+		[InlineData(EditorCommandType.Undo)]
+		[InlineData(EditorCommandType.Redo)]
+		internal void UndoまたはRedo可能になったときにイベントが発行される(EditorCommandType commandType)
 		{
+			// Arrange
+			var editSubject = new Subject<Unit>();
+
+			var rootState = new Mock<IFieldState>();
+			rootState.Setup(x => x.OnEdited)
+				.Returns(editSubject);
+
+			var project = new Mock<IProject>();
+			project.Setup(x => x.Root)
+				.Returns(() => new StateRoot(new object(), new []{ rootState.Object }));
+
+			var projectContext = new ProjectContext(project.Object, new Mock<IProjectTypeExporter>().Object);
+
+			var loader = new Mock<IProjectLoadService>();
+			loader.Setup(x => x.CreateAsync())
+				.Returns(async () => projectContext);
+
 			var okHistory = new Mock<IProjectHistoryService>();
 			okHistory.Setup(x => x.CanUndo).Returns(true);
+			okHistory.Setup(x => x.CanRedo).Returns(true);
 
 			var ngHistory = new Mock<IProjectHistoryService>();
 			ngHistory.Setup(x => x.CanUndo).Returns(false);
+			ngHistory.Setup(x => x.CanRedo).Returns(false);
 
 			IProjectHistoryService currentHistory = ngHistory.Object;
 			var editorState = new Mock<IEditorState>();
@@ -133,12 +159,22 @@ namespace Romanesco.Test.EditorComponents
 				.Callback(() => currentHistory = okHistory.Object);
 			editorState.Setup(x => x.GetHistoryService())
 				.Returns(() => currentHistory);
-
-			// いったん、OnEditをSubscribeさせないといけない
-			// - ProjectContext がモック可能である必要がある
-			// - あるいは、OnEditイベントを挿し込めるようにする
+			editorState.Setup(x => x.GetLoadService())
+				.Returns(loader.Object);
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+
+			bool raised = false;
+			editor.CanExecuteObservable.Where(x => x.command == commandType)
+				.Where(x => x.canExecute)
+				.Subscribe(x => raised = true);
+
+			// Act
+			var projectResult = editor.CreateAsync().Result;
+			editSubject.OnNext(Unit.Default);
+
+			// Assert
+			Assert.True(raised);
 		}
 	}
 }
