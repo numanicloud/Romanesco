@@ -71,7 +71,7 @@ namespace Romanesco.Model.EditorComponents.States
 			var history = GetHistoryService();
 			history.Undo();
 			OnUndo();
-			UpdateCanExecute(availability.Observer, EditorCommandType.Undo, history.CanUndo);
+			UpdateCanExecute(availability, EditorCommandType.Undo, history.CanUndo);
 		}
 		
 		public void Redo(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability)
@@ -79,14 +79,14 @@ namespace Romanesco.Model.EditorComponents.States
 			var history = GetHistoryService();
 			history.Redo();
 			OnRedo();
-			UpdateCanExecute(availability.Observer, EditorCommandType.Redo, history.CanRedo);
+			UpdateCanExecute(availability, EditorCommandType.Redo, history.CanRedo);
 		}
 
 		public void UpdateHistoryAvailability(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability)
 		{
 			var history = GetHistoryService();
-			UpdateCanExecute(availability.Observer, EditorCommandType.Undo, history.CanUndo);
-			UpdateCanExecute(availability.Observer, EditorCommandType.Redo, history.CanRedo);
+			UpdateCanExecute(availability, EditorCommandType.Undo, history.CanUndo);
+			UpdateCanExecute(availability, EditorCommandType.Redo, history.CanRedo);
 		}
 		
 		public void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability)
@@ -95,19 +95,19 @@ namespace Romanesco.Model.EditorComponents.States
 			// 列挙子を使う代わりに対応した名前のメソッドを用意する
 			// その中にLoadServiceなどを直接持たせて、CanCreateなどを読み取らせたい
 
-			UpdateCanExecute(availability.Observer, Create, GetLoadService().CanCreate);
-			UpdateCanExecute(availability.Observer, Open, GetLoadService().CanOpen);
-			UpdateCanExecute(availability.Observer, Save, GetSaveService().CanSave);
-			UpdateCanExecute(availability.Observer, SaveAs, GetSaveService().CanSave);
-			UpdateCanExecute(availability.Observer, Export, GetSaveService().CanExport);
-			UpdateCanExecute(availability.Observer, EditorCommandType.Undo, GetHistoryService().CanUndo);
-			UpdateCanExecute(availability.Observer, EditorCommandType.Redo, GetHistoryService().CanRedo);
+			UpdateCanExecute(availability, Create, GetLoadService().CanCreate);
+			UpdateCanExecute(availability, Open, GetLoadService().CanOpen);
+			UpdateCanExecute(availability, Save, GetSaveService().CanSave);
+			UpdateCanExecute(availability, SaveAs, GetSaveService().CanSave);
+			UpdateCanExecute(availability, Export, GetSaveService().CanExport);
+			UpdateCanExecute(availability, EditorCommandType.Undo, GetHistoryService().CanUndo);
+			UpdateCanExecute(availability, EditorCommandType.Redo, GetHistoryService().CanRedo);
 		}
 
-		private static void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer, EditorCommandType commandType,
+		private static void UpdateCanExecute(CommandAvailability availability, EditorCommandType commandType,
 			bool canExecute)
 		{
-			observer.OnNext((commandType, canExecute));
+			availability.Observer.OnNext((commandType, canExecute));
 		}
 	}
 }
