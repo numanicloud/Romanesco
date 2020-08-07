@@ -4,6 +4,7 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
+using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.ProjectComponents;
@@ -60,6 +61,7 @@ namespace Romanesco.Model.Infrastructure
 		[Resolution(typeof(SimpleHistoryService))]
 		IProjectHistoryService ResolveProjectHistoryService();
 		ProjectSaveServiceFactory ResolveProjectSaveServiceFactory();
+		CommandAvailability ResolveCommandAvailability();
 
 		[Resolution(typeof(ProjectModelFactory))]
 		IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext);

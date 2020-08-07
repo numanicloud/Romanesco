@@ -7,6 +7,7 @@ using Romanesco.Model.Services.Save;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.History;
+using Romanesco.Model.Commands;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Services.Serialize;
 using Romanesco.Model.ProjectComponents;
@@ -82,6 +83,11 @@ namespace Romanesco.Model.Infrastructure
 		public ProjectSaveServiceFactory ResolveProjectSaveServiceFactory()
 		{
 			return Model.ResolveProjectSaveServiceFactory();
+		}
+
+		public CommandAvailability ResolveCommandAvailability()
+		{
+			return Model.ResolveCommandAvailability();
 		}
 
 		public IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext)

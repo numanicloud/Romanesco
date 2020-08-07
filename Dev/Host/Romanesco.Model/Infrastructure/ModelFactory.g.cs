@@ -7,6 +7,7 @@ using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Save;
+using Romanesco.Model.Commands;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Services.Serialize;
 using Romanesco.Model.ProjectComponents;
@@ -26,6 +27,7 @@ namespace Romanesco.Model.Infrastructure
 		private WindowsLoadService? _ResolveProjectLoadServiceCache;
 		private SimpleHistoryService? _ResolveProjectHistoryServiceCache;
 		private ProjectSaveServiceFactory? _ResolveProjectSaveServiceFactoryCache;
+		private CommandAvailability? _ResolveCommandAvailabilityCache;
 		private ProjectModelFactory? _ResolveProjectModelFactoryCache;
 		private Editor? _ResolveEditorFacadeCache;
 		private NewtonsoftStateSerializer? _ResolveStateSerializerCache;
@@ -69,6 +71,11 @@ namespace Romanesco.Model.Infrastructure
 			return _ResolveProjectSaveServiceFactoryCache ??= new ProjectSaveServiceFactory(ResolveStateSerializer());
 		}
 
+		public CommandAvailability ResolveCommandAvailability()
+		{
+			return _ResolveCommandAvailabilityCache ??= new CommandAvailability();
+		}
+
 		public IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext)
 		{
 			return _ResolveProjectModelFactoryCache ??= new ProjectModelFactory(projectContext, this, Requirement, Plugin);
@@ -76,7 +83,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public IEditorFacade ResolveEditorFacade()
 		{
-			return _ResolveEditorFacadeCache ??= new Editor(ResolveEditorStateChanger(), ResolveEditorState());
+			return _ResolveEditorFacadeCache ??= new Editor(ResolveEditorStateChanger(), ResolveEditorState(), ResolveCommandAvailability());
 		}
 
 		public IStateSerializer ResolveStateSerializer()
@@ -106,6 +113,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public void Dispose()
 		{
+			_ResolveCommandAvailabilityCache?.Dispose();
 			_ResolveProjectModelFactoryCache?.Dispose();
 			_ResolveEditorFacadeCache?.Dispose();
 		}

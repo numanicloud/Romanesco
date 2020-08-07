@@ -38,7 +38,7 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.UpdateCanExecute(It.IsAny<CommandAvailability>()))
 				.Callback(() => { });
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			// Act
 			var projectContext = editor.CreateAsync().Result;
@@ -59,7 +59,7 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.UpdateCanExecute(It.IsAny<CommandAvailability>()))
 				.Callback(() => { });
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			var projectContext = editor.OpenAsync().Result;
 
@@ -89,7 +89,7 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<CommandAvailability>()))
 				.Callback(() => { });
 			
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 			var projectResult = editor.CreateAsync().Result;
 			editSubject.OnNext(Unit.Default);
 
@@ -130,7 +130,7 @@ namespace Romanesco.Test.EditorComponents
 					av.UpdateCanExecute(Redo, true);
 				});
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			var raised = false;
 			editor.CanExecuteObservable.Where(x => x.command == commandType)
@@ -152,7 +152,7 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.Undo(It.IsAny<CommandAvailability>()))
 				.Callback((CommandAvailability av) => av.UpdateCanExecute(Undo, false));
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			bool raised = false;
 			using var disposable = editor.CanExecuteObservable
@@ -170,7 +170,7 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.Redo(It.IsAny<CommandAvailability>()))
 				.Callback((CommandAvailability av) => av.UpdateCanExecute(Redo, false));
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			bool raised = false;
 			using var disposable = editor.CanExecuteObservable

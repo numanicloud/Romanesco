@@ -13,22 +13,22 @@ namespace Romanesco.Model.EditorComponents
 {
 	internal sealed class Editor : IEditorFacade, IDisposable
 	{
+		private readonly CommandAvailability commandAvailability;
 		private IEditorState editorState;
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
 		public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable
-			=> CommandAvailability.Observable;
-		private CommandAvailability CommandAvailability { get; }
+			=> commandAvailability.Observable;
 
-		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
+		public Editor(IEditorStateChanger stateChanger, IEditorState initialState, CommandAvailability commandAvailability)
 		{
 			stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
 
 			editorState = initialState;
 			ChangeState(editorState);
 
-			CommandAvailability = new CommandAvailability();
+			this.commandAvailability = commandAvailability;
 		}
 
 		public async Task<IProjectContext?> CreateAsync()
@@ -67,7 +67,7 @@ namespace Romanesco.Model.EditorComponents
 		private void OnEdit()
 		{
 			editorState.OnEdit();
-			editorState.UpdateHistoryAvailability(CommandAvailability);
+			editorState.UpdateHistoryAvailability(commandAvailability);
 		}
 
 		public async Task SaveAsync()
@@ -91,25 +91,25 @@ namespace Romanesco.Model.EditorComponents
 
 		public void Undo()
 		{
-			editorState.Undo(CommandAvailability);
+			editorState.Undo(commandAvailability);
 		}
 
 		public void Redo()
 		{
-			editorState.Redo(CommandAvailability);
+			editorState.Redo(commandAvailability);
 		}
 
 		public void ChangeState(IEditorState state)
 		{
 			editorState = state;
 			UpdateTitle();
-			editorState.UpdateCanExecute(CommandAvailability);
+			editorState.UpdateCanExecute(commandAvailability);
 		}
 
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
 		public void Dispose()
 		{
-			CommandAvailability.Dispose();
+			commandAvailability.Dispose();
 			ApplicationTitle.Dispose();
 			foreach (var disposable in Disposables)
 			{
