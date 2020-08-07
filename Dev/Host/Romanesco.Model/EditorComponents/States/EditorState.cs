@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Romanesco.Model.EditorComponents.States
 {
-	internal abstract class EditorState
+	internal abstract class EditorState : IEditorState
 	{
 		private readonly IModelFactory factory;
 		protected IEditorStateChanger StateChanger { get; }

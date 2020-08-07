@@ -14,7 +14,7 @@ namespace Romanesco.Model.EditorComponents
 {
 	internal sealed class Editor : IEditorFacade, IDisposable
     {
-        private EditorState editorState;
+        private IEditorState editorState;
         public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
         private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
@@ -24,11 +24,11 @@ namespace Romanesco.Model.EditorComponents
         public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable
             => canExecuteSubject;
 
-		public Editor(IEditorStateChanger stateChanger)
+		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
 		{
             stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
 
-            editorState = stateChanger.GetInitialState();
+            editorState = initialState;
             ChangeState(editorState);
         }
 
@@ -37,7 +37,7 @@ namespace Romanesco.Model.EditorComponents
 			// ResetProjectメソッドの中では、結局EditorStateが持っているLoadServiceにメッセージを投げてる
 			// EditorState自体にCreate/Loadのメソッドを用意すればよいだけでは？
 
-			if (!(await editorState.CreateAsync() is { } projectContext))
+			if (!(await editorState.GetLoadService().CreateAsync() is { } projectContext))
 			{
 				return null;
 			}
@@ -83,25 +83,6 @@ namespace Romanesco.Model.EditorComponents
             return projectContext;
         }
 
-        private async Task<ProjectContext?> ResetProject(Func<IProjectLoadService, Task<ProjectContext?>> generator)
-        {
-            var projectContext = await generator(editorState.GetLoadService());
-            if (projectContext is null)
-            {
-                return null;
-            }
-
-            UpdateTitle();
-
-            projectContext.Project.Root.States
-	            .Select(x => x.OnEdited)
-	            .Merge()
-                .Subscribe(x => OnEdit())
-                .AddTo(Disposables);
-
-            return projectContext;
-        }
-
         public async Task SaveAsync()
         {
             await editorState.GetSaveService().SaveAsync();
@@ -137,7 +118,7 @@ namespace Romanesco.Model.EditorComponents
             canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
         }
 
-        public void ChangeState(EditorState state)
+        public void ChangeState(IEditorState state)
         {
             editorState = state;
             UpdateTitle();

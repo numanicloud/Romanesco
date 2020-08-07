@@ -59,6 +59,11 @@ namespace Romanesco.Model.Infrastructure
 			return Model.ResolveEditorStateChanger();
 		}
 
+		public IEditorState ResolveEditorState()
+		{
+			return Model.ResolveEditorState();
+		}
+
 		public EmptyEditorState ResolveEmptyEditorStateAsTransient()
 		{
 			return Model.ResolveEmptyEditorStateAsTransient();

@@ -52,6 +52,8 @@ namespace Romanesco.Model.Infrastructure
 
 		[Resolution(typeof(EditorStateChanger))]
 		IEditorStateChanger ResolveEditorStateChanger();
+		[Resolution(typeof(EmptyEditorState))]
+		IEditorState ResolveEditorState();
 		EmptyEditorState ResolveEmptyEditorStateAsTransient();
 		[Resolution(typeof(WindowsLoadService))]
 		IProjectLoadService ResolveProjectLoadService();
