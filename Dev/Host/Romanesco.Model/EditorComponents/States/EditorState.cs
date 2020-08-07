@@ -65,6 +65,12 @@ namespace Romanesco.Model.EditorComponents.States
 			OnSaveAs();
 		}
 		
+		public async Task ExportAsync()
+		{
+			await GetSaveService().ExportAsync();
+			OnExport();
+		}
+		
 		public void Undo(CommandAvailability availability)
 		{
 			GetHistoryService().Undo();

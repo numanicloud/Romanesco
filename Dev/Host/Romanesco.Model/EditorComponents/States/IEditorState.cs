@@ -16,8 +16,6 @@ namespace Romanesco.Model.EditorComponents.States
 
 		void OnCreate(IProjectContext project);
 		void OnOpen(IProjectContext project);
-		void OnSave();
-		void OnSaveAs();
 		void OnExport();
 		void OnEdit();
 

@@ -98,17 +98,6 @@ namespace Romanesco.Test.EditorComponents
 			saveService.Verify(x => x.SaveAsync(), Times.Once);
 		}
 
-		private static DirtyEditorState GetMockEditorStateToSave(Mock<IProjectSaveService> saveService)
-		{
-			return new DirtyEditorState(
-				Mock.Of<IProjectLoadService>(),
-				Mock.Of<IProjectHistoryService>(),
-				saveService.Object,
-				Mock.Of<IProjectContext>(),
-				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>());
-		}
-
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
 		{
@@ -120,6 +109,17 @@ namespace Romanesco.Test.EditorComponents
 			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
 		}
 
+		[Fact]
+		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
+		{
+			var saveService = GetMockSaveService();
+			var editorState = GetMockEditorStateToSave(saveService);
+
+			editorState.ExportAsync().Wait();
+
+			saveService.Verify(x => x.ExportAsync(), Times.Once);
+		}
+
 		private static Mock<IProjectSaveService> GetMockSaveService()
 		{
 			var saveService = new Mock<IProjectSaveService>();
@@ -127,7 +127,20 @@ namespace Romanesco.Test.EditorComponents
 				.Callback(async () => { });
 			saveService.Setup(x => x.SaveAsAsync())
 				.Callback(async () => { });
+			saveService.Setup(x => x.ExportAsync())
+				.Callback(async () => { });
 			return saveService;
+		}
+
+		private static DirtyEditorState GetMockEditorStateToSave(Mock<IProjectSaveService> saveService)
+		{
+			return new DirtyEditorState(
+				Mock.Of<IProjectLoadService>(),
+				Mock.Of<IProjectHistoryService>(),
+				saveService.Object,
+				Mock.Of<IProjectContext>(),
+				Mock.Of<IProjectModelFactory>(),
+				Mock.Of<IEditorStateChanger>());
 		}
 	}
 }
