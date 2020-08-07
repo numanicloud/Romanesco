@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Reactive.Subjects;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
 
+
 namespace Romanesco.Model.Commands
 {
 	internal class CommandAvailability
 	{
-		public IObserver<(EditorCommandType, bool)> Observer { get; }
+		private IObserver<(EditorCommandType, bool)> Observer { get; }
 
 		public CommandAvailability(IObserver<(EditorCommandType, bool)> observer)
 		{

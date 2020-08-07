@@ -9,6 +9,7 @@ using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Services.Load;
 using Xunit;
+using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Test.EditorComponents
 {
@@ -96,8 +97,8 @@ namespace Romanesco.Test.EditorComponents
 		}
 
 		[Theory]
-		[InlineData(EditorCommandType.Undo)]
-		[InlineData(EditorCommandType.Redo)]
+		[InlineData(Undo)]
+		[InlineData(Redo)]
 		internal void UndoまたはRedo可能になったときにイベントが発行される(EditorCommandType commandType)
 		{
 			// 2つの部分に分解できるテスト
@@ -125,8 +126,8 @@ namespace Romanesco.Test.EditorComponents
 			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<CommandAvailability>()))
 				.Callback((CommandAvailability av) =>
 				{
-					av.Observer.OnNext((EditorCommandType.Undo, true));
-					av.Observer.OnNext((EditorCommandType.Redo, true));
+					av.UpdateCanExecute(Undo, true);
+					av.UpdateCanExecute(Redo, true);
 				});
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
@@ -149,10 +150,7 @@ namespace Romanesco.Test.EditorComponents
 		{
 			var editorState = new Mock<IEditorState>();
 			editorState.Setup(x => x.Undo(It.IsAny<CommandAvailability>()))
-				.Callback((CommandAvailability av) =>
-				{
-					av.Observer.OnNext((EditorCommandType.Undo, false));
-				});
+				.Callback((CommandAvailability av) => av.UpdateCanExecute(Undo, false));
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
@@ -170,10 +168,7 @@ namespace Romanesco.Test.EditorComponents
 		{
 			var editorState = new Mock<IEditorState>();
 			editorState.Setup(x => x.Redo(It.IsAny<CommandAvailability>()))
-				.Callback((CommandAvailability av) =>
-				{
-					av.Observer.OnNext((EditorCommandType.Redo, false));
-				});
+				.Callback((CommandAvailability av) => av.UpdateCanExecute(Redo, false));
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
