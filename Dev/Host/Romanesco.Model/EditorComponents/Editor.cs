@@ -72,8 +72,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task SaveAsync()
 		{
-			await editorState.GetSaveService().SaveAsync();
-			editorState.OnSave();
+			await editorState.SaveAsync();
 		}
 
 		public async Task SaveAsAsync()
