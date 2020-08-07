@@ -92,10 +92,7 @@ namespace Romanesco.Model.EditorComponents
 
         public void Undo()
         {
-            var history = editorState.GetHistoryService();
-            history.Undo();
-            editorState.OnUndo();
-            canExecuteSubject.OnNext((EditorCommandType.Undo, history.CanUndo));
+            editorState.Undo(canExecuteSubject);
         }
 
         public void Redo()

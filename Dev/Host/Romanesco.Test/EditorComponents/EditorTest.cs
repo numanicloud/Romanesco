@@ -68,62 +68,6 @@ namespace Romanesco.Test.EditorComponents
 		}
 
 		[Fact]
-		public void Undo不能になったときにイベントが発行される()
-		{
-			var canUndo = true;
-
-			var history = new Mock<IProjectHistoryService>();
-			history.Setup(x => x.Undo())
-				.Callback(() => canUndo = false);
-			history.Setup(x => x.CanUndo)
-				.Returns(() => canUndo);
-
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetHistoryService())
-				.Returns(history.Object);
-
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			bool raised = false;
-			var disposable = editor.CanExecuteObservable.Where(x => x.command == EditorCommandType.Undo)
-				.Where(x => !x.canExecute)
-				.Subscribe(x => raised = true);
-
-			editor.Undo();
-			disposable.Dispose();
-
-			Assert.True(raised);
-		}
-
-		[Fact]
-		public void Redo不能になったときにイベントが発行される()
-		{
-			var canRedo = true;
-
-			var history = new Mock<IProjectHistoryService>();
-			history.Setup(x => x.Redo())
-				.Callback(() => canRedo = false);
-			history.Setup(x => x.CanRedo)
-				.Returns(() => canRedo);
-
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetHistoryService())
-				.Returns(history.Object);
-
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			bool raised = false;
-			var disposable = editor.CanExecuteObservable.Where(x => x.command == EditorCommandType.Redo)
-				.Where(x => !x.canExecute)
-				.Subscribe(x => raised = true);
-
-			editor.Redo();
-			disposable.Dispose();
-
-			Assert.True(raised);
-		}
-
-		[Fact]
 		public void プロジェクトが作成されるとHistoryの更新をステートに要求する()
 		{
 			// これはもはやEditorStateのテストかも
@@ -205,16 +149,12 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void UndoするとUndo可能性が更新される()
 		{
-			var history = new Mock<IProjectHistoryService>();
-			history.Setup(x => x.Undo())
-				.Callback(() => { });
-			history.Setup(x => x.CanUndo).Returns(false);
-
 			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.OnUndo())
-				.Callback(() => { });
-			editorState.Setup(x => x.GetHistoryService())
-				.Returns(history.Object);
+			editorState.Setup(x => x.Undo(It.IsAny<IObserver<(EditorCommandType, bool)>>()))
+				.Callback((IObserver<(EditorCommandType, bool)> observer) =>
+				{
+					observer.OnNext((EditorCommandType.Undo, false));
+				});
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 

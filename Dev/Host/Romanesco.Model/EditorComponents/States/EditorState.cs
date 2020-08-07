@@ -63,6 +63,14 @@ namespace Romanesco.Model.EditorComponents.States
 		public virtual void OnEdit()
 		{
 		}
+		
+		public void Undo(IObserver<(EditorCommandType, bool)> observer)
+		{
+			var history = GetHistoryService();
+			history.Undo();
+			OnUndo();
+			observer.OnNext((EditorCommandType.Undo, history.CanUndo));
+		}
 
 		public void UpdateHistoryAvailability(IObserver<(EditorCommandType, bool)> observer)
 		{
