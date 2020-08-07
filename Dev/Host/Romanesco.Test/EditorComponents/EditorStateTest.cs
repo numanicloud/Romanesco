@@ -197,6 +197,7 @@ namespace Romanesco.Test.EditorComponents
 			loadService.Verify(x => x.CreateAsync(), Times.Once);
 		}
 		
+		[Fact]
 		public void プロジェクトを開くサービスを実行できる()
 		{
 			var loadService = new Mock<IProjectLoadService>();
@@ -211,7 +212,7 @@ namespace Romanesco.Test.EditorComponents
 				Mock.Of<IProjectModelFactory>(),
 				Mock.Of<IEditorStateChanger>());
 
-			//var _ = editorState.CreateAsync().Result;
+			var _ = editorState.OpenAsync().Result;
 
 			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}

@@ -53,6 +53,11 @@ namespace Romanesco.Model.EditorComponents.States
 		{
 			return await GetLoadService().CreateAsync();
 		}
+
+		public async Task<IProjectContext?> OpenAsync()
+		{
+			return await GetLoadService().OpenAsync();
+		}
 		
 		public void NotifyEdit(CommandAvailability commandAvailability)
 		{
