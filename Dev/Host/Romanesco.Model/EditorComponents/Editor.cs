@@ -16,12 +16,9 @@ namespace Romanesco.Model.EditorComponents
 		private IEditorState editorState;
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
-		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
-			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
-
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
 		public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable
-			=> canExecuteSubject;
+			=> CommandAvailability.Observable;
 		private CommandAvailability CommandAvailability { get; }
 
 		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
@@ -31,7 +28,7 @@ namespace Romanesco.Model.EditorComponents
 			editorState = initialState;
 			ChangeState(editorState);
 
-			CommandAvailability = new CommandAvailability(canExecuteSubject);
+			CommandAvailability = new CommandAvailability();
 		}
 
 		public async Task<IProjectContext?> CreateAsync()
@@ -112,7 +109,7 @@ namespace Romanesco.Model.EditorComponents
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
 		public void Dispose()
 		{
-			canExecuteSubject.Dispose();
+			CommandAvailability.Dispose();
 			ApplicationTitle.Dispose();
 			foreach (var disposable in Disposables)
 			{

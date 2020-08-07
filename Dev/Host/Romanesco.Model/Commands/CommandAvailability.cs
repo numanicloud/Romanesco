@@ -9,13 +9,18 @@ using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Model.Commands
 {
-	internal class CommandAvailability
+	internal class CommandAvailability : IDisposable
 	{
-		private IObserver<(EditorCommandType, bool)> Observer { get; }
+		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
+			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
 
-		public CommandAvailability(IObserver<(EditorCommandType, bool)> observer)
+		private IObserver<(EditorCommandType, bool)> Observer => canExecuteSubject;
+
+		public IObservable<(EditorCommandType, bool)> Observable => canExecuteSubject;
+
+		public void Dispose()
 		{
-			Observer = observer;
+			canExecuteSubject.Dispose();
 		}
 
 		public void UpdateCanExecute(EditorCommandType commandType, bool canExecute)

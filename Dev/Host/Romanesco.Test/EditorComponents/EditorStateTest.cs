@@ -20,11 +20,10 @@ namespace Romanesco.Test.EditorComponents
 		public void Undoを呼ぶとUndo可能性が更新される()
 		{
 			var editorState = CreateDirtyEditorState(CreateHistoryMock());
-			var subject = new Subject<(EditorCommandType, bool)>();
-			var availability = new CommandAvailability(subject);
+			var availability = new CommandAvailability();
 
 			bool raised = false;
-			subject.Where(x => x.Item1 == EditorCommandType.Undo)
+			availability.Observable.Where(x => x.Item1 == EditorCommandType.Undo)
 				.Subscribe(x => raised = true);
 
 			editorState.Undo(availability);
@@ -36,11 +35,10 @@ namespace Romanesco.Test.EditorComponents
 		public void Redoを呼ぶとRedo可能性が更新される()
 		{
 			var editorState = CreateDirtyEditorState(CreateHistoryMock());
-			var subject = new Subject<(EditorCommandType, bool)>();
-			var availability = new CommandAvailability(subject);
+			var availability = new CommandAvailability();
 
 			bool raised = false;
-			subject.Where(x => x.Item1 == EditorCommandType.Redo)
+			availability.Observable.Where(x => x.Item1 == EditorCommandType.Redo)
 				.Subscribe(x => raised = true);
 
 			editorState.Redo(availability);
@@ -54,11 +52,10 @@ namespace Romanesco.Test.EditorComponents
 		public void UndoとRedoの状態を更新できる(EditorCommandType type)
 		{
 			var editorState = CreateDirtyEditorState(CreateHistoryMock());
-			var subject = new Subject<(EditorCommandType, bool)>();
-			var availability = new CommandAvailability(subject);
+			var availability = new CommandAvailability();
 
 			bool raised = false;
-			subject.Where(x => x.Item1 == type)
+			availability.Observable.Where(x => x.Item1 == type)
 				.Subscribe(x => raised = true);
 
 			editorState.UpdateHistoryAvailability(availability);
