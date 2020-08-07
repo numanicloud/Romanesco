@@ -5,7 +5,7 @@ using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.Common.Model.ProjectComponent
 {
-	public class ProjectContext
+	public class ProjectContext : IProjectContext
 	{
 		public IProjectTypeExporter Exporter { get; }
 		public IProject Project { get; }
@@ -15,7 +15,7 @@ namespace Romanesco.Common.Model.ProjectComponent
 			Project = project;
 			Exporter = exporter;
 		}
-		
+
 		public IDisposable ObserveEdit(Action action)
 		{
 			return Project.Root.States

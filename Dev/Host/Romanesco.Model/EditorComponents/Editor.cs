@@ -60,10 +60,9 @@ namespace Romanesco.Model.EditorComponents
             return projectContext;
         }
 
-		private void ObserveEdit(ProjectContext projectContext)
+		private void ObserveEdit(IProjectContext projectContext)
 		{
-			projectContext.ObserveEdit(OnEdit)
-				.AddTo(Disposables);
+			projectContext.ObserveEdit(OnEdit).AddTo(Disposables);
 		}
 
 		private void OnEdit()
