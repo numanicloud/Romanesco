@@ -66,6 +66,10 @@ namespace Romanesco.Model.EditorComponents.States
 		
 		public void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer)
 		{
+			// IObserver<(EditorCommandType, bool)> をクラスに格上げしたいかも
+			// 列挙子を使う代わりに対応した名前のメソッドを用意する
+			// その中にLoadServiceなどを直接持たせて、CanCreateなどを読み取らせたい
+
 			observer.OnNext((EditorCommandType.Create, GetLoadService().CanCreate));
 			observer.OnNext((EditorCommandType.Open, GetLoadService().CanOpen));
 			observer.OnNext((EditorCommandType.Save, GetSaveService().CanSave));
