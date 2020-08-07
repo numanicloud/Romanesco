@@ -15,9 +15,6 @@ namespace Romanesco.Model.EditorComponents.States
 		IProjectSaveService GetSaveService();
 		IProjectHistoryService GetHistoryService();
 
-		// 怠けでvirtualにしているが、このクラスに更に基底の IEditorState とかが必要かもしれない
-		Task<IProjectContext?> CreateAsync();
-
 		void OnCreate(IProjectContext project);
 		void OnOpen(IProjectContext project);
 		void OnSave();
@@ -27,6 +24,8 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnRedo();
 		void OnEdit();
 
+		// このへんはCommandAvailabilityの責務かも？
+		// あるいはEditor側がCommandAvailabilityを使うようにするとよいか？
 		void Undo(CommandAvailability availability);
 		void Redo(CommandAvailability availability);
 		void UpdateHistoryAvailability(CommandAvailability availability);

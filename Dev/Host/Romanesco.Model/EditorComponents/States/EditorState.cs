@@ -26,9 +26,6 @@ namespace Romanesco.Model.EditorComponents.States
 			this.StateChanger = stateChanger;
 		}
 
-		// 怠けでvirtualにしているが、このクラスに更に基底の IEditorState とかが必要かもしれない
-		public virtual async Task<IProjectContext?> CreateAsync() => await GetLoadService().CreateAsync();
-
 		public virtual void OnCreate(IProjectContext project)
 		{
 			var projectFactory = factory.ResolveProjectModelFactory(project);
@@ -67,25 +64,22 @@ namespace Romanesco.Model.EditorComponents.States
 		
 		public void Undo(CommandAvailability availability)
 		{
-			var history = GetHistoryService();
-			history.Undo();
+			GetHistoryService().Undo();
 			OnUndo();
-			availability.UpdateCanExecute(EditorCommandType.Undo, history.CanUndo);
+			availability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
 		}
 		
 		public void Redo(CommandAvailability availability)
 		{
-			var history = GetHistoryService();
-			history.Redo();
+			GetHistoryService().Redo();
 			OnRedo();
-			availability.UpdateCanExecute(EditorCommandType.Redo, history.CanRedo);
+			availability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
 		}
 
 		public void UpdateHistoryAvailability(CommandAvailability availability)
 		{
-			var history = GetHistoryService();
-			availability.UpdateCanExecute(EditorCommandType.Undo, history.CanUndo);
-			availability.UpdateCanExecute(EditorCommandType.Redo, history.CanRedo);
+			availability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
+			availability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
 		}
 		
 		public void UpdateCanExecute(CommandAvailability availability)
