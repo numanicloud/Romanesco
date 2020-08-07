@@ -57,10 +57,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task<ProjectContext?> OpenAsync()
         {
-	        Func<IProjectLoadService, Task<ProjectContext?>> generator = x => x.OpenAsync();
-            
-	        var projectContext = await editorState.GetLoadService().OpenAsync();
-	        if (projectContext is null)
+	        if (!(await editorState.GetLoadService().OpenAsync() is {} projectContext))
 	        {
 		        return null;
 	        }
