@@ -1,4 +1,7 @@
-﻿using Romanesco.Common.Model.Interfaces;
+﻿using System;
+using System.Linq;
+using System.Reactive.Linq;
+using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.Common.Model.ProjectComponent
 {
@@ -11,6 +14,14 @@ namespace Romanesco.Common.Model.ProjectComponent
 		{
 			Project = project;
 			Exporter = exporter;
+		}
+		
+		public IDisposable ObserveEdit(Action action)
+		{
+			return Project.Root.States
+				.Select(x => x.OnEdited)
+				.Merge()
+				.Subscribe(x => action());
 		}
 	}
 }

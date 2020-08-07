@@ -130,37 +130,42 @@ namespace Romanesco.Test.EditorComponents
 		{
 			// Arrange
 			var editSubject = new Subject<Unit>();
-
-			var rootState = new Mock<IFieldState>();
-			rootState.Setup(x => x.OnEdited)
-				.Returns(editSubject);
-
-			var project = new Mock<IProject>();
-			project.Setup(x => x.Root)
-				.Returns(() => new StateRoot(new object(), new []{ rootState.Object }));
-
-			var projectContext = new ProjectContext(project.Object, new Mock<IProjectTypeExporter>().Object);
-
 			var loader = new Mock<IProjectLoadService>();
-			loader.Setup(x => x.CreateAsync())
-				.Returns(async () => projectContext);
+			{
+				var rootState = new Mock<IFieldState>();
+				rootState.Setup(x => x.OnEdited)
+					.Returns(editSubject);
 
-			var okHistory = new Mock<IProjectHistoryService>();
-			okHistory.Setup(x => x.CanUndo).Returns(true);
-			okHistory.Setup(x => x.CanRedo).Returns(true);
+				var project = new Mock<IProject>();
+				project.Setup(x => x.Root)
+					.Returns(() => new StateRoot(new object(), new []{ rootState.Object }));
 
-			var ngHistory = new Mock<IProjectHistoryService>();
-			ngHistory.Setup(x => x.CanUndo).Returns(false);
-			ngHistory.Setup(x => x.CanRedo).Returns(false);
+				var projectContext = new ProjectContext(project.Object, new Mock<IProjectTypeExporter>().Object);
 
-			IProjectHistoryService currentHistory = ngHistory.Object;
+				loader.Setup(x => x.CreateAsync())
+					.Returns(async () => projectContext);
+			}
+
+			/* ここでぶったぎりたい */
+
 			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.OnEdit())
-				.Callback(() => currentHistory = okHistory.Object);
-			editorState.Setup(x => x.GetHistoryService())
-				.Returns(() => currentHistory);
-			editorState.Setup(x => x.GetLoadService())
-				.Returns(loader.Object);
+			{
+				var okHistory = new Mock<IProjectHistoryService>();
+				okHistory.Setup(x => x.CanUndo).Returns(true);
+				okHistory.Setup(x => x.CanRedo).Returns(true);
+
+				var ngHistory = new Mock<IProjectHistoryService>();
+				ngHistory.Setup(x => x.CanUndo).Returns(false);
+				ngHistory.Setup(x => x.CanRedo).Returns(false);
+
+				IProjectHistoryService currentHistory = ngHistory.Object;
+				editorState.Setup(x => x.OnEdit())
+					.Callback(() => currentHistory = okHistory.Object);
+				editorState.Setup(x => x.GetHistoryService())
+					.Returns(() => currentHistory);
+				editorState.Setup(x => x.GetLoadService())
+					.Returns(loader.Object);
+			}
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 

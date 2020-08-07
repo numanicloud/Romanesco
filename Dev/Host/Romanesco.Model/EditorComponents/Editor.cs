@@ -62,10 +62,7 @@ namespace Romanesco.Model.EditorComponents
 
 		private void ObserveEdit(ProjectContext projectContext)
 		{
-			projectContext.Project.Root.States
-				.Select(x => x.OnEdited)
-				.Merge()
-				.Subscribe(x => OnEdit())
+			projectContext.ObserveEdit(OnEdit)
 				.AddTo(Disposables);
 		}
 
