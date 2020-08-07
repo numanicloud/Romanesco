@@ -109,13 +109,13 @@ namespace Romanesco.Test.EditorComponents
 				Mock.Of<IEditorStateChanger>());
 		}
 
-		//[Fact]
+		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
 		{
 			var saveService = GetMockSaveService();
 			var editorState = GetMockEditorStateToSave(saveService);
 
-			//editorState.SaveAsAsync().Wait();
+			editorState.SaveAsAsync().Wait();
 
 			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
 		}
