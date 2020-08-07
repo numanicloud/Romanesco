@@ -37,17 +37,17 @@ namespace Romanesco.Model.Infrastructure
 
 		public NewEditorState ResolveNewEditorStateAsTransient()
 		{
-			return new NewEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), this, Model.ResolveEditorStateChanger());
+			return new NewEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), this, Model.ResolveEditorStateChanger(), Model.ResolveCommandAvailability());
 		}
 
 		public CleanEditorState ResolveCleanEditorStateAsTransient()
 		{
-			return new CleanEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), _iProjectContext, this, Model.ResolveEditorStateChanger());
+			return new CleanEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), _iProjectContext, this, Model.ResolveEditorStateChanger(), Model.ResolveCommandAvailability());
 		}
 
 		public DirtyEditorState ResolveDirtyEditorStateAsTransient()
 		{
-			return new DirtyEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), _iProjectContext, this, Model.ResolveEditorStateChanger());
+			return new DirtyEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), _iProjectContext, this, Model.ResolveEditorStateChanger(), Model.ResolveCommandAvailability());
 		}
 
 		public IProjectSaveService ResolveProjectSaveService()

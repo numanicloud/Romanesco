@@ -1,4 +1,5 @@
-﻿using Romanesco.Model.Infrastructure;
+﻿using Romanesco.Model.Commands;
+using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.EditorComponents.States
 {
@@ -6,8 +7,9 @@ namespace Romanesco.Model.EditorComponents.States
 	{
 		private readonly IProjectModelFactory factory;
 
-		protected ProjectSpecifiedEditorState(IProjectModelFactory factory, IEditorStateChanger stateChanger)
-			: base(factory, stateChanger)
+		protected ProjectSpecifiedEditorState(IProjectModelFactory factory, IEditorStateChanger stateChanger,
+			CommandAvailability commandAvailability)
+			: base(factory, stateChanger, commandAvailability)
 		{
 			this.factory = factory;
 		}

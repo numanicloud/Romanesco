@@ -19,8 +19,8 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void Undoを呼ぶとUndo可能性が更新される()
 		{
-			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock());
 			var availability = new CommandAvailability();
+			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock(), availability);
 
 			bool raised = false;
 			availability.Observable.Where(x => x.Item1 == EditorCommandType.Undo)
@@ -34,8 +34,8 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void Redoを呼ぶとRedo可能性が更新される()
 		{
-			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock());
 			var availability = new CommandAvailability();
+			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock(), availability);
 
 			bool raised = false;
 			availability.Observable.Where(x => x.Item1 == EditorCommandType.Redo)
@@ -52,8 +52,8 @@ namespace Romanesco.Test.EditorComponents
 		public void UndoとRedoの状態を更新できる(EditorCommandType type)
 		{
 			// これはもはや CommandAvailability のテスト
-			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock());
 			var availability = new CommandAvailability();
+			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock(), availability);
 
 			bool raised = false;
 			availability.Observable.Where(x => x.Item1 == type)
@@ -76,7 +76,8 @@ namespace Romanesco.Test.EditorComponents
 			return history;
 		}
 
-		private static DirtyEditorState GetDirtyEditorStateToHistory(Mock<IProjectHistoryService> history)
+		private static DirtyEditorState GetDirtyEditorStateToHistory(Mock<IProjectHistoryService> history,
+			CommandAvailability commandAvailability)
 		{
 			var editorState = new DirtyEditorState(
 				Mock.Of<IProjectLoadService>(),
@@ -84,7 +85,8 @@ namespace Romanesco.Test.EditorComponents
 				Mock.Of<IProjectSaveService>(),
 				Mock.Of<IProjectContext>(),
 				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>());
+				Mock.Of<IEditorStateChanger>(),
+				commandAvailability);
 			return editorState;
 		}
 		
@@ -92,7 +94,7 @@ namespace Romanesco.Test.EditorComponents
 		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
 		{
 			var saveService = GetMockSaveService();
-			var editorState = GetMockEditorStateToSave(saveService);
+			var editorState = GetMockEditorStateToSave(saveService, new CommandAvailability());
 
 			editorState.SaveAsync().Wait();
 
@@ -103,7 +105,7 @@ namespace Romanesco.Test.EditorComponents
 		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
 		{
 			var saveService = GetMockSaveService();
-			var editorState = GetMockEditorStateToSave(saveService);
+			var editorState = GetMockEditorStateToSave(saveService, new CommandAvailability());
 
 			editorState.SaveAsAsync().Wait();
 
@@ -114,7 +116,7 @@ namespace Romanesco.Test.EditorComponents
 		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
 		{
 			var saveService = GetMockSaveService();
-			var editorState = GetMockEditorStateToSave(saveService);
+			var editorState = GetMockEditorStateToSave(saveService, new CommandAvailability());
 
 			editorState.ExportAsync().Wait();
 
@@ -133,7 +135,8 @@ namespace Romanesco.Test.EditorComponents
 			return saveService;
 		}
 
-		private static DirtyEditorState GetMockEditorStateToSave(Mock<IProjectSaveService> saveService)
+		private static DirtyEditorState GetMockEditorStateToSave(Mock<IProjectSaveService> saveService,
+			CommandAvailability commandAvailability)
 		{
 			return new DirtyEditorState(
 				Mock.Of<IProjectLoadService>(),
@@ -141,15 +144,16 @@ namespace Romanesco.Test.EditorComponents
 				saveService.Object,
 				Mock.Of<IProjectContext>(),
 				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>());
+				Mock.Of<IEditorStateChanger>(),
+				commandAvailability);
 		}
 
 		[Fact]
 		public void OnEditを呼ぶとUndoが更新される()
 		{
 			var history = CreateHistoryMock();
-			var editorState = GetDirtyEditorStateToHistory(history);
 			var commandAvailability = new CommandAvailability();
+			var editorState = GetDirtyEditorStateToHistory(history, commandAvailability);
 
 			bool raised = false;
 			commandAvailability.Observable
@@ -165,8 +169,8 @@ namespace Romanesco.Test.EditorComponents
 		public void OnEditを呼ぶとRedoが更新される()
 		{
 			var history = CreateHistoryMock();
-			var editorState = GetDirtyEditorStateToHistory(history);
 			var commandAvailability = new CommandAvailability();
+			var editorState = GetDirtyEditorStateToHistory(history, commandAvailability);
 
 			bool raised = false;
 			commandAvailability.Observable
@@ -191,7 +195,8 @@ namespace Romanesco.Test.EditorComponents
 				Mock.Of<IProjectSaveService>(),
 				Mock.Of<IProjectContext>(),
 				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>());
+				Mock.Of<IEditorStateChanger>(),
+				new CommandAvailability());
 
 			var _ = editorState.CreateAsync().Result;
 
@@ -211,7 +216,8 @@ namespace Romanesco.Test.EditorComponents
 				Mock.Of<IProjectSaveService>(),
 				Mock.Of<IProjectContext>(),
 				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>());
+				Mock.Of<IEditorStateChanger>(),
+				new CommandAvailability());
 
 			var _ = editorState.OpenAsync().Result;
 

@@ -11,6 +11,8 @@ namespace Romanesco.Model.EditorComponents.States
 	internal abstract class EditorState : IEditorState
 	{
 		private readonly IModelFactory factory;
+		private readonly CommandAvailability commandAvailability;
+
 		protected IEditorStateChanger StateChanger { get; }
 
 		public abstract string Title { get; }
@@ -19,10 +21,12 @@ namespace Romanesco.Model.EditorComponents.States
 		public abstract IProjectSaveService GetSaveService();
 		public abstract IProjectHistoryService GetHistoryService();
 
-		protected EditorState(IModelFactory factory, IEditorStateChanger stateChanger)
+		protected EditorState(IModelFactory factory, IEditorStateChanger stateChanger,
+			CommandAvailability commandAvailability)
 		{
 			this.factory = factory;
 			this.StateChanger = stateChanger;
+			this.commandAvailability = commandAvailability;
 		}
 
 		public virtual void OnCreate(IProjectContext project)

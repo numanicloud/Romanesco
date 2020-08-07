@@ -1,4 +1,5 @@
-﻿using Romanesco.Model.Infrastructure;
+﻿using Romanesco.Model.Commands;
+using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
@@ -13,8 +14,9 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public EmptyEditorState(IProjectLoadService loadService,
 			IModelFactory factory,
-			IEditorStateChanger stateChanger)
-			: base(factory, stateChanger)
+			IEditorStateChanger stateChanger,
+			CommandAvailability commandAvailability)
+			: base(factory, stateChanger, commandAvailability)
 		{
 			this.loadService = loadService;
 		}

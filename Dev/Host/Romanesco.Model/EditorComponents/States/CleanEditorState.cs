@@ -1,4 +1,5 @@
 ﻿using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Commands;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
@@ -20,8 +21,9 @@ namespace Romanesco.Model.EditorComponents.States
 			IProjectSaveService saveService,
 			IProjectContext projectContext,
 			IProjectModelFactory factory,
-			IEditorStateChanger stateChanger)
-			: base(factory, stateChanger)
+			IEditorStateChanger stateChanger,
+			CommandAvailability commandAvailability)
+			: base(factory, stateChanger, commandAvailability)
 		{
 			this.projectContext = projectContext;
 			this.loadService = loadService;
