@@ -25,23 +25,34 @@ namespace Romanesco.Test.EditorComponents
 			this.neverEditorStateChanger = editorStateChanger.Object;
 		}
 
+		private Mock<IProjectLoadService> GetMockProjectLoadService()
+		{
+			var loadService = new Mock<IProjectLoadService>();
+
+			loadService.Setup(x => x.CreateAsync())
+				.Returns(async () => null);
+
+			return loadService;
+		}
+
+		private IEditorState GetMockEditorState(IProjectLoadService loadService)
+		{
+			var editorState = new Mock<IEditorState>();
+			editorState.Setup(x => x.GetLoadService())
+				.Returns(loadService);
+			return editorState.Object;
+		}
+
 		[Fact]
 		public void プロジェクトを作成する命令をエディターが現在のステートに割り振る()
 		{
 			// Arrange
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.CreateAsync())
-				.Returns(async () => null);
-
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetLoadService()).Returns(loadService.Object);
-			editorState.Setup(x => x.UpdateCanExecute(It.IsAny<CommandAvailability>()))
-				.Callback(() => { });
-
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var loadService = GetMockProjectLoadService();
+			var initialState = GetMockEditorState(loadService.Object);
+			var editor = new Editor(neverEditorStateChanger, initialState, new CommandAvailability());
 
 			// Act
-			var projectContext = editor.CreateAsync().Result;
+			var _ = editor.CreateAsync().Result;
 
 			// Assert
 			loadService.Verify(x => x.CreateAsync(), Times.Once);
@@ -50,18 +61,11 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void プロジェクトを開く命令をエディターが現在のステートに割り振る()
 		{
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.OpenAsync())
-				.Returns(async () => null);
-			
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetLoadService()).Returns(loadService.Object);
-			editorState.Setup(x => x.UpdateCanExecute(It.IsAny<CommandAvailability>()))
-				.Callback(() => { });
+			var loadService = GetMockProjectLoadService();
+			var editorState = GetMockEditorState(loadService.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState, new CommandAvailability());
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
-
-			var projectContext = editor.OpenAsync().Result;
+			var _ = editor.OpenAsync().Result;
 
 			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}
