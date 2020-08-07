@@ -63,17 +63,9 @@ namespace Romanesco.Model.EditorComponents
 	        }
 
 	        UpdateTitle();
+            ObserveEdit(projectContext);
+            editorState.OnOpen(projectContext);
 
-	        projectContext.Project.Root.States
-		        .Select(x => x.OnEdited)
-		        .Merge()
-		        .Subscribe(x => OnEdit())
-		        .AddTo(Disposables);
-
-            if (projectContext is { } c)
-            {
-                editorState.OnOpen(projectContext);
-            }
             return projectContext;
         }
 
