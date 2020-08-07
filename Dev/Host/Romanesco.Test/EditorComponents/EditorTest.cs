@@ -201,5 +201,55 @@ namespace Romanesco.Test.EditorComponents
 			// Assert
 			Assert.True(raised);
 		}
+
+		[Fact]
+		public void UndoするとUndo可能性が更新される()
+		{
+			var history = new Mock<IProjectHistoryService>();
+			history.Setup(x => x.Undo())
+				.Callback(() => { });
+			history.Setup(x => x.CanUndo).Returns(false);
+
+			var editorState = new Mock<IEditorState>();
+			editorState.Setup(x => x.OnUndo())
+				.Callback(() => { });
+			editorState.Setup(x => x.GetHistoryService())
+				.Returns(history.Object);
+
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+
+			bool raised = false;
+			using var disposable = editor.CanExecuteObservable
+				.Subscribe(x => raised = true);
+
+			editor.Undo();
+
+			Assert.True(raised);
+		}
+		
+		[Fact]
+		public void RedoするとRedo可能性が更新される()
+		{
+			var history = new Mock<IProjectHistoryService>();
+			history.Setup(x => x.Redo())
+				.Callback(() => { });
+			history.Setup(x => x.CanRedo).Returns(false);
+
+			var editorState = new Mock<IEditorState>();
+			editorState.Setup(x => x.OnRedo())
+				.Callback(() => { });
+			editorState.Setup(x => x.GetHistoryService())
+				.Returns(history.Object);
+
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+
+			bool raised = false;
+			using var disposable = editor.CanExecuteObservable
+				.Subscribe(x => raised = true);
+
+			editor.Redo();
+
+			Assert.True(raised);
+		}
 	}
 }
