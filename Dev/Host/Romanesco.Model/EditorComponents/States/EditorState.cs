@@ -5,7 +5,7 @@ using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 using System.Threading.Tasks;
-
+using Romanesco.Model.Commands;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Model.EditorComponents.States
@@ -66,7 +66,7 @@ namespace Romanesco.Model.EditorComponents.States
 		{
 		}
 		
-		public void Undo(IObserver<(EditorCommandType, bool)> observer)
+		public void Undo(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability)
 		{
 			var history = GetHistoryService();
 			history.Undo();
@@ -74,7 +74,7 @@ namespace Romanesco.Model.EditorComponents.States
 			UpdateCanExecute(observer, EditorCommandType.Undo, history.CanUndo);
 		}
 		
-		public void Redo(IObserver<(EditorCommandType, bool)> observer)
+		public void Redo(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability)
 		{
 			var history = GetHistoryService();
 			history.Redo();
@@ -82,14 +82,14 @@ namespace Romanesco.Model.EditorComponents.States
 			UpdateCanExecute(observer, EditorCommandType.Redo, history.CanRedo);
 		}
 
-		public void UpdateHistoryAvailability(IObserver<(EditorCommandType, bool)> observer)
+		public void UpdateHistoryAvailability(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability)
 		{
 			var history = GetHistoryService();
 			UpdateCanExecute(observer, EditorCommandType.Undo, history.CanUndo);
 			UpdateCanExecute(observer, EditorCommandType.Redo, history.CanRedo);
 		}
 		
-		public void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer)
+		public void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability)
 		{
 			// IObserver<(EditorCommandType, bool)> をクラスに格上げしたいかも
 			// 列挙子を使う代わりに対応した名前のメソッドを用意する

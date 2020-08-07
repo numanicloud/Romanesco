@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Commands;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
@@ -30,9 +31,9 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnRedo();
 		void OnEdit();
 
-		void Undo(IObserver<(EditorCommandType, bool)> observer);
-		void Redo(IObserver<(EditorCommandType, bool)> observer);
-		void UpdateHistoryAvailability(IObserver<(EditorCommandType, bool)> observer);
-		void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer);
+		void Undo(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability);
+		void Redo(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability);
+		void UpdateHistoryAvailability(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability);
+		void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer, CommandAvailability availability);
 	}
 }
