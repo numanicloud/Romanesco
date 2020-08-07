@@ -12,11 +12,9 @@ namespace Romanesco.Model.EditorComponents.States
 		string Title { get; }
 
 		IProjectLoadService GetLoadService();
-		IProjectSaveService GetSaveService();
 
 		void OnCreate(IProjectContext project);
 		void OnOpen(IProjectContext project);
-		void OnExport();
 		void OnEdit();
 
 		Task SaveAsync();

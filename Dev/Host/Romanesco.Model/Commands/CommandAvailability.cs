@@ -16,7 +16,7 @@ namespace Romanesco.Model.Commands
 
 		private IObserver<(EditorCommandType, bool)> Observer => canExecuteSubject;
 
-		public IObservable<(EditorCommandType, bool)> Observable => canExecuteSubject;
+		public IObservable<(EditorCommandType command, bool canExecute)> Observable => canExecuteSubject;
 
 		public void Dispose()
 		{

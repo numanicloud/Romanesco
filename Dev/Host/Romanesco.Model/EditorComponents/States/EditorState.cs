@@ -45,12 +45,14 @@ namespace Romanesco.Model.EditorComponents.States
 		{
 		}
 
-		public virtual void OnExport()
-		{
-		}
-
 		public virtual void OnEdit()
 		{
+		}
+		
+		public void OnEdit_Refactor(CommandAvailability commandAvailability)
+		{
+			OnEdit();
+			UpdateHistoryAvailability(commandAvailability);
 		}
 
 		public async Task SaveAsync()
@@ -68,7 +70,6 @@ namespace Romanesco.Model.EditorComponents.States
 		public async Task ExportAsync()
 		{
 			await GetSaveService().ExportAsync();
-			OnExport();
 		}
 		
 		public void Undo(CommandAvailability availability)

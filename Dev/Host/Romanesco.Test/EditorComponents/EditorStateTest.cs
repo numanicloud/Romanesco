@@ -19,7 +19,7 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void Undoを呼ぶとUndo可能性が更新される()
 		{
-			var editorState = CreateDirtyEditorState(CreateHistoryMock());
+			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock());
 			var availability = new CommandAvailability();
 
 			bool raised = false;
@@ -34,7 +34,7 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void Redoを呼ぶとRedo可能性が更新される()
 		{
-			var editorState = CreateDirtyEditorState(CreateHistoryMock());
+			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock());
 			var availability = new CommandAvailability();
 
 			bool raised = false;
@@ -51,7 +51,7 @@ namespace Romanesco.Test.EditorComponents
 		[InlineData(EditorCommandType.Redo)]
 		public void UndoとRedoの状態を更新できる(EditorCommandType type)
 		{
-			var editorState = CreateDirtyEditorState(CreateHistoryMock());
+			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock());
 			var availability = new CommandAvailability();
 
 			bool raised = false;
@@ -75,7 +75,7 @@ namespace Romanesco.Test.EditorComponents
 			return history;
 		}
 
-		private static DirtyEditorState CreateDirtyEditorState(Mock<IProjectHistoryService> history)
+		private static DirtyEditorState GetDirtyEditorStateToHistory(Mock<IProjectHistoryService> history)
 		{
 			var editorState = new DirtyEditorState(
 				Mock.Of<IProjectLoadService>(),
@@ -141,6 +141,40 @@ namespace Romanesco.Test.EditorComponents
 				Mock.Of<IProjectContext>(),
 				Mock.Of<IProjectModelFactory>(),
 				Mock.Of<IEditorStateChanger>());
+		}
+
+		[Fact]
+		public void OnEditを呼ぶとUndoが更新される()
+		{
+			var history = CreateHistoryMock();
+			var editorState = GetDirtyEditorStateToHistory(history);
+			var commandAvailability = new CommandAvailability();
+
+			bool raised = false;
+			commandAvailability.Observable
+				.Where(x => x.command == EditorCommandType.Undo)
+				.Subscribe(x => raised = true);
+
+			editorState.OnEdit_Refactor(commandAvailability);
+
+			Assert.True(raised);
+		}
+
+		[Fact]
+		public void OnEditを呼ぶとRedoが更新される()
+		{
+			var history = CreateHistoryMock();
+			var editorState = GetDirtyEditorStateToHistory(history);
+			var commandAvailability = new CommandAvailability();
+
+			bool raised = false;
+			commandAvailability.Observable
+				.Where(x => x.command == EditorCommandType.Redo)
+				.Subscribe(x => raised = true);
+
+			editorState.OnEdit_Refactor(commandAvailability);
+
+			Assert.True(raised);
 		}
 	}
 }
