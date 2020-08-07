@@ -97,10 +97,7 @@ namespace Romanesco.Model.EditorComponents
 
         public void Redo()
         {
-            var history = editorState.GetHistoryService();
-            history.Redo();
-            editorState.OnRedo();
-            canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
+            editorState.Redo(canExecuteSubject);
         }
 
         public void ChangeState(IEditorState state)

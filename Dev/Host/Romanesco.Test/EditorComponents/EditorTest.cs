@@ -170,16 +170,12 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void RedoするとRedo可能性が更新される()
 		{
-			var history = new Mock<IProjectHistoryService>();
-			history.Setup(x => x.Redo())
-				.Callback(() => { });
-			history.Setup(x => x.CanRedo).Returns(false);
-
 			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.OnRedo())
-				.Callback(() => { });
-			editorState.Setup(x => x.GetHistoryService())
-				.Returns(history.Object);
+			editorState.Setup(x => x.Redo(It.IsAny<IObserver<(EditorCommandType, bool)>>()))
+				.Callback((IObserver<(EditorCommandType, bool)> observer) =>
+				{
+					observer.OnNext((EditorCommandType.Redo, false));
+				});
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
