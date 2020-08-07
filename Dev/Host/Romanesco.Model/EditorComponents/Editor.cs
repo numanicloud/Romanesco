@@ -46,15 +46,6 @@ namespace Romanesco.Model.EditorComponents
 			return projectContext;
 		}
 
-		private void ObserveEdit(ProjectContext projectContext)
-		{
-			projectContext.Project.Root.States
-				.Select(x => x.OnEdited)
-				.Merge()
-				.Subscribe(x => OnEdit())
-				.AddTo(Disposables);
-		}
-
 		public async Task<ProjectContext?> OpenAsync()
         {
 	        if (!(await editorState.GetLoadService().OpenAsync() is {} projectContext))
@@ -68,6 +59,23 @@ namespace Romanesco.Model.EditorComponents
 
             return projectContext;
         }
+
+		private void ObserveEdit(ProjectContext projectContext)
+		{
+			projectContext.Project.Root.States
+				.Select(x => x.OnEdited)
+				.Merge()
+				.Subscribe(x => OnEdit())
+				.AddTo(Disposables);
+		}
+
+		private void OnEdit()
+		{
+			editorState.OnEdit();
+			var history = editorState.GetHistoryService();
+			canExecuteSubject.OnNext((EditorCommandType.Undo, history.CanUndo));
+			canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
+		}
 
         public async Task SaveAsync()
         {
@@ -109,14 +117,6 @@ namespace Romanesco.Model.EditorComponents
             editorState = state;
             UpdateTitle();
             editorState.UpdateCanExecute(canExecuteSubject);
-        }
-
-        private void OnEdit()
-        {
-            editorState.OnEdit();
-            var history = editorState.GetHistoryService();
-            canExecuteSubject.OnNext((EditorCommandType.Undo, history.CanUndo));
-            canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
         }
 
         private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
