@@ -1,4 +1,5 @@
-﻿using Romanesco.Common.Model.ProjectComponent;
+﻿using System.Threading.Tasks;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
@@ -50,6 +51,12 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public virtual void OnEdit()
 		{
+		}
+
+		public async Task SaveAsync()
+		{
+			await GetSaveService().SaveAsync();
+			OnSave();
 		}
 		
 		public void Undo(CommandAvailability availability)
