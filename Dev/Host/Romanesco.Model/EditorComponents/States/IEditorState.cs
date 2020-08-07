@@ -22,6 +22,7 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnEdit();
 
 		Task SaveAsync();
+		Task SaveAsAsync();
 
 		// このへんはCommandAvailabilityの責務かも？
 		// あるいはEditor側がCommandAvailabilityを使うようにするとよいか？
