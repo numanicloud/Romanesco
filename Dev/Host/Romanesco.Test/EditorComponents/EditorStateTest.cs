@@ -51,6 +51,7 @@ namespace Romanesco.Test.EditorComponents
 		[InlineData(EditorCommandType.Redo)]
 		public void UndoとRedoの状態を更新できる(EditorCommandType type)
 		{
+			// これはもはや CommandAvailability のテスト
 			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock());
 			var availability = new CommandAvailability();
 
@@ -58,7 +59,7 @@ namespace Romanesco.Test.EditorComponents
 			availability.Observable.Where(x => x.Item1 == type)
 				.Subscribe(x => raised = true);
 
-			editorState.UpdateHistoryAvailability(availability);
+			availability.UpdateCanExecute(editorState.GetHistoryService());
 
 			Assert.True(raised);
 		}

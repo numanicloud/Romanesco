@@ -62,7 +62,7 @@ namespace Romanesco.Model.EditorComponents.States
 		public void NotifyEdit(CommandAvailability commandAvailability)
 		{
 			OnEdit();
-			UpdateHistoryAvailability(commandAvailability);
+			commandAvailability.UpdateCanExecute(GetHistoryService());
 		}
 
 		public async Task SaveAsync()
@@ -94,11 +94,6 @@ namespace Romanesco.Model.EditorComponents.States
 			availability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
 		}
 
-		public void UpdateHistoryAvailability(CommandAvailability availability)
-		{
-			availability.UpdateCanExecute(GetHistoryService());
-		}
-		
 		public void UpdateCanExecute(CommandAvailability availability)
 		{
 			availability.UpdateCanExecute(GetLoadService());
