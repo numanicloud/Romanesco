@@ -48,15 +48,17 @@ namespace Romanesco.Test.EditorComponents
 		public void プロジェクトを作成する命令をエディターが現在のステートに割り振る()
 		{
 			// Arrange
-			var loadService = GetMockProjectLoadService();
-			var initialState = GetMockEditorState(loadService.Object);
-			var editor = new Editor(neverEditorStateChanger, initialState, new CommandAvailability());
+			var editorState = new Mock<IEditorState>();
+			editorState.Setup(x => x.CreateAsync())
+				.Returns(async () => null);
+
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			// Act
 			var _ = editor.CreateAsync().Result;
 
 			// Assert
-			loadService.Verify(x => x.CreateAsync(), Times.Once);
+			editorState.Verify(x => x.CreateAsync(), Times.Once);
 		}
 
 		[Fact]
@@ -77,18 +79,13 @@ namespace Romanesco.Test.EditorComponents
 			// これはもはやEditorStateのテストかも
 
 			var editSubject = new Subject<Unit>();
-			var loader = new Mock<IProjectLoadService>();
-			{
-				var iprojectContext = new Mock<IProjectContext>();
-				iprojectContext.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
-					.Returns((Action action) => editSubject.Subscribe(x => action()));
-
-				loader.Setup(x => x.CreateAsync())
-					.Returns(async () => iprojectContext.Object);
-			}
+			var iprojectContext2 = new Mock<IProjectContext>();
+			iprojectContext2.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
+				.Returns((Action action) => editSubject.Subscribe(x => action()));
 
 			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetLoadService()).Returns(loader.Object);
+			editorState.Setup(x => x.CreateAsync())
+				.Returns(async () => iprojectContext2.Object);
 			editorState.Setup(x => x.NotifyEdit(It.IsAny<CommandAvailability>()))
 				.Callback((CommandAvailability x) => { });
 			

@@ -16,6 +16,7 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnCreate(IProjectContext project);
 		void OnOpen(IProjectContext project);
 
+		Task<IProjectContext?> CreateAsync();
 		void NotifyEdit(CommandAvailability commandAvailability);
 		Task SaveAsync();
 		Task SaveAsAsync();
