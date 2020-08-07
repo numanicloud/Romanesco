@@ -1,4 +1,5 @@
-﻿using Romanesco.Common.Model.ProjectComponent;
+﻿using System;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
@@ -61,6 +62,17 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public virtual void OnEdit()
 		{
+		}
+		
+		public void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer)
+		{
+			observer.OnNext((EditorCommandType.Create, GetLoadService().CanCreate));
+			observer.OnNext((EditorCommandType.Open, GetLoadService().CanOpen));
+			observer.OnNext((EditorCommandType.Save, GetSaveService().CanSave));
+			observer.OnNext((EditorCommandType.SaveAs, GetSaveService().CanSave));
+			observer.OnNext((EditorCommandType.Export, GetSaveService().CanExport));
+			observer.OnNext((EditorCommandType.Undo, GetHistoryService().CanUndo));
+			observer.OnNext((EditorCommandType.Redo, GetHistoryService().CanRedo));
 		}
 	}
 }

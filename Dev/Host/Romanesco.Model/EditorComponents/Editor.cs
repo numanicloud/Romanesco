@@ -137,17 +137,7 @@ namespace Romanesco.Model.EditorComponents
 
         private void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer)
         {
-            var load = editorState.GetLoadService();
-            var save = editorState.GetSaveService();
-            var history = editorState.GetHistoryService();
-
-            observer.OnNext((EditorCommandType.Create, load.CanCreate));
-            observer.OnNext((EditorCommandType.Open, load.CanOpen));
-            observer.OnNext((EditorCommandType.Save, save.CanSave));
-            observer.OnNext((EditorCommandType.SaveAs, save.CanSave));
-            observer.OnNext((EditorCommandType.Export, save.CanExport));
-            observer.OnNext((EditorCommandType.Undo, history.CanUndo));
-            observer.OnNext((EditorCommandType.Redo, history.CanRedo));
+            editorState.UpdateCanExecute(observer);
         }
 
         public void Dispose()
