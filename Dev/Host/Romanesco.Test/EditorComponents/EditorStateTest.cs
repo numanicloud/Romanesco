@@ -176,5 +176,44 @@ namespace Romanesco.Test.EditorComponents
 
 			Assert.True(raised);
 		}
+
+		[Fact]
+		public void プロジェクトを作成するサービスを実行できる()
+		{
+			var loadService = new Mock<IProjectLoadService>();
+			loadService.Setup(x => x.CreateAsync())
+				.Returns(async () => null);
+
+			var editorState = new DirtyEditorState(
+				loadService.Object,
+				Mock.Of<IProjectHistoryService>(),
+				Mock.Of<IProjectSaveService>(),
+				Mock.Of<IProjectContext>(),
+				Mock.Of<IProjectModelFactory>(),
+				Mock.Of<IEditorStateChanger>());
+
+			var _ = editorState.CreateAsync().Result;
+
+			loadService.Verify(x => x.CreateAsync(), Times.Once);
+		}
+		
+		public void プロジェクトを開くサービスを実行できる()
+		{
+			var loadService = new Mock<IProjectLoadService>();
+			loadService.Setup(x => x.OpenAsync())
+				.Returns(async () => null);
+
+			var editorState = new DirtyEditorState(
+				loadService.Object,
+				Mock.Of<IProjectHistoryService>(),
+				Mock.Of<IProjectSaveService>(),
+				Mock.Of<IProjectContext>(),
+				Mock.Of<IProjectModelFactory>(),
+				Mock.Of<IEditorStateChanger>());
+
+			//var _ = editorState.CreateAsync().Result;
+
+			loadService.Verify(x => x.OpenAsync(), Times.Once);
+		}
 	}
 }

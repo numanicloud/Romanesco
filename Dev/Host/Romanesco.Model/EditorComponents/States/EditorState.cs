@@ -48,6 +48,11 @@ namespace Romanesco.Model.EditorComponents.States
 		public virtual void OnEdit()
 		{
 		}
+
+		public async Task<IProjectContext?> CreateAsync()
+		{
+			return await GetLoadService().CreateAsync();
+		}
 		
 		public void NotifyEdit(CommandAvailability commandAvailability)
 		{
