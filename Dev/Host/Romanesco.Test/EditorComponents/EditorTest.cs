@@ -70,24 +70,26 @@ namespace Romanesco.Test.EditorComponents
 			var editorState = new Mock<IEditorState>();
 			editorState.Setup(x => x.CreateAsync())
 				.Returns(async () => iprojectContext2.Object);
-			editorState.Setup(x => x.NotifyEdit(It.IsAny<CommandAvailability>()))
-				.Callback((CommandAvailability x) => { });
+			editorState.Setup(x => x.NotifyEdit())
+				.Callback(() => { });
 			
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 			var projectResult = editor.CreateAsync().Result;
 			editSubject.OnNext(Unit.Default);
 
-			editorState.Verify(x => x.NotifyEdit(It.IsAny<CommandAvailability>()), Times.Once);
+			editorState.Verify(x => x.NotifyEdit(), Times.Once);
 		}
 
 		[Fact]
 		public void UndoするとUndo可能性が更新される()
 		{
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.Undo(It.IsAny<CommandAvailability>()))
-				.Callback((CommandAvailability av) => av.UpdateCanExecute(Undo, false));
+			var commandAvailability = new CommandAvailability();
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var editorState = new Mock<IEditorState>();
+			editorState.Setup(x => x.Undo())
+				.Callback(() => commandAvailability.UpdateCanExecute(Undo, false));
+
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, commandAvailability);
 
 			bool raised = false;
 			using var disposable = editor.CanExecuteObservable

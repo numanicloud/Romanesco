@@ -63,7 +63,7 @@ namespace Romanesco.Model.EditorComponents.States
 			return await GetLoadService().OpenAsync();
 		}
 		
-		public void NotifyEdit(CommandAvailability commandAvailability)
+		public void NotifyEdit()
 		{
 			OnEdit();
 			commandAvailability.UpdateCanExecute(GetHistoryService());
@@ -86,10 +86,10 @@ namespace Romanesco.Model.EditorComponents.States
 			await GetSaveService().ExportAsync();
 		}
 		
-		public void Undo(CommandAvailability availability)
+		public void Undo()
 		{
 			GetHistoryService().Undo();
-			availability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
+			commandAvailability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
 		}
 		
 		public void Redo(CommandAvailability availability)

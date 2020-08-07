@@ -26,7 +26,7 @@ namespace Romanesco.Test.EditorComponents
 			availability.Observable.Where(x => x.Item1 == EditorCommandType.Undo)
 				.Subscribe(x => raised = true);
 
-			editorState.Undo(availability);
+			editorState.Undo();
 
 			Assert.True(raised);
 		}
@@ -160,7 +160,7 @@ namespace Romanesco.Test.EditorComponents
 				.Where(x => x.command == EditorCommandType.Undo)
 				.Subscribe(x => raised = true);
 
-			editorState.NotifyEdit(commandAvailability);
+			editorState.NotifyEdit();
 
 			Assert.True(raised);
 		}
@@ -177,7 +177,7 @@ namespace Romanesco.Test.EditorComponents
 				.Where(x => x.command == EditorCommandType.Redo)
 				.Subscribe(x => raised = true);
 
-			editorState.NotifyEdit(commandAvailability);
+			editorState.NotifyEdit();
 
 			Assert.True(raised);
 		}

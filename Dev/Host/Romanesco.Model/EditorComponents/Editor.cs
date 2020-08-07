@@ -65,7 +65,7 @@ namespace Romanesco.Model.EditorComponents
 
 		private void OnEdit()
 		{
-			editorState.NotifyEdit(commandAvailability);
+			editorState.NotifyEdit();
 		}
 
 		public async Task SaveAsync()
@@ -86,7 +86,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public void Undo()
 		{
-			editorState.Undo(commandAvailability);
+			editorState.Undo();
 		}
 
 		public void Redo()
