@@ -68,9 +68,7 @@ namespace Romanesco.Model.EditorComponents
 		private void OnEdit()
 		{
 			editorState.OnEdit();
-			var history = editorState.GetHistoryService();
-			canExecuteSubject.OnNext((EditorCommandType.Undo, history.CanUndo));
-			canExecuteSubject.OnNext((EditorCommandType.Redo, history.CanRedo));
+            editorState.UpdateHistoryAvailability(canExecuteSubject);
 		}
 
         public async Task SaveAsync()

@@ -30,6 +30,7 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnRedo();
 		void OnEdit();
 
+		void UpdateHistoryAvailability(IObserver<(EditorCommandType, bool)> observer);
 		void UpdateCanExecute(IObserver<(EditorCommandType, bool)> observer);
 	}
 }

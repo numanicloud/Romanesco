@@ -128,6 +128,10 @@ namespace Romanesco.Test.EditorComponents
 		[InlineData(EditorCommandType.Redo)]
 		internal void UndoまたはRedo可能になったときにイベントが発行される(EditorCommandType commandType)
 		{
+			// 2つの部分に分解できるテスト
+			// - プロジェクトが作成されると、Undo/Redoの状態が更新される
+			// - Undo/Redoが可能になるとイベントを発行する
+
 			// Arrange
 			var editSubject = new Subject<Unit>();
 			var loader = new Mock<IProjectLoadService>();
@@ -140,30 +144,19 @@ namespace Romanesco.Test.EditorComponents
 					.Returns(async () => iprojectContext.Object);
 			}
 
-			/* ここでぶったぎりたい */
-
 			var editorState = new Mock<IEditorState>();
-			{
-				var okHistory = new Mock<IProjectHistoryService>();
-				okHistory.Setup(x => x.CanUndo).Returns(true);
-				okHistory.Setup(x => x.CanRedo).Returns(true);
-
-				var ngHistory = new Mock<IProjectHistoryService>();
-				ngHistory.Setup(x => x.CanUndo).Returns(false);
-				ngHistory.Setup(x => x.CanRedo).Returns(false);
-
-				IProjectHistoryService currentHistory = ngHistory.Object;
-				editorState.Setup(x => x.OnEdit())
-					.Callback(() => currentHistory = okHistory.Object);
-				editorState.Setup(x => x.GetHistoryService())
-					.Returns(() => currentHistory);
-				editorState.Setup(x => x.GetLoadService())
-					.Returns(loader.Object);
-			}
+			editorState.Setup(x => x.OnEdit()).Callback(() => { });
+			editorState.Setup(x => x.GetLoadService()).Returns(loader.Object);
+			editorState.Setup(x => x.UpdateHistoryAvailability(It.IsAny<IObserver<(EditorCommandType, bool)>>()))
+				.Callback((IObserver<(EditorCommandType, bool)> observer) =>
+				{
+					observer.OnNext((EditorCommandType.Undo, true));
+					observer.OnNext((EditorCommandType.Redo, true));
+				});
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
-			bool raised = false;
+			var raised = false;
 			editor.CanExecuteObservable.Where(x => x.command == commandType)
 				.Where(x => x.canExecute)
 				.Subscribe(x => raised = true);
