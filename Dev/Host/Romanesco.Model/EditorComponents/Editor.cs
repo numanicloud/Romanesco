@@ -109,7 +109,6 @@ namespace Romanesco.Model.EditorComponents
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
 		public void Dispose()
 		{
-			commandAvailability.Dispose();
 			ApplicationTitle.Dispose();
 			foreach (var disposable in Disposables)
 			{

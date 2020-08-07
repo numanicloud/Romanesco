@@ -48,14 +48,6 @@ namespace Romanesco.Model.EditorComponents.States
 		{
 		}
 
-		public virtual void OnUndo()
-		{
-		}
-
-		public virtual void OnRedo()
-		{
-		}
-
 		public virtual void OnEdit()
 		{
 		}
@@ -63,14 +55,12 @@ namespace Romanesco.Model.EditorComponents.States
 		public void Undo(CommandAvailability availability)
 		{
 			GetHistoryService().Undo();
-			OnUndo();
 			availability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
 		}
 		
 		public void Redo(CommandAvailability availability)
 		{
 			GetHistoryService().Redo();
-			OnRedo();
 			availability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
 		}
 

@@ -13,15 +13,12 @@ namespace Romanesco.Model.EditorComponents.States
 
 		IProjectLoadService GetLoadService();
 		IProjectSaveService GetSaveService();
-		IProjectHistoryService GetHistoryService();
 
 		void OnCreate(IProjectContext project);
 		void OnOpen(IProjectContext project);
 		void OnSave();
 		void OnSaveAs();
 		void OnExport();
-		void OnUndo();
-		void OnRedo();
 		void OnEdit();
 
 		// このへんはCommandAvailabilityの責務かも？
