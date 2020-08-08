@@ -21,9 +21,8 @@ namespace Romanesco.Model.EditorComponents.States
 			IProjectSaveService saveService,
 			IProjectContext projectContext,
 			IProjectModelFactory factory,
-			IEditorStateChanger stateChanger,
-			CommandAvailability commandAvailability)
-			: base(factory, stateChanger, commandAvailability)
+			EditorSession editorSession)
+			: base(factory, editorSession)
 		{
 			this.projectContext = projectContext;
 			this.loadService = loadService;

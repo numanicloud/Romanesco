@@ -195,14 +195,17 @@ namespace Romanesco.Test.EditorComponents
 			Mock<IProjectSaveService>? saveService = null,
 			Mock<IProjectHistoryService>? historyService = null)
 		{
+			var editorSession = new EditorSession(
+				Mock.Of<IEditorStateChanger>(),
+				commandAvailability ?? new CommandAvailability());
+
 			return new DirtyEditorState(
 				loadService?.Object ?? Mock.Of<IProjectLoadService>(),
 				historyService?.Object ?? Mock.Of<IProjectHistoryService>(),
 				saveService?.Object ?? Mock.Of<IProjectSaveService>(),
 				Mock.Of<IProjectContext>(),
 				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>(),
-				commandAvailability ?? new CommandAvailability());
+				editorSession);
 		}
 
 		private static Mock<IProjectHistoryService> CreateHistoryMock()

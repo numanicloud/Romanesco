@@ -21,15 +21,14 @@ namespace Romanesco.Model.EditorComponents.States
 		public abstract IProjectSaveService GetSaveService();
 		public abstract IProjectHistoryService GetHistoryService();
 
-		protected EditorState(IModelFactory factory, IEditorStateChanger stateChanger,
-			CommandAvailability commandAvailability)
+		protected EditorState(IModelFactory factory, EditorSession editorSession)
 		{
 			// IEditorStateChanger, CommandAvailability はEditorの持っている物と同一である必要がある
 			// それを名前で表現すべき。
 			// EditorStateOwnership のような名前のクラスに、IEditorStateChangerとCommandAvailabilityを含ませるとよいかも
 			this.factory = factory;
-			this.StateChanger = stateChanger;
-			this.commandAvailability = commandAvailability;
+			this.StateChanger = editorSession.EditorStateChanger;
+			this.commandAvailability = editorSession.CommandAvailability;
 		}
 
 		public virtual void OnCreate(IProjectContext project)

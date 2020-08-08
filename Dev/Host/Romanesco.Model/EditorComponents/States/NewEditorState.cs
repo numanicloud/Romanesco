@@ -18,9 +18,8 @@ namespace Romanesco.Model.EditorComponents.States
             IProjectHistoryService historyService,
             IProjectSaveService saveService,
             IProjectModelFactory factory,
-            IEditorStateChanger stateChanger,
-            CommandAvailability commandAvailability)
-            : base(factory, stateChanger, commandAvailability)
+            EditorSession editorSession)
+            : base(factory, editorSession)
         {
 			this.loadService = loadService;
             this.saveService = saveService;
