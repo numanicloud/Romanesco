@@ -44,10 +44,26 @@ namespace Romanesco.ViewModel.Editor
                     .Concat(CommandExecution.IsUsing.Select(x => !x));
                 return new ReactiveCommand(canExecute);
             }
+            ReactiveCommand ToEditorCommand2(IObservable<bool> stream)
+            {
+	            var isNotUsing = CommandExecution.IsUsing.Select(x => !x);
+	            return new ReactiveCommand(stream.Concat(isNotUsing));
+            }
 
             Editor = editor;
 			this.interpreter = interpreter;
 			CommandExecution = new BooleanUsingScopeSource();
+
+            /*
+			var cav = Editor.CommandAvailability;
+			CreateCommand = ToEditorCommand2(cav.CanCreate);
+			OpenCommand = ToEditorCommand2(cav.CanOpen);
+			SaveCommand = ToEditorCommand2(cav.CanSave);
+			SaveAsCommand = ToEditorCommand2(cav.CanSaveAs);
+			ExportCommand = ToEditorCommand2(cav.CanExport);
+			Undo = ToEditorCommand2(cav.CanUndo);
+			Redo = ToEditorCommand2(cav.CanRedo);
+            //*/
 
             CreateCommand = ToEditorCommand(EditorCommandType.Create);
             OpenCommand = ToEditorCommand(EditorCommandType.Open);

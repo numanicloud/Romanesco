@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco", "Host\Romanesco
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Test", "Host\Romanesco.Test\Romanesco.Test.csproj", "{4AB38475-CEC5-4484-B480-559756E3BE95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Romanesco.ViewModel.Test", "Romanesco.ViewModel.Test\Romanesco.ViewModel.Test.csproj", "{19FB8267-3621-4BA2-8715-3878BB1F3CC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +196,14 @@ Global
 		{4AB38475-CEC5-4484-B480-559756E3BE95}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4AB38475-CEC5-4484-B480-559756E3BE95}.Release|x64.ActiveCfg = Release|x64
 		{4AB38475-CEC5-4484-B480-559756E3BE95}.Release|x64.Build.0 = Release|x64
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Debug|x64.Build.0 = Debug|Any CPU
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Release|x64.ActiveCfg = Release|Any CPU
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,6 +226,7 @@ Global
 		{B5D53375-4880-4B4B-B892-A15F1EED1E46} = {01C5DEF4-E315-4138-9843-56169C7073D0}
 		{2D6F1831-7EE1-469A-8C58-6ED39926EA9D} = {01C5DEF4-E315-4138-9843-56169C7073D0}
 		{4AB38475-CEC5-4484-B480-559756E3BE95} = {01C5DEF4-E315-4138-9843-56169C7073D0}
+		{19FB8267-3621-4BA2-8715-3878BB1F3CC7} = {01C5DEF4-E315-4138-9843-56169C7073D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {87D5578B-44E4-4B3D-8D5F-9B5D1879A11D}
