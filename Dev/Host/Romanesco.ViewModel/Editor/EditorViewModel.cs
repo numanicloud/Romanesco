@@ -48,14 +48,14 @@ namespace Romanesco.ViewModel.Editor
             ReactiveCommand ToEditorCommand2(IObservable<bool> stream)
             {
 	            var isNotUsing = CommandExecution.IsUsing.Select(x => !x);
-	            return new ReactiveCommand(stream.Concat(isNotUsing));
+	            return new ReactiveCommand(stream.Concat(isNotUsing).Do(x => {  }));
             }
 
             Editor = editor;
 			this.interpreter = interpreter;
 			CommandExecution = new BooleanUsingScopeSource();
 
-            /*
+            //*
 			var cav = Editor.CommandAvailability;
 			CreateCommand = ToEditorCommand2(cav.CanCreate);
 			OpenCommand = ToEditorCommand2(cav.CanOpen);
@@ -65,14 +65,6 @@ namespace Romanesco.ViewModel.Editor
 			Undo = ToEditorCommand2(cav.CanUndo);
 			Redo = ToEditorCommand2(cav.CanRedo);
             //*/
-
-            CreateCommand = ToEditorCommand(EditorCommandType.Create);
-            OpenCommand = ToEditorCommand(EditorCommandType.Open);
-            SaveCommand = ToEditorCommand(EditorCommandType.Save);
-            SaveAsCommand = ToEditorCommand(EditorCommandType.SaveAs);
-            ExportCommand = ToEditorCommand(EditorCommandType.Export);
-            Undo = ToEditorCommand(EditorCommandType.Undo);
-            Redo = ToEditorCommand(EditorCommandType.Redo);
 
             CreateCommand.SubscribeSafe(x => CreateAsync().Forget()).AddTo(editor.Disposables);
             OpenCommand.SubscribeSafe(x => OpenAsync().Forget()).AddTo(editor.Disposables);
