@@ -2,23 +2,27 @@
 using Romanesco.ViewModel.Editor;
 using System;
 using System.Collections.Generic;
-using System.Reactive;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
 using System.Threading;
 using Romanesco.Model.EditorComponents;
 using Romanesco.ViewModel.States;
 using Romanesco.ViewModel.Test.Helpers;
 using Xunit;
+using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.ViewModel.Test.Editor
 {
 	public class EditorViewModelTest
 	{
-		[Fact]
-		public void CreateCommandの実行可能性が反映される()
+		[Theory]
+		[InlineData(Create)]
+		[InlineData(Open)]
+		[InlineData(Save)]
+		[InlineData(SaveAs)]
+		[InlineData(Export)]
+		[InlineData(Undo)]
+		[InlineData(Redo)]
+		public void CreateCommandの実行可能性が反映される(EditorCommandType type)
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
 
@@ -34,11 +38,23 @@ namespace Romanesco.ViewModel.Test.Editor
 
 			var editor = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
 
-			availability.OnNext((EditorCommandType.Create, false));
-			Assert.False(editor.CreateCommand.CanExecute());
+			var targetCommand = type switch
+			{
+				Create => editor.CreateCommand,
+				Open => editor.OpenCommand,
+				Save => editor.SaveCommand,
+				SaveAs => editor.SaveAsCommand,
+				Export => editor.ExportCommand,
+				Undo => editor.Undo,
+				Redo => editor.Redo,
+				_ => throw new NotImplementedException(),
+			};
 
-			availability.OnNext((EditorCommandType.Create, true));
-			Assert.True(editor.CreateCommand.CanExecute());
+			availability.OnNext((type, false));
+			Assert.False(targetCommand.CanExecute());
+
+			availability.OnNext((type, true));
+			Assert.True(targetCommand.CanExecute());
 		}
 	}
 }
