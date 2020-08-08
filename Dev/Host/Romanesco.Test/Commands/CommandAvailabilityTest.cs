@@ -80,7 +80,6 @@ namespace Romanesco.Test.Commands
 			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}
 
-
 		private static DirtyEditorState GetDirtyEditorState(CommandAvailability? commandAvailability = null,
 			Mock<IProjectLoadService>? loadService = null,
 			Mock<IProjectSaveService>? saveService = null,
@@ -97,6 +96,30 @@ namespace Romanesco.Test.Commands
 				Mock.Of<IProjectContext>(),
 				Mock.Of<IProjectModelFactory>(),
 				editorSession);
+		}
+		
+		[Fact]
+		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
+		{
+			var saveService = GetMockSaveService();
+			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
+			var availability = new CommandAvailability();
+
+			availability.SaveAsync(editorState).Wait();
+
+			saveService.Verify(x => x.SaveAsync(), Times.Once);
+		}
+		
+		private static Mock<IProjectSaveService> GetMockSaveService()
+		{
+			var saveService = new Mock<IProjectSaveService>();
+			saveService.Setup(x => x.SaveAsync())
+				.Callback(async () => { });
+			saveService.Setup(x => x.SaveAsAsync())
+				.Callback(async () => { });
+			saveService.Setup(x => x.ExportAsync())
+				.Callback(async () => { });
+			return saveService;
 		}
 	}
 }

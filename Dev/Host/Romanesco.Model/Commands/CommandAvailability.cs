@@ -97,5 +97,11 @@ namespace Romanesco.Model.Commands
 		{
 			return await editorState.GetLoadService().OpenAsync();
 		}
+
+		public async Task SaveAsync(IEditorState editorState)
+		{
+			await editorState.GetSaveService().SaveAsync();
+			editorState.OnSave();
+		}
 	}
 }
