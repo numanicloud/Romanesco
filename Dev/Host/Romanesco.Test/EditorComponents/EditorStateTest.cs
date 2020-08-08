@@ -202,17 +202,5 @@ namespace Romanesco.Test.EditorComponents
 			history.Setup(x => x.CanRedo).Returns(true);
 			return history;
 		}
-
-		private static Mock<IProjectSaveService> GetMockSaveService()
-		{
-			var saveService = new Mock<IProjectSaveService>();
-			saveService.Setup(x => x.SaveAsync())
-				.Callback(async () => { });
-			saveService.Setup(x => x.SaveAsAsync())
-				.Callback(async () => { });
-			saveService.Setup(x => x.ExportAsync())
-				.Callback(async () => { });
-			return saveService;
-		}
 	}
 }

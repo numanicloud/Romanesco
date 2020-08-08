@@ -30,65 +30,38 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void プロジェクトを作成する命令をエディターが現在のステートに割り振る()
 		{
-			var fixture = GetProjectCreatingFixture();
+			var loader = MockHelper.GetLoaderServiceMock();
+			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
-			_ = fixture.Item3.CreateAsync().Result;
+			_ = editor.CreateAsync().Result;
 
-			fixture.Item1.Verify(x => x.CreateAsync(), Times.Once);
+			loader.Verify(x => x.CreateAsync(), Times.Once);
 		}
 
 		[Fact]
 		public void プロジェクトが作成されるとHistoryの更新をステートに要求する()
 		{
 			var editSubject = new Subject<Unit>();
-			var fixture = GetProjectCreatingFixture(editSubject);
+			var context = new Mock<IProjectContext>();
+			context.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
+				.Returns((Action action) => editSubject.Subscribe(x => action()));
 
-			_ = fixture.Item3.CreateAsync().Result;
-			editSubject.OnNext(Unit.Default);
-
-			fixture.Item2.Verify(x => x.NotifyEdit(), Times.Once);
-		}
-
-		private (Mock<IProjectLoadService>, Mock<IEditorState>, Editor) GetProjectCreatingFixture(Subject<Unit>? onEdit = null)
-		{
-			var loader = MockHelper.GetLoaderServiceMock(onEdit is null ? null : GetContext().Object);
+			var loader = MockHelper.GetLoaderServiceMock(context.Object);
 			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
-			return (loader, editorState, editor);
 
-			Mock<IProjectContext> GetContext()
-			{
-				var context = new Mock<IProjectContext>();
-				context.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
-					.Returns((Action action) => onEdit.Subscribe(x => action()));
-				return context;
-			}
+			_ = editor.CreateAsync().Result;
+			editSubject.OnNext(Unit.Default);
 
-			Mock<IEditorState> GetEditorState()
-			{
-				var mock = new Mock<IEditorState>();
-				if (loader is { })
-				{
-					mock.Setup(x => x.GetLoadService())
-						.Returns(loader.Object);
-				}
-				mock.Setup(x => x.NotifyEdit())
-					.Callback(() => { });
-				return mock;
-			}
+			editorState.Verify(x => x.NotifyEdit(), Times.Once);
 		}
 
 		[Fact]
 		public void プロジェクトを開く命令をエディターが現在のステートに割り振る()
 		{
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.OpenAsync())
-				.Returns(async () => null);
-
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetLoadService())
-				.Returns(loadService.Object);
-
+			var loadService = MockHelper.GetLoaderServiceMock();
+			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			var _ = editor.OpenAsync().Result;
@@ -107,13 +80,10 @@ namespace Romanesco.Test.EditorComponents
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, commandAvailability);
 
-			bool raised = false;
-			using var disposable = editor.CanExecuteObservable
-				.Subscribe(x => raised = true);
+			using var once = editor.CanExecuteObservable
+				.ExpectAtLeastOnce();
 
 			editor.Undo();
-
-			Assert.True(raised);
 		}
 		
 		[Fact]
@@ -127,13 +97,10 @@ namespace Romanesco.Test.EditorComponents
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, commandAvailability);
 
-			bool raised = false;
-			using var disposable = editor.CanExecuteObservable
-				.Subscribe(x => raised = true);
+			using var once = editor.CanExecuteObservable
+				.ExpectAtLeastOnce();
 
 			editor.Redo();
-
-			Assert.True(raised);
 		}
 	}
 }
