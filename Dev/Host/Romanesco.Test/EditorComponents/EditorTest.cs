@@ -29,13 +29,10 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void プロジェクトを作成する命令をエディターが現在のステートに割り振る()
 		{
-			// Arrange
 			var fixture = GetProjectCreatingFixture();
 
-			// Act
 			_ = fixture.Item3.CreateAsync().Result;
 
-			// Assert
 			fixture.Item1.Verify(x => x.CreateAsync(), Times.Once);
 		}
 

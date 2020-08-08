@@ -92,5 +92,10 @@ namespace Romanesco.Model.Commands
 		{
 			return await editorState.GetLoadService().CreateAsync();
 		}
+
+		public async Task<IProjectContext?> OpenAsync(IEditorState editorState)
+		{
+			return await editorState.GetLoadService().OpenAsync();
+		}
 	}
 }

@@ -64,6 +64,22 @@ namespace Romanesco.Test.Commands
 
 			loadService.Verify(x => x.CreateAsync(), Times.Once);
 		}
+		
+		[Fact]
+		public void プロジェクトを開くサービスを実行できる()
+		{
+			var loadService = new Mock<IProjectLoadService>();
+			loadService.Setup(x => x.OpenAsync())
+				.Returns(async () => null);
+
+			var editorState = GetDirtyEditorState(loadService: loadService);
+			var commandAvailability = new CommandAvailability();
+
+			_ = commandAvailability.OpenAsync(editorState).Result;
+
+			loadService.Verify(x => x.OpenAsync(), Times.Once);
+		}
+
 
 		private static DirtyEditorState GetDirtyEditorState(CommandAvailability? commandAvailability = null,
 			Mock<IProjectLoadService>? loadService = null,
