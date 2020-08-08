@@ -36,7 +36,7 @@ namespace Romanesco.Test.EditorComponents
 			var availability = new CommandAvailability();
 			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
 
-			using var once = availability.CanRedo .ExpectAtLeastOnce();
+			using var once = availability.CanRedo.ExpectAtLeastOnce();
 
 			editorState.Redo();
 		}

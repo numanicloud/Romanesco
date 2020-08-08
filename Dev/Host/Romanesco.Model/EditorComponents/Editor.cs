@@ -7,27 +7,29 @@ using System.Threading.Tasks;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
+using Romanesco.Model.Interfaces;
 
 namespace Romanesco.Model.EditorComponents
 {
 	internal sealed class Editor : IEditorFacade, IDisposable
 	{
-		private readonly CommandAvailability commandAvailability;
 		private IEditorState editorState;
-		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 
+		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
-		public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable
-			=> commandAvailability.Observable;
+		public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable { get; }
+		public ICommandAvailabilityPublisher CommandAvailability { get; }
 
 		public Editor(IEditorStateChanger stateChanger, IEditorState initialState, CommandAvailability commandAvailability)
 		{
+			// TODO: コンストラクタパラメータを EditorSession にする
 			stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
 
 			editorState = initialState;
 			ChangeState(editorState);
 
-			this.commandAvailability = commandAvailability;
+			CanExecuteObservable = commandAvailability.Observable;
+			CommandAvailability = commandAvailability;
 		}
 
 		public async Task<IProjectContext?> CreateAsync()

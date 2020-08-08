@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Reactive.Bindings;
 using Romanesco.Model.EditorComponents;
+using Romanesco.Model.Interfaces;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
@@ -10,7 +11,7 @@ using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Model.Commands
 {
-	internal class CommandAvailability : IDisposable
+	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher
 	{
 		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
 			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
