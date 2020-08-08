@@ -30,21 +30,59 @@ namespace Romanesco.Test.EditorComponents
 		public void プロジェクトを作成する命令をエディターが現在のステートに割り振る()
 		{
 			// Arrange
-			var loader = new Mock<IProjectLoadService>();
-			loader.Setup(x => x.CreateAsync())
-				.Returns(async () => null);
-
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetLoadService())
-				.Returns(loader.Object);
-
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var fixture = GetProjectCreatingFixture();
 
 			// Act
-			_ = editor.CreateAsync().Result;
+			_ = fixture.Item3.CreateAsync().Result;
 
 			// Assert
-			loader.Verify(x => x.CreateAsync(), Times.Once);
+			fixture.Item1.Verify(x => x.CreateAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void プロジェクトが作成されるとHistoryの更新をステートに要求する()
+		{
+			var editSubject = new Subject<Unit>();
+			var fixture = GetProjectCreatingFixture(editSubject);
+
+			_ = fixture.Item3.CreateAsync().Result;
+			editSubject.OnNext(Unit.Default);
+
+			fixture.Item2.Verify(x => x.NotifyEdit(), Times.Once);
+		}
+
+		private (Mock<IProjectLoadService>, Mock<IEditorState>, Editor) GetProjectCreatingFixture(Subject<Unit>? onEdit = null)
+		{
+			var loader = GetLoader(onEdit is null ? null : GetContext().Object);
+			var editorState = GetEditorState();
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			return (loader, editorState, editor);
+			
+			Mock<IProjectLoadService> GetLoader(IProjectContext? projectContext)
+			{
+				var mock = new Mock<IProjectLoadService>();
+				mock.Setup(x => x.CreateAsync())
+					.Returns(async () => projectContext);
+				return mock;
+			}
+
+			Mock<IProjectContext> GetContext()
+			{
+				var context = new Mock<IProjectContext>();
+				context.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
+					.Returns((Action action) => onEdit.Subscribe(x => action()));
+				return context;
+			}
+
+			Mock<IEditorState> GetEditorState()
+			{
+				var mock = new Mock<IEditorState>();
+				mock.Setup(x => x.GetLoadService())
+					.Returns(loader.Object);
+				mock.Setup(x => x.NotifyEdit())
+					.Callback(() => { });
+				return mock;
+			}
 		}
 
 		[Fact]
@@ -59,44 +97,6 @@ namespace Romanesco.Test.EditorComponents
 			var _ = editor.OpenAsync().Result;
 
 			editorState.Verify(x => x.OpenAsync(), Times.Once);
-		}
-
-		private (Mock<IProjectLoadService>, Mock<IEditorState>, Editor) GetProjectCreatingFixture(Subject<Unit>? onEdit = null)
-		{
-			Mock<IProjectContext> GetContext()
-			{
-				var context = new Mock<IProjectContext>();
-				context.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
-					.Returns((Action action) => onEdit.Subscribe(x => action()));
-				return context;
-			}
-
-			var loader = new Mock<IProjectLoadService>();
-			loader.Setup(x => x.CreateAsync())
-				.Returns(async () => onEdit is null ? null : GetContext().Object);
-			
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.GetLoadService())
-				.Returns(loader.Object);
-
-			editorState.Setup(x => x.NotifyEdit())
-				.Callback(() => { });
-
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
-
-			return (loader, editorState, editor);
-		}
-
-		[Fact]
-		public void プロジェクトが作成されるとHistoryの更新をステートに要求する()
-		{
-			var editSubject = new Subject<Unit>();
-			var fixture = GetProjectCreatingFixture(editSubject);
-
-			_ = fixture.Item3.CreateAsync().Result;
-			editSubject.OnNext(Unit.Default);
-
-			fixture.Item2.Verify(x => x.NotifyEdit(), Times.Once);
 		}
 
 		[Fact]
