@@ -185,7 +185,7 @@ namespace Romanesco.Test.EditorComponents
 				Expect(availability, EditorCommandType.Redo),
 			};
 
-			editorState.UpdateCanExecute(availability);
+			editorState.UpdateCanExecute();
 
 			disposables.ForEach(x => x.Dispose());
 		}

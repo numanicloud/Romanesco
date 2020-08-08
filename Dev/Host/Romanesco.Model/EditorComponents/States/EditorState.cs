@@ -101,11 +101,11 @@ namespace Romanesco.Model.EditorComponents.States
 			commandAvailability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
 		}
 
-		public void UpdateCanExecute(CommandAvailability availability)
+		public void UpdateCanExecute()
 		{
-			availability.UpdateCanExecute(GetLoadService());
-			availability.UpdateCanExecute(GetSaveService());
-			availability.UpdateCanExecute(GetHistoryService());
+			commandAvailability.UpdateCanExecute(GetLoadService());
+			commandAvailability.UpdateCanExecute(GetSaveService());
+			commandAvailability.UpdateCanExecute(GetHistoryService());
 		}
 	}
 }

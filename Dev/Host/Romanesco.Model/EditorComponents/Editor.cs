@@ -98,7 +98,7 @@ namespace Romanesco.Model.EditorComponents
 		{
 			editorState = state;
 			UpdateTitle();
-			editorState.UpdateCanExecute(commandAvailability);
+			editorState.UpdateCanExecute();
 		}
 
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
