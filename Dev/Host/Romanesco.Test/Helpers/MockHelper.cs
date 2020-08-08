@@ -42,12 +42,15 @@ namespace Romanesco.Test.Helpers
 			return mock;
 		}
 		
-		public static IEditorState GetEditorStateMock(CommandAvailability? commandAvailability = null,
+		public static Mock<IEditorState> GetEditorStateMock(CommandAvailability? commandAvailability = null,
 			IProjectLoadService? loadService = null,
 			IProjectSaveService? saveService = null,
 			IProjectHistoryService? historyService = null)
 		{
 			var mock = new Mock<IEditorState>();
+			
+			mock.Setup(x => x.NotifyEdit())
+				.Callback(() => { });
 
 			if (loadService is {})
 			{
@@ -67,10 +70,10 @@ namespace Romanesco.Test.Helpers
 					.Returns(historyService);
 			}
 
-			return mock.Object;
+			return mock;
 		}
 		
-		public static Mock<IProjectSaveService> GetSaveServiceMock()
+		public static Mock<IProjectSaveService> GetSaveServiceMock(bool? canSave = null, bool? canExport = null)
 		{
 			var saveService = new Mock<IProjectSaveService>();
 			saveService.Setup(x => x.SaveAsync())
@@ -79,6 +82,19 @@ namespace Romanesco.Test.Helpers
 				.Callback(async () => { });
 			saveService.Setup(x => x.ExportAsync())
 				.Callback(async () => { });
+
+			if (canSave.HasValue)
+			{
+				saveService.Setup(x => x.CanSave)
+					.Returns(canSave.Value);
+			}
+
+			if (canExport.HasValue)
+			{
+				saveService.Setup(x => x.CanExport)
+					.Returns(canExport.Value);
+			}
+
 			return saveService;
 		}
 	}

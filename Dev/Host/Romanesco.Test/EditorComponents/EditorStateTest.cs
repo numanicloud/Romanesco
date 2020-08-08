@@ -19,6 +19,8 @@ namespace Romanesco.Test.EditorComponents
 {
 	public class EditorStateTest
 	{
+		// ここはEditorState自身のテストなので、MockHelperからIEditorStateの実装を取ってはいけない
+
 		[Fact]
 		public void Undoを呼ぶとUndo可能性が更新される()
 		{
@@ -60,7 +62,7 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
 		{
-			var saveService = GetMockSaveService();
+			var saveService = MockHelper.GetSaveServiceMock();
 			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
 
 			editorState.SaveAsync().Wait();
@@ -71,7 +73,7 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
 		{
-			var saveService = GetMockSaveService();
+			var saveService = MockHelper.GetSaveServiceMock();
 			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
 
 			editorState.SaveAsAsync().Wait();
@@ -82,7 +84,7 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
 		{
-			var saveService = GetMockSaveService();
+			var saveService = MockHelper.GetSaveServiceMock();
 			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
 
 			editorState.ExportAsync().Wait();
@@ -128,10 +130,7 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void プロジェクトを開くサービスを実行できる()
 		{
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.OpenAsync())
-				.Returns(async () => null);
-
+			var loadService = MockHelper.GetLoaderServiceMock();
 			var editorState = GetDirtyEditorState(loadService: loadService);
 
 			_ = editorState.OpenAsync().Result;
@@ -148,13 +147,8 @@ namespace Romanesco.Test.EditorComponents
 					.ExpectAtLeastOnce();
 			}
 
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.CanOpen).Returns(true);
-			loadService.Setup(x => x.CanCreate).Returns(true);
-
-			var saveService = new Mock<IProjectSaveService>();
-			saveService.Setup(x => x.CanSave).Returns(true);
-			saveService.Setup(x => x.CanExport).Returns(true);
+			var loadService = MockHelper.GetLoaderServiceMock(canCreate: true, canOpen: true);
+			var saveService = MockHelper.GetSaveServiceMock(true, true);
 
 			var historyService = new Mock<IProjectHistoryService>();
 			historyService.Setup(x => x.CanUndo).Returns(true);
