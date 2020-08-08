@@ -14,6 +14,7 @@ namespace Romanesco.Model.EditorComponents
 	internal sealed class Editor : IEditorFacade, IDisposable
 	{
 		private IEditorState editorState;
+		private readonly CommandAvailability commandAvailability_xxx;
 
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
@@ -30,11 +31,12 @@ namespace Romanesco.Model.EditorComponents
 
 			CanExecuteObservable = commandAvailability.Observable;
 			CommandAvailability = commandAvailability;
+			commandAvailability_xxx = commandAvailability;
 		}
 
 		public async Task<IProjectContext?> CreateAsync()
 		{
-			if (!(await editorState.CreateAsync() is { } projectContext))
+			if (!(await commandAvailability_xxx.CreateAsync(editorState) is { } projectContext))
 			{
 				return null;
 			}

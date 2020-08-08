@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Reactive.Bindings;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.EditorComponents;
+using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Interfaces;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
@@ -83,6 +86,11 @@ namespace Romanesco.Model.Commands
 		{
 			UpdateCanExecute(Undo, history.CanUndo);
 			UpdateCanExecute(Redo, history.CanRedo);
+		}
+		
+		public async Task<IProjectContext?> CreateAsync(IEditorState editorState)
+		{
+			return await editorState.GetLoadService().CreateAsync();
 		}
 	}
 }

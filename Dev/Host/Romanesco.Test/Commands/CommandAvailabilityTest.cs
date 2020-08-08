@@ -1,8 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Moq;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
+using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.Infrastructure;
+using Romanesco.Model.Services.History;
+using Romanesco.Model.Services.Load;
+using Romanesco.Model.Services.Save;
 using Xunit;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
 
@@ -41,6 +48,39 @@ namespace Romanesco.Test.Commands
 			
 			availability.UpdateCanExecute(type, false);
 			Assert.False(stream.Value);
+		}
+		
+		[Fact]
+		public void プロジェクトを作成するサービスを実行できる()
+		{
+			var loadService = new Mock<IProjectLoadService>();
+			loadService.Setup(x => x.CreateAsync())
+				.Returns(async () => null);
+
+			var editorState = GetDirtyEditorState(loadService: loadService);
+			var commandAvailability = new CommandAvailability();
+
+			_ = commandAvailability.CreateAsync(editorState).Result;
+
+			loadService.Verify(x => x.CreateAsync(), Times.Once);
+		}
+
+		private static DirtyEditorState GetDirtyEditorState(CommandAvailability? commandAvailability = null,
+			Mock<IProjectLoadService>? loadService = null,
+			Mock<IProjectSaveService>? saveService = null,
+			Mock<IProjectHistoryService>? historyService = null)
+		{
+			var editorSession = new EditorSession(
+				Mock.Of<IEditorStateChanger>(),
+				commandAvailability ?? new CommandAvailability());
+
+			return new DirtyEditorState(
+				loadService?.Object ?? Mock.Of<IProjectLoadService>(),
+				historyService?.Object ?? Mock.Of<IProjectHistoryService>(),
+				saveService?.Object ?? Mock.Of<IProjectSaveService>(),
+				Mock.Of<IProjectContext>(),
+				Mock.Of<IProjectModelFactory>(),
+				editorSession);
 		}
 	}
 }
