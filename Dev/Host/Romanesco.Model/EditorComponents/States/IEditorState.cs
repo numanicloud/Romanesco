@@ -18,6 +18,7 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnCreate(IProjectContext project);
 		void OnOpen(IProjectContext project);
 		void OnSave();
+		void OnSaveAs();
 
 		Task<IProjectContext?> CreateAsync();
 		Task<IProjectContext?> OpenAsync();

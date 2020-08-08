@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Moq;
-using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
-using Romanesco.Model.EditorComponents.States;
-using Romanesco.Model.Infrastructure;
-using Romanesco.Model.Services.History;
-using Romanesco.Model.Services.Load;
-using Romanesco.Model.Services.Save;
 using Romanesco.Test.Helpers;
 using Xunit;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
@@ -85,6 +77,19 @@ namespace Romanesco.Test.Commands
 			availability.SaveAsync(editorState.Object).Wait();
 
 			saveService.Verify(x => x.SaveAsync(), Times.Once);
+		}
+		
+
+		[Fact]
+		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
+		{
+			var saveService = MockHelper.GetSaveServiceMock();
+			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
+			var availability = new CommandAvailability();
+
+			availability.SaveAsAsync(editorState.Object).Wait();
+
+			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
 		}
 	}
 }
