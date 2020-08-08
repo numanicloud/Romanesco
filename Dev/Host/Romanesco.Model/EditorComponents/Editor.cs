@@ -50,7 +50,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task<IProjectContext?> OpenAsync()
 		{
-			if (!(await editorState.OpenAsync() is {} projectContext))
+			if (!(await commandAvailability_xxx.OpenAsync(editorState) is {} projectContext))
 			{
 				return null;
 			}

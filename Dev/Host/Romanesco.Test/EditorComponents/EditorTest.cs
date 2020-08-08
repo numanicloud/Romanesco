@@ -85,15 +85,19 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void プロジェクトを開く命令をエディターが現在のステートに割り振る()
 		{
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.OpenAsync())
+			var loadService = new Mock<IProjectLoadService>();
+			loadService.Setup(x => x.OpenAsync())
 				.Returns(async () => null);
+
+			var editorState = new Mock<IEditorState>();
+			editorState.Setup(x => x.GetLoadService())
+				.Returns(loadService.Object);
 
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			var _ = editor.OpenAsync().Result;
 
-			editorState.Verify(x => x.OpenAsync(), Times.Once);
+			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}
 
 		[Fact]
