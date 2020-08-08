@@ -117,7 +117,7 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void プロジェクトを作成するサービスを実行できる()
 		{
-			var loadService = MockHelper.GetLoadMock();
+			var loadService = MockHelper.GetLoaderServiceMock();
 			var editorState = GetDirtyEditorState(loadService: loadService);
 
 			_ = editorState.CreateAsync().Result;

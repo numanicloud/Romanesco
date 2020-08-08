@@ -51,7 +51,7 @@ namespace Romanesco.Test.EditorComponents
 
 		private (Mock<IProjectLoadService>, Mock<IEditorState>, Editor) GetProjectCreatingFixture(Subject<Unit>? onEdit = null)
 		{
-			var loader = MockHelper.GetLoadMock(onEdit is null ? null : GetContext().Object);
+			var loader = MockHelper.GetLoaderServiceMock(onEdit is null ? null : GetContext().Object);
 			var editorState = GetEditorState();
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 			return (loader, editorState, editor);

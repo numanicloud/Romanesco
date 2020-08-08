@@ -54,7 +54,7 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクトを作成するサービスを実行できる()
 		{
-			var loadService = MockHelper.GetLoadMock();
+			var loadService = MockHelper.GetLoaderServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
 			var commandAvailability = new CommandAvailability();
 
@@ -66,7 +66,7 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクトを開くサービスを実行できる()
 		{
-			var loadService = MockHelper.GetLoadMock();
+			var loadService = MockHelper.GetLoaderServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
 			var commandAvailability = new CommandAvailability();
 
@@ -78,25 +78,13 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
 		{
-			var saveService = GetMockSaveService();
+			var saveService = MockHelper.GetSaveServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
 			var availability = new CommandAvailability();
 
 			availability.SaveAsync(editorState).Wait();
 
 			saveService.Verify(x => x.SaveAsync(), Times.Once);
-		}
-		
-		private static Mock<IProjectSaveService> GetMockSaveService()
-		{
-			var saveService = new Mock<IProjectSaveService>();
-			saveService.Setup(x => x.SaveAsync())
-				.Callback(async () => { });
-			saveService.Setup(x => x.SaveAsAsync())
-				.Callback(async () => { });
-			saveService.Setup(x => x.ExportAsync())
-				.Callback(async () => { });
-			return saveService;
 		}
 	}
 }

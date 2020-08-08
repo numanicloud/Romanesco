@@ -15,7 +15,7 @@ namespace Romanesco.Test.Helpers
 {
 	static class MockHelper
 	{
-		public static Mock<IProjectLoadService> GetLoadMock(IProjectContext? projectContext = null,
+		public static Mock<IProjectLoadService> GetLoaderServiceMock(IProjectContext? projectContext = null,
 			bool? canCreate = null,
 			bool? canOpen = null)
 		{
@@ -68,6 +68,18 @@ namespace Romanesco.Test.Helpers
 			}
 
 			return mock.Object;
+		}
+		
+		public static Mock<IProjectSaveService> GetSaveServiceMock()
+		{
+			var saveService = new Mock<IProjectSaveService>();
+			saveService.Setup(x => x.SaveAsync())
+				.Callback(async () => { });
+			saveService.Setup(x => x.SaveAsAsync())
+				.Callback(async () => { });
+			saveService.Setup(x => x.ExportAsync())
+				.Callback(async () => { });
+			return saveService;
 		}
 	}
 }
