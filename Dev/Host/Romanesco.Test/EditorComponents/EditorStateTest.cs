@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Moq;
@@ -11,6 +13,7 @@ using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 using Xunit;
+using Romanesco.Test.Helpers;
 
 namespace Romanesco.Test.EditorComponents
 {
@@ -20,30 +23,26 @@ namespace Romanesco.Test.EditorComponents
 		public void Undoを呼ぶとUndo可能性が更新される()
 		{
 			var availability = new CommandAvailability();
-			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock(), availability);
+			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
 
-			bool raised = false;
-			availability.Observable.Where(x => x.Item1 == EditorCommandType.Undo)
-				.Subscribe(x => raised = true);
+			using var once = availability.Observable
+				.Where(x => x.command == EditorCommandType.Undo)
+				.ExpectAtLeastOnce();
 
 			editorState.Undo();
-
-			Assert.True(raised);
 		}
 		
 		[Fact]
 		public void Redoを呼ぶとRedo可能性が更新される()
 		{
 			var availability = new CommandAvailability();
-			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock(), availability);
+			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
 
-			bool raised = false;
-			availability.Observable.Where(x => x.Item1 == EditorCommandType.Redo)
-				.Subscribe(x => raised = true);
+			using var once = availability.Observable
+				.Where(x => x.command == EditorCommandType.Redo)
+				.ExpectAtLeastOnce();
 
-			editorState.Redo(availability);
-
-			Assert.True(raised);
+			editorState.Redo();
 		}
 		
 		[Theory]
@@ -53,15 +52,157 @@ namespace Romanesco.Test.EditorComponents
 		{
 			// これはもはや CommandAvailability のテスト
 			var availability = new CommandAvailability();
-			var editorState = GetDirtyEditorStateToHistory(CreateHistoryMock(), availability);
+			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
 
-			bool raised = false;
-			availability.Observable.Where(x => x.Item1 == type)
-				.Subscribe(x => raised = true);
+			using var once = availability.Observable
+				.Where(x => x.command == type)
+				.ExpectAtLeastOnce();
 
 			availability.UpdateCanExecute(editorState.GetHistoryService());
+		}
 
-			Assert.True(raised);
+		[Fact]
+		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
+		{
+			var saveService = GetMockSaveService();
+			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
+
+			editorState.SaveAsync().Wait();
+
+			saveService.Verify(x => x.SaveAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
+		{
+			var saveService = GetMockSaveService();
+			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
+
+			editorState.SaveAsAsync().Wait();
+
+			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
+		{
+			var saveService = GetMockSaveService();
+			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
+
+			editorState.ExportAsync().Wait();
+
+			saveService.Verify(x => x.ExportAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void OnEditを呼ぶとUndoが更新される()
+		{
+			var history = CreateHistoryMock();
+			var commandAvailability = new CommandAvailability();
+			var editorState = GetDirtyEditorState(commandAvailability, historyService: history);
+
+			using var once = commandAvailability.Observable
+				.Where(x => x.command == EditorCommandType.Undo)
+				.ExpectAtLeastOnce();
+
+			editorState.NotifyEdit();
+		}
+
+		[Fact]
+		public void OnEditを呼ぶとRedoが更新される()
+		{
+			var history = CreateHistoryMock();
+			var commandAvailability = new CommandAvailability();
+			var editorState = GetDirtyEditorState(commandAvailability, historyService: history);
+
+			using var once = commandAvailability.Observable
+				.Where(x => x.command == EditorCommandType.Redo)
+				.ExpectAtLeastOnce();
+
+			editorState.NotifyEdit();
+		}
+
+		[Fact]
+		public void プロジェクトを作成するサービスを実行できる()
+		{
+			var loadService = new Mock<IProjectLoadService>();
+			loadService.Setup(x => x.CreateAsync())
+				.Returns(async () => null);
+
+			var editorState = GetDirtyEditorState(loadService: loadService);
+
+			_ = editorState.CreateAsync().Result;
+
+			loadService.Verify(x => x.CreateAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void プロジェクトを開くサービスを実行できる()
+		{
+			var loadService = new Mock<IProjectLoadService>();
+			loadService.Setup(x => x.OpenAsync())
+				.Returns(async () => null);
+
+			var editorState = GetDirtyEditorState(loadService: loadService);
+
+			_ = editorState.OpenAsync().Result;
+
+			loadService.Verify(x => x.OpenAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void 全コマンドの可用性を更新できる()
+		{
+			IDisposable Expect(CommandAvailability ca, EditorCommandType type)
+			{
+				return ca.Observable.Where(x => x.command == type)
+					.ExpectAtLeastOnce();
+			}
+
+			var loadService = new Mock<IProjectLoadService>();
+			loadService.Setup(x => x.CanOpen).Returns(true);
+			loadService.Setup(x => x.CanCreate).Returns(true);
+
+			var saveService = new Mock<IProjectSaveService>();
+			saveService.Setup(x => x.CanSave).Returns(true);
+			saveService.Setup(x => x.CanExport).Returns(true);
+
+			var historyService = new Mock<IProjectHistoryService>();
+			historyService.Setup(x => x.CanUndo).Returns(true);
+			historyService.Setup(x => x.CanRedo).Returns(true);
+
+			var availability = new CommandAvailability();
+			var editorState = GetDirtyEditorState(availability, loadService, saveService, historyService);
+
+			var disposables = new[]
+			{
+				Expect(availability, EditorCommandType.Create),
+				Expect(availability, EditorCommandType.Open),
+				Expect(availability, EditorCommandType.Save),
+				Expect(availability, EditorCommandType.SaveAs),
+				Expect(availability, EditorCommandType.Export),
+				Expect(availability, EditorCommandType.Undo),
+				Expect(availability, EditorCommandType.Redo),
+			};
+
+			editorState.UpdateCanExecute(availability);
+
+			disposables.ForEach(x => x.Dispose());
+		}
+
+		private static DirtyEditorState GetDirtyEditorState(CommandAvailability? commandAvailability = null,
+			Mock<IProjectLoadService>? loadService = null,
+			Mock<IProjectSaveService>? saveService = null,
+			Mock<IProjectHistoryService>? historyService = null)
+		{
+			return new DirtyEditorState(
+				loadService?.Object ?? Mock.Of<IProjectLoadService>(),
+				historyService?.Object ?? Mock.Of<IProjectHistoryService>(),
+				saveService?.Object ?? Mock.Of<IProjectSaveService>(),
+				Mock.Of<IProjectContext>(),
+				Mock.Of<IProjectModelFactory>(),
+				Mock.Of<IEditorStateChanger>(),
+				commandAvailability ?? new CommandAvailability());
 		}
 
 		private static Mock<IProjectHistoryService> CreateHistoryMock()
@@ -76,53 +217,6 @@ namespace Romanesco.Test.EditorComponents
 			return history;
 		}
 
-		private static DirtyEditorState GetDirtyEditorStateToHistory(Mock<IProjectHistoryService> history,
-			CommandAvailability commandAvailability)
-		{
-			var editorState = new DirtyEditorState(
-				Mock.Of<IProjectLoadService>(),
-				history.Object,
-				Mock.Of<IProjectSaveService>(),
-				Mock.Of<IProjectContext>(),
-				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>(),
-				commandAvailability);
-			return editorState;
-		}
-		
-		[Fact]
-		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
-		{
-			var saveService = GetMockSaveService();
-			var editorState = GetMockEditorStateToSave(saveService, new CommandAvailability());
-
-			editorState.SaveAsync().Wait();
-
-			saveService.Verify(x => x.SaveAsync(), Times.Once);
-		}
-
-		[Fact]
-		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
-		{
-			var saveService = GetMockSaveService();
-			var editorState = GetMockEditorStateToSave(saveService, new CommandAvailability());
-
-			editorState.SaveAsAsync().Wait();
-
-			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
-		}
-
-		[Fact]
-		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
-		{
-			var saveService = GetMockSaveService();
-			var editorState = GetMockEditorStateToSave(saveService, new CommandAvailability());
-
-			editorState.ExportAsync().Wait();
-
-			saveService.Verify(x => x.ExportAsync(), Times.Once);
-		}
-
 		private static Mock<IProjectSaveService> GetMockSaveService()
 		{
 			var saveService = new Mock<IProjectSaveService>();
@@ -133,95 +227,6 @@ namespace Romanesco.Test.EditorComponents
 			saveService.Setup(x => x.ExportAsync())
 				.Callback(async () => { });
 			return saveService;
-		}
-
-		private static DirtyEditorState GetMockEditorStateToSave(Mock<IProjectSaveService> saveService,
-			CommandAvailability commandAvailability)
-		{
-			return new DirtyEditorState(
-				Mock.Of<IProjectLoadService>(),
-				Mock.Of<IProjectHistoryService>(),
-				saveService.Object,
-				Mock.Of<IProjectContext>(),
-				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>(),
-				commandAvailability);
-		}
-
-		[Fact]
-		public void OnEditを呼ぶとUndoが更新される()
-		{
-			var history = CreateHistoryMock();
-			var commandAvailability = new CommandAvailability();
-			var editorState = GetDirtyEditorStateToHistory(history, commandAvailability);
-
-			bool raised = false;
-			commandAvailability.Observable
-				.Where(x => x.command == EditorCommandType.Undo)
-				.Subscribe(x => raised = true);
-
-			editorState.NotifyEdit();
-
-			Assert.True(raised);
-		}
-
-		[Fact]
-		public void OnEditを呼ぶとRedoが更新される()
-		{
-			var history = CreateHistoryMock();
-			var commandAvailability = new CommandAvailability();
-			var editorState = GetDirtyEditorStateToHistory(history, commandAvailability);
-
-			bool raised = false;
-			commandAvailability.Observable
-				.Where(x => x.command == EditorCommandType.Redo)
-				.Subscribe(x => raised = true);
-
-			editorState.NotifyEdit();
-
-			Assert.True(raised);
-		}
-
-		[Fact]
-		public void プロジェクトを作成するサービスを実行できる()
-		{
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.CreateAsync())
-				.Returns(async () => null);
-
-			var editorState = new DirtyEditorState(
-				loadService.Object,
-				Mock.Of<IProjectHistoryService>(),
-				Mock.Of<IProjectSaveService>(),
-				Mock.Of<IProjectContext>(),
-				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>(),
-				new CommandAvailability());
-
-			var _ = editorState.CreateAsync().Result;
-
-			loadService.Verify(x => x.CreateAsync(), Times.Once);
-		}
-		
-		[Fact]
-		public void プロジェクトを開くサービスを実行できる()
-		{
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.OpenAsync())
-				.Returns(async () => null);
-
-			var editorState = new DirtyEditorState(
-				loadService.Object,
-				Mock.Of<IProjectHistoryService>(),
-				Mock.Of<IProjectSaveService>(),
-				Mock.Of<IProjectContext>(),
-				Mock.Of<IProjectModelFactory>(),
-				Mock.Of<IEditorStateChanger>(),
-				new CommandAvailability());
-
-			var _ = editorState.OpenAsync().Result;
-
-			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}
 	}
 }

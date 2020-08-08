@@ -24,6 +24,9 @@ namespace Romanesco.Model.EditorComponents.States
 		protected EditorState(IModelFactory factory, IEditorStateChanger stateChanger,
 			CommandAvailability commandAvailability)
 		{
+			// IEditorStateChanger, CommandAvailability はEditorの持っている物と同一である必要がある
+			// それを名前で表現すべき。
+			// EditorStateOwnership のような名前のクラスに、IEditorStateChangerとCommandAvailabilityを含ませるとよいかも
 			this.factory = factory;
 			this.StateChanger = stateChanger;
 			this.commandAvailability = commandAvailability;
@@ -92,10 +95,10 @@ namespace Romanesco.Model.EditorComponents.States
 			commandAvailability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
 		}
 		
-		public void Redo(CommandAvailability availability)
+		public void Redo()
 		{
 			GetHistoryService().Redo();
-			availability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
+			commandAvailability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
 		}
 
 		public void UpdateCanExecute(CommandAvailability availability)

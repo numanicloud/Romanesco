@@ -103,11 +103,13 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void RedoするとRedo可能性が更新される()
 		{
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.Redo(It.IsAny<CommandAvailability>()))
-				.Callback((CommandAvailability av) => av.UpdateCanExecute(Redo, false));
+			var commandAvailability = new CommandAvailability();
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var editorState = new Mock<IEditorState>();
+			editorState.Setup(x => x.Redo())
+				.Callback(() => commandAvailability.UpdateCanExecute(Redo, false));
+
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, commandAvailability);
 
 			bool raised = false;
 			using var disposable = editor.CanExecuteObservable

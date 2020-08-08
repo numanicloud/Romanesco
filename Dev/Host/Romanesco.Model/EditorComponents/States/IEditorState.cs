@@ -23,7 +23,7 @@ namespace Romanesco.Model.EditorComponents.States
 		// EditorとEditorStateの両方に、CommandAvailabilityを注入するという手がある
 		// その場合EditorViewModelにもCommandAvailabilityを注入すれば実装可能そう
 		void Undo();
-		void Redo(CommandAvailability availability);
+		void Redo();
 		void UpdateCanExecute(CommandAvailability availability);
 	}
 }
