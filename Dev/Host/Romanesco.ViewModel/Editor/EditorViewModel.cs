@@ -55,6 +55,7 @@ namespace Romanesco.ViewModel.Editor
 			this.interpreter = interpreter;
 			CommandExecution = new BooleanUsingScopeSource();
 
+            /* 各コマンドの実行可能性をUIに伝達する */
             //*
 			var cav = Editor.CommandAvailability;
 			CreateCommand = ToEditorCommand2(cav.CanCreate);
@@ -66,6 +67,7 @@ namespace Romanesco.ViewModel.Editor
 			Redo = ToEditorCommand2(cav.CanRedo);
             //*/
 
+            /* 各コマンドの実行内容を指定する */
             CreateCommand.SubscribeSafe(x => CreateAsync().Forget()).AddTo(editor.Disposables);
             OpenCommand.SubscribeSafe(x => OpenAsync().Forget()).AddTo(editor.Disposables);
             ExportCommand.SubscribeSafe(x => ExportAsync().Forget()).AddTo(editor.Disposables);

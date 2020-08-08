@@ -51,6 +51,7 @@ namespace Romanesco.Model.EditorComponents.States
 		{
 		}
 
+		/* 各コマンドを状態に応じて実行する */
 		public virtual void OnEdit()
 		{
 		}

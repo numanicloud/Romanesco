@@ -65,6 +65,7 @@ namespace Romanesco.Model.EditorComponents
 			projectContext.ObserveEdit(OnEdit).AddTo(Disposables);
 		}
 
+		/* 各コマンドの実行リクエストを受け付ける */
 		private void OnEdit()
 		{
 			editorState.NotifyEdit();

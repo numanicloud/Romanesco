@@ -11,6 +11,15 @@ using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Model.Commands
 {
+	/*
+	 * コマンド実装方針
+	 * Model側のコマンドクラス、ViewModel側のコマンドクラスで分ける。(CommandAvailabilityViewModelとする)
+	 * コマンドの実行をEditorStateから剥がし、まずはここに持ってくる
+	 * ReactiveCommandをSubscribeする機能をこのクラスに持ってくる(あるいはViewModel側に)
+	 * ViewModel側から、Editor.CommandAvailability.Create というようにコマンドに直接アクセスする
+	 * クライアントクラスは EditorViewModel でもいいが、最終的には CommandAvailabilityViewModel が理想かな？
+	 */
+
 	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher
 	{
 		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
@@ -20,6 +29,7 @@ namespace Romanesco.Model.Commands
 
 		public IObservable<(EditorCommandType command, bool canExecute)> Observable => canExecuteSubject;
 
+		/* 各コマンドの実行可能性を保持する */
 		public IReadOnlyReactiveProperty<bool> CanSave { get; }
 		public IReadOnlyReactiveProperty<bool> CanSaveAs { get; }
 		public IReadOnlyReactiveProperty<bool> CanExport { get; }
