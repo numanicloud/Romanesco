@@ -9,6 +9,7 @@ using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
+using Romanesco.Test.Helpers;
 using Xunit;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
 
@@ -50,7 +51,7 @@ namespace Romanesco.Test.EditorComponents
 
 		private (Mock<IProjectLoadService>, Mock<IEditorState>, Editor) GetProjectCreatingFixture(Subject<Unit>? onEdit = null)
 		{
-			var loader = GetLoader(onEdit is null ? null : GetContext().Object);
+			var loader = MockHelper.GetLoadMock(onEdit is null ? null : GetContext().Object);
 			var editorState = GetEditorState();
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 			return (loader, editorState, editor);

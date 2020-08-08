@@ -10,6 +10,7 @@ using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
+using Romanesco.Test.Helpers;
 using Xunit;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
 
@@ -53,10 +54,7 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクトを作成するサービスを実行できる()
 		{
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.CreateAsync())
-				.Returns(async () => null);
-
+			var loadService = MockHelper.GetLoadMock();
 			var editorState = GetDirtyEditorState(loadService: loadService);
 			var commandAvailability = new CommandAvailability();
 
