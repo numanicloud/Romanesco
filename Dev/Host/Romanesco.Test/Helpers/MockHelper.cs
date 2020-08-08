@@ -3,7 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Moq;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Commands;
+using Romanesco.Model.EditorComponents;
+using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.Infrastructure;
+using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
+using Romanesco.Model.Services.Save;
 
 namespace Romanesco.Test.Helpers
 {
@@ -16,6 +22,9 @@ namespace Romanesco.Test.Helpers
 			var mock = new Mock<IProjectLoadService>();
 
 			mock.Setup(x => x.CreateAsync())
+				.Returns(async () => projectContext);
+
+			mock.Setup(x => x.OpenAsync())
 				.Returns(async () => projectContext);
 
 			if (canCreate.HasValue)
@@ -31,6 +40,34 @@ namespace Romanesco.Test.Helpers
 			}
 
 			return mock;
+		}
+		
+		public static IEditorState GetEditorStateMock(CommandAvailability? commandAvailability = null,
+			IProjectLoadService? loadService = null,
+			IProjectSaveService? saveService = null,
+			IProjectHistoryService? historyService = null)
+		{
+			var mock = new Mock<IEditorState>();
+
+			if (loadService is {})
+			{
+				mock.Setup(x => x.GetLoadService())
+					.Returns(loadService);
+			}
+
+			if (saveService is { })
+			{
+				mock.Setup(x => x.GetSaveService())
+					.Returns(saveService);
+			}
+
+			if (historyService is { })
+			{
+				mock.Setup(x => x.GetHistoryService())
+					.Returns(historyService);
+			}
+
+			return mock.Object;
 		}
 	}
 }

@@ -55,14 +55,6 @@ namespace Romanesco.Test.EditorComponents
 			var editorState = GetEditorState();
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 			return (loader, editorState, editor);
-			
-			Mock<IProjectLoadService> GetLoader(IProjectContext? projectContext)
-			{
-				var mock = new Mock<IProjectLoadService>();
-				mock.Setup(x => x.CreateAsync())
-					.Returns(async () => projectContext);
-				return mock;
-			}
 
 			Mock<IProjectContext> GetContext()
 			{

@@ -55,7 +55,7 @@ namespace Romanesco.Test.Commands
 		public void プロジェクトを作成するサービスを実行できる()
 		{
 			var loadService = MockHelper.GetLoadMock();
-			var editorState = GetDirtyEditorState(loadService: loadService);
+			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
 			var commandAvailability = new CommandAvailability();
 
 			_ = commandAvailability.CreateAsync(editorState).Result;
@@ -66,11 +66,8 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクトを開くサービスを実行できる()
 		{
-			var loadService = new Mock<IProjectLoadService>();
-			loadService.Setup(x => x.OpenAsync())
-				.Returns(async () => null);
-
-			var editorState = GetDirtyEditorState(loadService: loadService);
+			var loadService = MockHelper.GetLoadMock();
+			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
 			var commandAvailability = new CommandAvailability();
 
 			_ = commandAvailability.OpenAsync(editorState).Result;
@@ -78,29 +75,11 @@ namespace Romanesco.Test.Commands
 			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}
 
-		private static DirtyEditorState GetDirtyEditorState(CommandAvailability? commandAvailability = null,
-			Mock<IProjectLoadService>? loadService = null,
-			Mock<IProjectSaveService>? saveService = null,
-			Mock<IProjectHistoryService>? historyService = null)
-		{
-			var editorSession = new EditorSession(
-				Mock.Of<IEditorStateChanger>(),
-				commandAvailability ?? new CommandAvailability());
-
-			return new DirtyEditorState(
-				loadService?.Object ?? Mock.Of<IProjectLoadService>(),
-				historyService?.Object ?? Mock.Of<IProjectHistoryService>(),
-				saveService?.Object ?? Mock.Of<IProjectSaveService>(),
-				Mock.Of<IProjectContext>(),
-				Mock.Of<IProjectModelFactory>(),
-				editorSession);
-		}
-		
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
 		{
 			var saveService = GetMockSaveService();
-			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
+			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
 			var availability = new CommandAvailability();
 
 			availability.SaveAsync(editorState).Wait();
