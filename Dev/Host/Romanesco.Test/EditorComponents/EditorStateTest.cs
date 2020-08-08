@@ -25,9 +25,7 @@ namespace Romanesco.Test.EditorComponents
 			var availability = new CommandAvailability();
 			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
 
-			using var once = availability.Observable
-				.Where(x => x.command == EditorCommandType.Undo)
-				.ExpectAtLeastOnce();
+			using var once = availability.CanUndo.ExpectAtLeastOnce();
 
 			editorState.Undo();
 		}
@@ -38,9 +36,7 @@ namespace Romanesco.Test.EditorComponents
 			var availability = new CommandAvailability();
 			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
 
-			using var once = availability.Observable
-				.Where(x => x.command == EditorCommandType.Redo)
-				.ExpectAtLeastOnce();
+			using var once = availability.CanRedo .ExpectAtLeastOnce();
 
 			editorState.Redo();
 		}
@@ -101,9 +97,7 @@ namespace Romanesco.Test.EditorComponents
 			var commandAvailability = new CommandAvailability();
 			var editorState = GetDirtyEditorState(commandAvailability, historyService: history);
 
-			using var once = commandAvailability.Observable
-				.Where(x => x.command == EditorCommandType.Undo)
-				.ExpectAtLeastOnce();
+			using var once = commandAvailability.CanUndo.ExpectAtLeastOnce();
 
 			editorState.NotifyEdit();
 		}
@@ -115,9 +109,7 @@ namespace Romanesco.Test.EditorComponents
 			var commandAvailability = new CommandAvailability();
 			var editorState = GetDirtyEditorState(commandAvailability, historyService: history);
 
-			using var once = commandAvailability.Observable
-				.Where(x => x.command == EditorCommandType.Redo)
-				.ExpectAtLeastOnce();
+			using var once = commandAvailability.CanRedo.ExpectAtLeastOnce();
 
 			editorState.NotifyEdit();
 		}

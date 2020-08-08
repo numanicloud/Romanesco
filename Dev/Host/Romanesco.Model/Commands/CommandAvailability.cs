@@ -33,7 +33,7 @@ namespace Romanesco.Model.Commands
 			{
 				var stream = canExecuteSubject.Where(x => x.command == type)
 					.Select(x => x.canExecute);
-				return new ReactiveProperty<bool>(stream);
+				return new ReactiveProperty<bool>(stream, mode: ReactivePropertyMode.DistinctUntilChanged);
 			}
 
 			CanSave = MakeProperty(Save);
