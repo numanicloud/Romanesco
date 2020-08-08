@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Livet.Messaging;
@@ -17,7 +18,7 @@ namespace Romanesco.ViewModel.Editor
 {
 	internal class EditorViewModel : Livet.ViewModel, IEditorViewModel
     {
-		private readonly ViewModelInterpreter interpreter;
+		private readonly IViewModelInterpreter interpreter;
 
 		public IEditorFacade Editor { get; set; }
         public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
@@ -34,7 +35,7 @@ namespace Romanesco.ViewModel.Editor
         public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
         public List<IDisposable> Disposables => Editor.Disposables;
 
-        public EditorViewModel(IEditorFacade editor, ViewModelInterpreter interpreter)
+        public EditorViewModel(IEditorFacade editor, IViewModelInterpreter interpreter)
         {
             ReactiveCommand ToEditorCommand(EditorCommandType type)
             {

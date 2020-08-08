@@ -6,7 +6,7 @@ using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.ViewModel.States
 {
-	internal class ViewModelInterpreter
+	internal class ViewModelInterpreter : IViewModelInterpreter
     {
         private readonly IStateViewModelFactory[] factories;
 
