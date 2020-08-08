@@ -62,6 +62,7 @@ namespace Romanesco.Model.Infrastructure
 		IProjectHistoryService ResolveProjectHistoryService();
 		ProjectSaveServiceFactory ResolveProjectSaveServiceFactory();
 		CommandAvailability ResolveCommandAvailability();
+		EditorSession ResolveEditorSession();
 
 		[Resolution(typeof(ProjectModelFactory))]
 		IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext);

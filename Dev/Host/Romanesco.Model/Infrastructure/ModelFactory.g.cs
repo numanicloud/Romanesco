@@ -28,6 +28,7 @@ namespace Romanesco.Model.Infrastructure
 		private SimpleHistoryService? _ResolveProjectHistoryServiceCache;
 		private ProjectSaveServiceFactory? _ResolveProjectSaveServiceFactoryCache;
 		private CommandAvailability? _ResolveCommandAvailabilityCache;
+		private EditorSession? _ResolveEditorSessionCache;
 		private ProjectModelFactory? _ResolveProjectModelFactoryCache;
 		private Editor? _ResolveEditorFacadeCache;
 		private NewtonsoftStateSerializer? _ResolveStateSerializerCache;
@@ -74,6 +75,11 @@ namespace Romanesco.Model.Infrastructure
 		public CommandAvailability ResolveCommandAvailability()
 		{
 			return _ResolveCommandAvailabilityCache ??= new CommandAvailability();
+		}
+
+		public EditorSession ResolveEditorSession()
+		{
+			return _ResolveEditorSessionCache ??= new EditorSession(ResolveEditorStateChanger(), ResolveCommandAvailability());
 		}
 
 		public IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext)

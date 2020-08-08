@@ -90,6 +90,11 @@ namespace Romanesco.Model.Infrastructure
 			return Model.ResolveCommandAvailability();
 		}
 
+		public EditorSession ResolveEditorSession()
+		{
+			return Model.ResolveEditorSession();
+		}
+
 		public IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext)
 		{
 			return Model.ResolveProjectModelFactory(_iProjectContext);
