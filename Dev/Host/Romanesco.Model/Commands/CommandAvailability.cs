@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Reactive.Bindings;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
-
 
 namespace Romanesco.Model.Commands
 {
@@ -17,6 +18,32 @@ namespace Romanesco.Model.Commands
 		private IObserver<(EditorCommandType, bool)> Observer => canExecuteSubject;
 
 		public IObservable<(EditorCommandType command, bool canExecute)> Observable => canExecuteSubject;
+
+		public IReadOnlyReactiveProperty<bool> CanSave { get; }
+		public IReadOnlyReactiveProperty<bool> CanSaveAs { get; }
+		public IReadOnlyReactiveProperty<bool> CanExport { get; }
+		public IReadOnlyReactiveProperty<bool> CanCreate { get; }
+		public IReadOnlyReactiveProperty<bool> CanOpen { get; }
+		public IReadOnlyReactiveProperty<bool> CanUndo { get; }
+		public IReadOnlyReactiveProperty<bool> CanRedo { get; }
+
+		public CommandAvailability()
+		{
+			IReadOnlyReactiveProperty<bool> MakeProperty(EditorCommandType type)
+			{
+				var stream = canExecuteSubject.Where(x => x.command == type)
+					.Select(x => x.canExecute);
+				return new ReactiveProperty<bool>(stream);
+			}
+
+			CanSave = MakeProperty(Save);
+			CanSaveAs = MakeProperty(SaveAs);
+			CanExport = MakeProperty(Export);
+			CanCreate = MakeProperty(Create);
+			CanOpen = MakeProperty(Open);
+			CanUndo = MakeProperty(Undo);
+			CanRedo = MakeProperty(Redo);
+		}
 
 		public void Dispose()
 		{
