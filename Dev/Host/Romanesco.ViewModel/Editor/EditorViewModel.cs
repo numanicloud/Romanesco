@@ -32,7 +32,7 @@ namespace Romanesco.ViewModel.Editor
 		public ReactiveCommand OpenCommand => commandManager.Open;
 		public ReactiveCommand SaveCommand => commandManager.Save;
 		public ReactiveCommand SaveAsCommand => commandManager.SaveAs;
-		public ReactiveCommand ExportCommand { get; }
+		public ReactiveCommand ExportCommand => commandManager.Export;
 		public ReactiveCommand Undo { get; }
 		public ReactiveCommand Redo { get; }
 		public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
@@ -55,15 +55,11 @@ namespace Romanesco.ViewModel.Editor
 			/* 各コマンドの実行可能性をUIに伝達する */
 			//*
 			var cav = Editor.CommandAvailabilityPublisher;
-			ExportCommand = ToEditorCommand(cav.CanExport);
 			Undo = ToEditorCommand(cav.CanUndo);
 			Redo = ToEditorCommand(cav.CanRedo);
 			//*/
 
 			/* 各コマンドの実行内容を指定する */
-			ExportCommand.SubscribeSafe(x => ExportAsync().Forget())
-				.AddTo(editor.Disposables);
-
 			Undo.SubscribeSafe(x => Editor.CommandAvailabilityPublisher.Undo())
 				.AddTo(editor.Disposables);
 
@@ -77,14 +73,6 @@ namespace Romanesco.ViewModel.Editor
 		{
 			var vm = new ProjectSettingsEditorViewModel(editor);
 			Messenger.Raise(new TransitionMessage(vm, "CreateProject"));
-		}
-
-		private async Task ExportAsync()
-		{
-			using (CommandExecution.Create())
-			{
-				await Editor.CommandAvailabilityPublisher.ExportAsync();
-			}
 		}
 	}
 }
