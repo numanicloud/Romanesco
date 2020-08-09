@@ -56,7 +56,7 @@ namespace Romanesco.Model.Commands
 			CanCreate = MakeProperty(Create);
 			CanOpen = MakeProperty(Open);
 			CanUndo = MakeProperty(EditorCommandType.Undo);
-			CanRedo = MakeProperty(Redo);
+			CanRedo = MakeProperty(EditorCommandType.Redo);
 		}
 
 		public void Dispose()
@@ -85,7 +85,7 @@ namespace Romanesco.Model.Commands
 		public void UpdateCanExecute(IProjectHistoryService history)
 		{
 			UpdateCanExecute(EditorCommandType.Undo, history.CanUndo);
-			UpdateCanExecute(Redo, history.CanRedo);
+			UpdateCanExecute(EditorCommandType.Redo, history.CanRedo);
 		}
 		
 		public async Task<IProjectContext?> CreateAsync(IEditorState editorState)
@@ -119,6 +119,12 @@ namespace Romanesco.Model.Commands
 		{
 			editorState.GetHistoryService().Undo();
 			UpdateCanExecute(EditorCommandType.Undo, editorState.GetHistoryService().CanUndo);
+		}
+		
+		public void Redo(IEditorState editorState)
+		{
+			editorState.GetHistoryService().Redo();
+			UpdateCanExecute(EditorCommandType.Redo, editorState.GetHistoryService().CanRedo);
 		}
 	}
 }

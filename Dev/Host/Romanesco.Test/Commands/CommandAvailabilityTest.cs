@@ -117,5 +117,17 @@ namespace Romanesco.Test.Commands
 
 			historyService.Verify(x => x.Undo(), Times.Once);
 		}
+
+		[Fact]
+		public void Redoを実行できる()
+		{
+			var historyService = MockHelper.CreateHistoryMock();
+			var editorState = MockHelper.GetEditorStateMock(historyService: historyService.Object);
+			var availability = new CommandAvailability();
+
+			availability.Redo(editorState.Object);
+
+			historyService.Verify(x => x.Redo(), Times.Once);
+		}
 	}
 }
