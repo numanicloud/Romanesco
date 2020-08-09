@@ -19,28 +19,6 @@ namespace Romanesco.Test.EditorComponents
 	{
 		// ここはEditorState自身のテストなので、MockHelperからIEditorStateの実装を取ってはいけない
 
-		[Fact]
-		public void Undoを呼ぶとUndo可能性が更新される()
-		{
-			var availability = new CommandAvailability();
-			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
-
-			using var once = availability.CanUndo.ExpectAtLeastOnce();
-
-			editorState.Undo();
-		}
-		
-		[Fact]
-		public void Redoを呼ぶとRedo可能性が更新される()
-		{
-			var availability = new CommandAvailability();
-			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
-
-			using var once = availability.CanRedo.ExpectAtLeastOnce();
-
-			editorState.Redo();
-		}
-		
 		[Theory]
 		[InlineData(EditorCommandType.Undo)]
 		[InlineData(EditorCommandType.Redo)]
@@ -55,39 +33,6 @@ namespace Romanesco.Test.EditorComponents
 				.ExpectAtLeastOnce();
 
 			availability.UpdateCanExecute(editorState.GetHistoryService());
-		}
-
-		[Fact]
-		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
-		{
-			var saveService = MockHelper.GetSaveServiceMock();
-			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
-
-			editorState.SaveAsync().Wait();
-
-			saveService.Verify(x => x.SaveAsync(), Times.Once);
-		}
-
-		[Fact]
-		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
-		{
-			var saveService = MockHelper.GetSaveServiceMock();
-			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
-
-			editorState.SaveAsAsync().Wait();
-
-			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
-		}
-
-		[Fact]
-		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
-		{
-			var saveService = MockHelper.GetSaveServiceMock();
-			var editorState = GetDirtyEditorState(new CommandAvailability(), saveService: saveService);
-
-			editorState.ExportAsync().Wait();
-
-			saveService.Verify(x => x.ExportAsync(), Times.Once);
 		}
 
 		[Fact]
@@ -112,28 +57,6 @@ namespace Romanesco.Test.EditorComponents
 			using var once = commandAvailability.CanRedo.ExpectAtLeastOnce();
 
 			editorState.NotifyEdit();
-		}
-
-		[Fact]
-		public void プロジェクトを作成するサービスを実行できる()
-		{
-			var loadService = MockHelper.GetLoaderServiceMock();
-			var editorState = GetDirtyEditorState(loadService: loadService);
-
-			_ = editorState.CreateAsync().Result;
-
-			loadService.Verify(x => x.CreateAsync(), Times.Once);
-		}
-
-		[Fact]
-		public void プロジェクトを開くサービスを実行できる()
-		{
-			var loadService = MockHelper.GetLoaderServiceMock();
-			var editorState = GetDirtyEditorState(loadService: loadService);
-
-			_ = editorState.OpenAsync().Result;
-
-			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}
 
 		[Fact]

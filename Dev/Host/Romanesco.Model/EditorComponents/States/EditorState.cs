@@ -56,49 +56,10 @@ namespace Romanesco.Model.EditorComponents.States
 		{
 		}
 
-		public async Task<IProjectContext?> CreateAsync()
-		{
-			return await GetLoadService().CreateAsync();
-		}
-
-		public async Task<IProjectContext?> OpenAsync()
-		{
-			return await GetLoadService().OpenAsync();
-		}
-		
 		public void NotifyEdit()
 		{
 			OnEdit();
 			commandAvailability.UpdateCanExecute(GetHistoryService());
-		}
-
-		public async Task SaveAsync()
-		{
-			await GetSaveService().SaveAsync();
-			OnSave();
-		}
-		
-		public async Task SaveAsAsync()
-		{
-			await GetSaveService().SaveAsAsync();
-			OnSaveAs();
-		}
-		
-		public async Task ExportAsync()
-		{
-			await GetSaveService().ExportAsync();
-		}
-		
-		public void Undo()
-		{
-			GetHistoryService().Undo();
-			commandAvailability.UpdateCanExecute(EditorCommandType.Undo, GetHistoryService().CanUndo);
-		}
-		
-		public void Redo()
-		{
-			GetHistoryService().Redo();
-			commandAvailability.UpdateCanExecute(EditorCommandType.Redo, GetHistoryService().CanRedo);
 		}
 
 		public void UpdateCanExecute()
