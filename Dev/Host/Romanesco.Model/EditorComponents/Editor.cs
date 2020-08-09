@@ -91,7 +91,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public void Undo()
 		{
-			editorState.Undo();
+			commandAvailability_xxx.Undo(editorState);
 		}
 
 		public void Redo()

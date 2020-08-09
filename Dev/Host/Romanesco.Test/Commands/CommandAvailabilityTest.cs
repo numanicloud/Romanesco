@@ -109,25 +109,13 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void Undoを実行できる()
 		{
-			var historyService = CreateHistoryMock();
+			var historyService = MockHelper.CreateHistoryMock();
 			var editorState = MockHelper.GetEditorStateMock(historyService: historyService.Object);
 			var availability = new CommandAvailability();
 
 			availability.Undo(editorState.Object);
 
 			historyService.Verify(x => x.Undo(), Times.Once);
-		}
-		
-		private static Mock<IProjectHistoryService> CreateHistoryMock()
-		{
-			var history = new Mock<IProjectHistoryService>();
-			history.Setup(x => x.Undo())
-				.Callback(() => { });
-			history.Setup(x => x.CanUndo).Returns(true);
-			history.Setup(x => x.Redo())
-				.Callback(() => { });
-			history.Setup(x => x.CanRedo).Returns(true);
-			return history;
 		}
 	}
 }

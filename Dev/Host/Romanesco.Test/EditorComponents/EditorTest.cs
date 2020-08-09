@@ -68,14 +68,26 @@ namespace Romanesco.Test.EditorComponents
 		}
 
 		[Fact]
+		public void Undoがステートに割り当てられる()
+		{
+			var history = MockHelper.CreateHistoryMock();
+			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+
+			editor.Undo();
+
+			history.Verify(x => x.Undo(), Times.Once);
+		}
+
+		[Fact]
 		public void UndoするとUndo可能性が更新される()
 		{
 			var commandAvailability = new CommandAvailability();
-
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.Undo())
-				.Callback(() => commandAvailability.UpdateCanExecute(Undo, false));
-
+			var history = MockHelper.CreateHistoryMock(undo: () =>
+			{
+				commandAvailability.UpdateCanExecute(Undo, false);
+			});
+			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, commandAvailability);
 
 			using var once = editor.CanExecuteObservable

@@ -97,5 +97,28 @@ namespace Romanesco.Test.Helpers
 
 			return saveService;
 		}
+		
+		public static Mock<IProjectHistoryService> CreateHistoryMock(Action? undo = null, Action? redo = null,
+			bool? canUndo = null, bool? canRedo = null)
+		{
+			var history = new Mock<IProjectHistoryService>();
+
+			history.Setup(x => x.Undo())
+				.Callback(() => undo?.Invoke());
+			history.Setup(x => x.Redo())
+				.Callback(() => redo?.Invoke());
+
+			if (canUndo.HasValue)
+			{
+				history.Setup(x => x.CanUndo).Returns(canUndo.Value);
+			}
+
+			if (canRedo.HasValue)
+			{
+				history.Setup(x => x.CanRedo).Returns(canRedo.Value);
+			}
+
+			return history;
+		}
 	}
 }
