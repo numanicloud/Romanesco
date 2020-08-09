@@ -8,8 +8,8 @@ namespace Romanesco.Model.EditorComponents
 {
 	internal interface IEditorStateChanger
 	{
-		IObservable<EditorState> OnChange { get; }
-		void ChangeState(EditorState state);
-		EditorState GetInitialState();
+		IObservable<IEditorState> OnChange { get; }
+		void ChangeState(IEditorState state);
+		IEditorState GetInitialState();
 	}
 }

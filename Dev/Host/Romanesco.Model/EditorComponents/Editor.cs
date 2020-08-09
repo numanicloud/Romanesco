@@ -30,6 +30,7 @@ namespace Romanesco.Model.EditorComponents
 			UpdateTitle();
 			commandAvailability = new CommandAvailability(initialState);
 			commandAvailability.UpdateCanExecute();
+			SetUpCommand(commandAvailability);
 		}
 
 		private void SetUpCommand(CommandAvailability target)
@@ -48,30 +49,12 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task<IProjectContext?> CreateAsync()
 		{
-			if (!(await commandAvailability.CreateAsync() is { } projectContext))
-			{
-				return null;
-			}
-
-			UpdateTitle();
-			ObserveEdit(projectContext);
-			editorState.OnCreate(projectContext);
-
-			return projectContext;
+			return await commandAvailability.CreateAsync();
 		}
 
 		public async Task<IProjectContext?> OpenAsync()
 		{
-			if (!(await commandAvailability.OpenAsync() is {} projectContext))
-			{
-				return null;
-			}
-
-			UpdateTitle();
-			ObserveEdit(projectContext);
-			editorState.OnOpen(projectContext);
-
-			return projectContext;
+			return await commandAvailability.OpenAsync();
 		}
 
 		private void ObserveEdit(IProjectContext projectContext)
@@ -88,7 +71,6 @@ namespace Romanesco.Model.EditorComponents
 		public async Task SaveAsAsync()
 		{
 			await commandAvailability.SaveAsAsync();
-			UpdateTitle();
 		}
 
 		public void ChangeState(IEditorState state)
@@ -98,6 +80,7 @@ namespace Romanesco.Model.EditorComponents
 
 			commandAvailability = new CommandAvailability(state);
 			commandAvailability.UpdateCanExecute();
+			SetUpCommand(commandAvailability);
 		}
 
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;

@@ -9,21 +9,21 @@ namespace Romanesco.Model.EditorComponents
 	internal class EditorStateChanger : IEditorStateChanger
 	{
 		private readonly IModelFactory factory;
-		private readonly Subject<EditorState> onChangeSubject = new Subject<EditorState>();
+		private readonly Subject<IEditorState> onChangeSubject = new Subject<IEditorState>();
 		
-		public IObservable<EditorState> OnChange => onChangeSubject;
+		public IObservable<IEditorState> OnChange => onChangeSubject;
 
 		public EditorStateChanger(IModelFactory factory)
 		{
 			this.factory = factory;
 		}
 
-		public EditorState GetInitialState()
+		public IEditorState GetInitialState()
 		{
 			return factory.ResolveEmptyEditorStateAsTransient();
 		}
 
-		public void ChangeState(EditorState state)
+		public void ChangeState(IEditorState state)
 		{
 			onChangeSubject.OnNext(state);
 		}

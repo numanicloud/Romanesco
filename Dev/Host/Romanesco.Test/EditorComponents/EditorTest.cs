@@ -6,6 +6,7 @@ using Moq;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.Infrastructure;
 using Romanesco.Test.Helpers;
 using Xunit;
 
@@ -86,6 +87,24 @@ namespace Romanesco.Test.EditorComponents
 			
 			Assert.False(editor.CommandAvailabilityPublisher.CanUndo.Value);
 			Assert.False(editor.CommandAvailabilityPublisher.CanRedo.Value);
+		}
+
+		[Fact]
+		public void 上書き保存するとタイトルが更新される()
+		{
+			string currentTitle = "Before";
+
+			var editorState = MockHelper.GetEditorStateMock();
+			editorState.Setup(x => x.Title)
+				.Returns(() => currentTitle);
+			editorState.Setup(x => x.OnSaveAs())
+				.Callback(() => currentTitle = "After");
+
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
+
+			Assert.Equal("Before", editor.ApplicationTitle.Value);
+			editor.SaveAsAsync().Wait();
+			Assert.Equal("After", editor.ApplicationTitle.Value);
 		}
 	}
 }
