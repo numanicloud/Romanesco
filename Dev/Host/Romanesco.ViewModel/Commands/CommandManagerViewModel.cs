@@ -26,6 +26,7 @@ namespace Romanesco.ViewModel.Commands
 		public ReactiveCommand Create { get; }
 		public ReactiveCommand Open { get; }
 		public ReactiveCommand Save { get; }
+		public ReactiveCommand SaveAs { get; }
 
 		public CommandManagerViewModel(ICommandAvailabilityPublisher model,
 			ReactiveProperty<IStateViewModel[]> roots, IViewModelInterpreter interpreter)
@@ -33,15 +34,18 @@ namespace Romanesco.ViewModel.Commands
 			Create = ToEditorCommand(model.CanCreate);
 			Open = ToEditorCommand(model.CanOpen);
 			Save = ToEditorCommand(model.CanSave);
+			SaveAs = ToEditorCommand(model.CanSaveAs);
 			
 			Create.SubscribeSafe(x => CreateAsync().Forget())
 				.AddTo(disposables);
 
-			
 			Open.SubscribeSafe(x => OpenAsync().Forget())
 				.AddTo(disposables);
 			
 			Save.SubscribeSafe(x => SaveAsync().Forget())
+				.AddTo(disposables);
+
+			SaveAs.SubscribeSafe(x => SaveAsAsync().Wait())
 				.AddTo(disposables);
 
 			this.model = model;
@@ -93,6 +97,14 @@ namespace Romanesco.ViewModel.Commands
 			using (CommandExecution.Create())
 			{
 				await model.SaveAsync();
+			}
+		}
+
+		private async Task SaveAsAsync()
+		{
+			using (CommandExecution.Create())
+			{
+				await model.SaveAsAsync();
 			}
 		}
 
