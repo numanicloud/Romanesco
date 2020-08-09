@@ -26,6 +26,7 @@ namespace Romanesco.ViewModel.Test.Commands
 		[InlineData(Save)]
 		[InlineData(SaveAs)]
 		[InlineData(Export)]
+		[InlineData(Undo)]
 		public void コマンドの実行可能性が反映される(EditorCommandType type)
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
@@ -42,6 +43,7 @@ namespace Romanesco.ViewModel.Test.Commands
 				Save => new SaveCommandViewModel(commands, commandExecution),
 				SaveAs => new SaveAsCommandViewModel(commands, commandExecution),
 				Export => new ExportCommandViewModel(commands, commandExecution),
+				Undo => new UndoCommandViewModel(commands, commandExecution),
 				_ => throw new NotImplementedException(),
 			};
 
@@ -60,6 +62,22 @@ namespace Romanesco.ViewModel.Test.Commands
 			var model = new Mock<ICommandAvailabilityPublisher>();
 			model.Setup(canExecuteExpression).Returns(new ReactiveProperty<bool>(true));
 			model.Setup(executeExpression).Callback(async () => { });
+
+			var command = createCommand(model.Object);
+
+			command.Execute(null);
+
+			model.Verify(executeExpression, Times.Once);
+		}
+		
+		private void AssertCommandGoToModel(
+			Expression<Func<ICommandAvailabilityPublisher, IReadOnlyReactiveProperty<bool>>> canExecuteExpression,
+			Expression<Action<ICommandAvailabilityPublisher>> executeExpression,
+			Func<ICommandAvailabilityPublisher, ICommand> createCommand)
+		{
+			var model = new Mock<ICommandAvailabilityPublisher>();
+			model.Setup(canExecuteExpression).Returns(new ReactiveProperty<bool>(true));
+			model.Setup(executeExpression).Callback(() => { });
 
 			var command = createCommand(model.Object);
 
@@ -120,6 +138,16 @@ namespace Romanesco.ViewModel.Test.Commands
 			AssertCommandGoToModel(x => x.CanExport,
 				x => x.ExportAsync(),
 				p => new ExportCommandViewModel(p, commandExecution));
+		}
+
+		[Fact]
+		public void Undoコマンドがモデルに伝わる()
+		{
+			var commandExecution = new BooleanUsingScopeSource();
+
+			AssertCommandGoToModel(x => x.CanUndo,
+				x => x.Undo(),
+				p => new UndoCommandViewModel(p, commandExecution));
 		}
 	}
 }
