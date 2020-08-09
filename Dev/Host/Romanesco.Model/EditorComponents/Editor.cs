@@ -71,30 +71,10 @@ namespace Romanesco.Model.EditorComponents
 			commandAvailability.NotifyEdit();
 		}
 
-		public async Task SaveAsync()
-		{
-			await commandAvailability.SaveAsync();
-		}
-
 		public async Task SaveAsAsync()
 		{
 			await commandAvailability.SaveAsAsync();
 			UpdateTitle();
-		}
-
-		public async Task ExportAsync()
-		{
-			await commandAvailability.ExportAsync();
-		}
-
-		public void Undo()
-		{
-			commandAvailability.Undo();
-		}
-
-		public void Redo()
-		{
-			commandAvailability.Redo();
 		}
 
 		public void ChangeState(IEditorState state)

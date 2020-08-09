@@ -69,58 +69,6 @@ namespace Romanesco.Test.EditorComponents
 		}
 
 		[Fact]
-		public void Undoがステートに割り当てられる()
-		{
-			var history = MockHelper.CreateHistoryMock();
-			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			editor.Undo();
-
-			history.Verify(x => x.Undo(), Times.Once);
-		}
-
-		[Fact]
-		public void UndoするとUndo可能性が更新される()
-		{
-			var history = MockHelper.CreateHistoryMock(undo: () => { });
-			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			using var once = editor.CommandAvailabilityPublisher
-				.CanUndo
-				.ExpectAtLeastOnce();
-
-			editor.Undo();
-		}
-
-		[Fact]
-		public void Redoがステートに割り当てられる()
-		{
-			var history = MockHelper.CreateHistoryMock();
-			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			editor.Redo();
-
-			history.Verify(x => x.Redo(), Times.Once);
-		}
-
-		[Fact]
-		public void RedoするとRedo可能性が更新される()
-		{
-			var history = MockHelper.CreateHistoryMock(redo: () => { });
-			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			using var once = editor.CommandAvailabilityPublisher
-				.CanRedo
-				.ExpectAtLeastOnce();
-
-			editor.Redo();
-		}
-
-		[Fact]
 		public void ステートが切り替わるとコマンドの実行可能性も更新される()
 		{
 			var okHistory = MockHelper.CreateHistoryMock(canUndo: true, canRedo: true);

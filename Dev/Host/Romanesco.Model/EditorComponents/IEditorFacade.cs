@@ -13,10 +13,6 @@ namespace Romanesco.Model.EditorComponents
         ICommandAvailabilityPublisher CommandAvailabilityPublisher { get; }
         Task<IProjectContext?> CreateAsync();
         Task<IProjectContext?> OpenAsync();
-        Task SaveAsync();
         Task SaveAsAsync();
-        Task ExportAsync();
-        void Undo();
-        void Redo();
     }
 }
