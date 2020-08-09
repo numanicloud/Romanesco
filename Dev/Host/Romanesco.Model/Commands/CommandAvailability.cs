@@ -23,7 +23,6 @@ namespace Romanesco.Model.Commands
 		private readonly CreateCommand _createCommand;
 		private readonly OpenCommand _openCommand;
 
-		private readonly Subject<IProjectContext> onOpenSubject = new Subject<IProjectContext>();
 		private readonly Subject<Unit> onSaveAsSubject = new Subject<Unit>();
 
 		private IObserver<(EditorCommandType, bool)> Observer => canExecuteSubject;
