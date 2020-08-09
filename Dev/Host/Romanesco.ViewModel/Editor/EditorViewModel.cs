@@ -16,6 +16,7 @@ namespace Romanesco.ViewModel.Editor
 {
 	internal class EditorViewModel : Livet.ViewModel, IEditorViewModel
 	{
+		private readonly RootViewModel root;
 		private readonly CommandManagerViewModel commandManager;
 
 		public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
@@ -32,6 +33,8 @@ namespace Romanesco.ViewModel.Editor
 
 		public EditorViewModel(IEditorFacade editor, IViewModelInterpreter interpreter)
 		{
+			root = new RootViewModel();
+
 			Disposables = editor.Disposables;
 			commandManager = new CommandManagerViewModel(editor.CommandAvailabilityPublisher, Roots, interpreter);
 			GcDebugCommand.SubscribeSafe(x => GC.Collect()).AddTo(editor.Disposables);

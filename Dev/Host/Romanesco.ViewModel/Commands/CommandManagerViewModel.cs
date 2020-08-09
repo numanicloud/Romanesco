@@ -20,7 +20,6 @@ namespace Romanesco.ViewModel.Commands
 	{
 		private readonly List<IDisposable> disposables = new List<IDisposable>();
 
-		public ReactiveProperty<IStateViewModel[]> Roots { get; }
 		public BooleanUsingScopeSource CommandExecution { get; } = new BooleanUsingScopeSource();
 		public ICommand Create { get; }
 		public ICommand Open { get; }
@@ -40,8 +39,6 @@ namespace Romanesco.ViewModel.Commands
 			Export = new ExportCommandViewModel(model, CommandExecution);
 			Undo = new UndoCommandViewModel(model, CommandExecution);
 			Redo = new RedoCommandViewModel(model, CommandExecution);
-
-			Roots = roots;
 		}
 
 		public void Dispose()
