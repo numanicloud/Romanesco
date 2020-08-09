@@ -17,6 +17,7 @@ namespace Romanesco.Test.Commands
 		[InlineData(Open)]
 		[InlineData(Save)]
 		[InlineData(SaveAs)]
+		[InlineData(Export)]
 		public void コマンドの実行可能性が通知される(EditorCommandType type)
 		{
 			var editorState = MockHelper.GetEditorStateMock();
@@ -28,6 +29,7 @@ namespace Romanesco.Test.Commands
 				Open => new OpenCommand(availability.CanOpen, editorState.Object),
 				Save => new SaveCommand(availability.CanSave, editorState.Object),
 				SaveAs => new SaveAsCommand(availability.CanSaveAs, editorState.Object),
+				Export => new ExportCommand(availability.CanExport, editorState.Object),
 				_ => throw new NotImplementedException(),
 			};
 
@@ -90,6 +92,19 @@ namespace Romanesco.Test.Commands
 			command.Execute().Wait();
 
 			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
+		{
+			var saveService = MockHelper.GetSaveServiceMock();
+			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
+			var availability = new CommandAvailability(editorState.Object);
+			var command = new ExportCommand(availability.CanExport, editorState.Object);
+
+			command.Execute().Wait();
+
+			saveService.Verify(x => x.ExportAsync(), Times.Once);
 		}
 	}
 }

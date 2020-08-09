@@ -24,6 +24,7 @@ namespace Romanesco.Model.Commands
 		private readonly OpenCommand _openCommand;
 		private readonly SaveCommand _saveCommand;
 		private readonly SaveAsCommand _saveAsCommand;
+		private readonly ExportCommand _exportCommand;
 
 		private IObserver<(EditorCommandType, bool)> Observer => _canExecuteSubject;
 
@@ -32,7 +33,7 @@ namespace Romanesco.Model.Commands
 		/* 各コマンドの実行可能性を保持する */
 		public IReadOnlyReactiveProperty<bool> CanSave => _saveCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanSaveAs => _saveAsCommand.CanExecute;
-		public IReadOnlyReactiveProperty<bool> CanExport { get; }
+		public IReadOnlyReactiveProperty<bool> CanExport => _exportCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanCreate => _createCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanOpen => _openCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanUndo { get; }
@@ -62,8 +63,8 @@ namespace Romanesco.Model.Commands
 			_openCommand = new OpenCommand(GetCanExecute(Open), currentState);
 			_saveCommand = new SaveCommand(GetCanExecute(Save), currentState);
 			_saveAsCommand = new SaveAsCommand(GetCanExecute(SaveAs), currentState);
+			_exportCommand = new ExportCommand(GetCanExecute(Export), currentState);
 
-			CanExport = MakeProperty(Export);
 			CanUndo = MakeProperty(EditorCommandType.Undo);
 			CanRedo = MakeProperty(EditorCommandType.Redo);
 			this._currentState = currentState;
@@ -114,10 +115,7 @@ namespace Romanesco.Model.Commands
 
 		public async Task SaveAsAsync() => await _saveAsCommand.Execute();
 
-		public async Task ExportAsync()
-		{
-			await _currentState.GetSaveService().ExportAsync();
-		}
+		public async Task ExportAsync() => await _exportCommand.Execute();
 
 		public void Undo()
 		{
