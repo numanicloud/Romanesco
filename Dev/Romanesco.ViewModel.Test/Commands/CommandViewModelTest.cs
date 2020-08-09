@@ -65,5 +65,24 @@ namespace Romanesco.ViewModel.Test.Commands
 
 			commands.Verify(x => x.CreateAsync(), Times.Once);
 		}
+
+		[Fact]
+		public void Openコマンドがモデルに伝わる()
+		{
+			var commands = new Mock<ICommandAvailabilityPublisher>();
+			commands.Setup(x => x.CanOpen)
+				.Returns(new ReactiveProperty<bool>(true));
+			commands.Setup(x => x.OpenAsync())
+				.Callback(async () => { });
+			
+			var roots = new ReactiveProperty<IStateViewModel[]>();
+			var interpreter = Mock.Of<IViewModelInterpreter>();
+			var commandExecution = new BooleanUsingScopeSource();
+			var subject = new OpenCommandViewModel(commands.Object, commandExecution, roots, interpreter);
+
+			subject.Execute(null);
+
+			commands.Verify(x => x.OpenAsync(), Times.Once);
+		}
 	}
 }

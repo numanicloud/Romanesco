@@ -41,9 +41,9 @@ namespace Romanesco.ViewModel.Commands
 			this.interpreter = interpreter;
 		}
 
-		public bool CanExecute(object parameter) => isCanExecute;
+		public bool CanExecute(object? parameter) => isCanExecute;
 
-		public void Execute(object parameter) => OpenAsync().Forget();
+		public void Execute(object? parameter) => OpenAsync().Forget();
 		
 		private async Task OpenAsync()
 		{

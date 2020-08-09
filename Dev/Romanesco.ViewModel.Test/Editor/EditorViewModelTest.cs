@@ -91,7 +91,7 @@ namespace Romanesco.ViewModel.Test.Editor
 
 			var viewModel = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
 
-			viewModel.OpenCommand.Execute();
+			viewModel.OpenCommand.Execute(null);
 
 			commands.Verify(x => x.OpenAsync(), Times.Once);
 		}

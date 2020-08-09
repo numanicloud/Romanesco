@@ -83,7 +83,7 @@ namespace Romanesco.ViewModel.Test.Commands
 				new ReactiveProperty<IStateViewModel[]>(),
 				Mock.Of<IViewModelInterpreter>());
 
-			subject.Open.Execute();
+			subject.Open.Execute(null);
 
 			commands.Verify(x => x.OpenAsync(), Times.Once);
 		}

@@ -21,7 +21,7 @@ namespace Romanesco.ViewModel.Editor
 		public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
 
 		public ICommand CreateCommand => commandManager.Create;
-		public ReactiveCommand OpenCommand => commandManager.Open;
+		public ICommand OpenCommand => commandManager.Open;
 		public ReactiveCommand SaveCommand => commandManager.Save;
 		public ReactiveCommand SaveAsCommand => commandManager.SaveAs;
 		public ReactiveCommand ExportCommand => commandManager.Export;
