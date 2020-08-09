@@ -86,7 +86,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task ExportAsync()
 		{
-			await editorState.ExportAsync();
+			await commandAvailability_xxx.ExportAsync(editorState);
 		}
 
 		public void Undo()
