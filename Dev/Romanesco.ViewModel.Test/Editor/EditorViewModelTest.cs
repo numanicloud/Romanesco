@@ -2,11 +2,14 @@
 using Romanesco.ViewModel.Editor;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
+using Reactive.Bindings;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.Interfaces;
 using Romanesco.ViewModel.States;
 using Romanesco.ViewModel.Test.Helpers;
 using Xunit;
@@ -57,6 +60,82 @@ namespace Romanesco.ViewModel.Test.Editor
 
 			commands.UpdateCanExecute(type, true);
 			Assert.True(targetCommand.CanExecute());
+		}
+
+		[Fact]
+		public void Createコマンドがモデルに伝わる()
+		{
+			var commands = GetCommands();
+			commands.Setup(x => x.CreateAsync())
+				.Callback(async () => { });
+
+			var model = GetEditorModel();
+			model.Setup(x => x.CommandAvailabilityPublisher)
+				.Returns(commands.Object);
+
+			var viewModel = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
+
+			viewModel.CreateCommand.Execute();
+
+			commands.Verify(x => x.CreateAsync(), Times.Once);
+		}
+		
+		[Fact]
+		public void Openコマンドがモデルに伝わる()
+		{
+			var commands = GetCommands();
+			commands.Setup(x => x.OpenAsync())
+				.Callback(async () => { });
+
+			var model = GetEditorModel();
+			model.Setup(x => x.CommandAvailabilityPublisher)
+				.Returns(commands.Object);
+
+			var viewModel = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
+
+			viewModel.OpenCommand.Execute();
+
+			commands.Verify(x => x.OpenAsync(), Times.Once);
+		}
+		
+		[Fact]
+		public void SaveAsコマンドがモデルに伝わる()
+		{
+			var commands = GetCommands();
+			commands.Setup(x => x.SaveAsAsync())
+				.Callback(async () => { });
+
+			var model = GetEditorModel();
+			model.Setup(x => x.CommandAvailabilityPublisher)
+				.Returns(commands.Object);
+
+			var viewModel = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
+
+			viewModel.SaveAsCommand.Execute();
+
+			commands.Verify(x => x.SaveAsAsync(), Times.Once);
+		}
+
+		private static Mock<IEditorFacade> GetEditorModel()
+		{
+			var disposables = new List<IDisposable>();
+			var model = new Mock<IEditorFacade>();
+			model.Setup(x => x.Disposables)
+				.Returns(disposables);
+			return model;
+		}
+
+		private static Mock<ICommandAvailabilityPublisher> GetCommands()
+		{
+			var commands = new Mock<ICommandAvailabilityPublisher>();
+			commands.Setup(x => x.CanCreate).Returns(new ReactiveProperty<bool>(true));
+			commands.Setup(x => x.CanOpen).Returns(new ReactiveProperty<bool>(true));
+			commands.Setup(x => x.CanSave).Returns(new ReactiveProperty<bool>(true));
+			commands.Setup(x => x.CanSaveAs).Returns(new ReactiveProperty<bool>(true));
+			commands.Setup(x => x.CanExport).Returns(new ReactiveProperty<bool>(true));
+			commands.Setup(x => x.CanUndo).Returns(new ReactiveProperty<bool>(true));
+			commands.Setup(x => x.CanRedo).Returns(new ReactiveProperty<bool>(true));
+			return commands;
 		}
 	}
 }

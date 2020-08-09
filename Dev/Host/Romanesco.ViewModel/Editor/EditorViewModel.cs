@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Livet.Messaging;
 using Reactive.Bindings;
@@ -40,7 +41,7 @@ namespace Romanesco.ViewModel.Editor
 			ReactiveCommand ToEditorCommand(IObservable<bool> stream)
 			{
 				var isNotUsing = CommandExecution.IsUsing.Select(x => !x);
-				return new ReactiveCommand(stream.Concat(isNotUsing).Do(x => {  }));
+				return new ReactiveCommand(stream.Concat(isNotUsing).Do(x => {  }), new SynchronizationContextScheduler(SynchronizationContext.Current));
 			}
 
 			Editor = editor;
@@ -97,8 +98,7 @@ namespace Romanesco.ViewModel.Editor
 			// 実行をロックする機能は IProjectLoadService 側に入れるべきかも
 			using (CommandExecution.Create())
 			{
-				var projectContext = await Editor.CreateAsync();
-				// Editor 側のメソッドに副作用があるので、インライン化は保留
+				var projectContext = await Editor.CommandAvailabilityPublisher.CreateAsync();
 				if (projectContext != null)
 				{
 					Roots.Value = projectContext.Project.Root.States
@@ -112,8 +112,7 @@ namespace Romanesco.ViewModel.Editor
 		{
 			using (CommandExecution.Create())
 			{
-				var projectContext = await Editor.OpenAsync();
-				// Editor 側のメソッドに副作用があるので、インライン化は保留
+				var projectContext = await Editor.CommandAvailabilityPublisher.OpenAsync();
 				if (projectContext == null)
 				{
 					return;
@@ -145,8 +144,7 @@ namespace Romanesco.ViewModel.Editor
 		{
 			using (CommandExecution.Create())
 			{
-				await Editor.SaveAsAsync();
-				// Editor 側のメソッドに副作用があるので、インライン化は保留
+				await Editor.CommandAvailabilityPublisher.SaveAsAsync();
 			}
 		}
 	}
