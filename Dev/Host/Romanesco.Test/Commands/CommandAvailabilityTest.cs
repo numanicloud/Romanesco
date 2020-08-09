@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reactive.Linq;
 using Moq;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Test.Helpers;
@@ -40,11 +41,11 @@ namespace Romanesco.Test.Commands
 
 			availability.UpdateCanExecute(type, true);
 			Assert.True(stream.Value);
-			
+
 			availability.UpdateCanExecute(type, false);
 			Assert.False(stream.Value);
 		}
-		
+
 		[Fact]
 		public void プロジェクトを作成するサービスを実行できる()
 		{
@@ -56,7 +57,7 @@ namespace Romanesco.Test.Commands
 
 			loadService.Verify(x => x.CreateAsync(), Times.Once);
 		}
-		
+
 		[Fact]
 		public void プロジェクトを開くサービスを実行できる()
 		{
@@ -80,7 +81,7 @@ namespace Romanesco.Test.Commands
 
 			saveService.Verify(x => x.SaveAsync(), Times.Once);
 		}
-		
+
 
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
@@ -129,7 +130,7 @@ namespace Romanesco.Test.Commands
 
 			historyService.Verify(x => x.Redo(), Times.Once);
 		}
-		
+
 
 		[Fact]
 		public void 全コマンドの可用性を更新できる()
@@ -162,6 +163,45 @@ namespace Romanesco.Test.Commands
 			availability.UpdateCanExecute();
 
 			disposables.ForEach(x => x.Dispose());
+		}
+
+		[Fact]
+		public void Create時にイベントを発行する()
+		{
+			var project = new Mock<IProjectContext>();
+			var loader = MockHelper.GetLoaderServiceMock(project.Object);
+			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
+			var commands = new CommandAvailability(editorState.Object);
+
+			using var once = commands.OnCreate.ExpectAtLeastOnce();
+
+			_ = commands.CreateAsync().Result;
+		}
+
+		[Fact]
+		public void Open時にイベントを発行する()
+		{
+			var project = new Mock<IProjectContext>();
+			var loader = MockHelper.GetLoaderServiceMock(project.Object);
+			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
+			var commands = new CommandAvailability(editorState.Object);
+
+			using var once = commands.OnOpen.ExpectAtLeastOnce();
+
+			_ = commands.OpenAsync().Result;
+		}
+
+		[Fact]
+		public void SaveAs時にイベントを発行する()
+		{
+			var project = new Mock<IProjectContext>();
+			var saver = MockHelper.GetSaveServiceMock();
+			var editorState = MockHelper.GetEditorStateMock(saveService: saver.Object);
+			var commands = new CommandAvailability(editorState.Object);
+
+			using var once = commands.OnSaveAs.ExpectAtLeastOnce();
+
+			commands.SaveAsAsync().Wait();
 		}
 	}
 }

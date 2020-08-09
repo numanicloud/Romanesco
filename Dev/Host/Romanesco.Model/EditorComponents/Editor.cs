@@ -3,6 +3,7 @@ using Romanesco.Model.EditorComponents.States;
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.ProjectComponent;
@@ -29,6 +30,20 @@ namespace Romanesco.Model.EditorComponents
 			UpdateTitle();
 			commandAvailability = new CommandAvailability(initialState);
 			commandAvailability.UpdateCanExecute();
+		}
+
+		private void SetUpCommand(CommandAvailability target)
+		{
+			target.OnCreate.Subscribe(SetProject);
+			target.OnOpen.Subscribe(SetProject);
+			target.OnSaveAs.Subscribe(x => UpdateTitle());
+		}
+
+		private void SetProject(IProjectContext projectContext)
+		{
+			UpdateTitle();
+			ObserveEdit(projectContext);
+			editorState.OnCreate(projectContext);
 		}
 
 		public async Task<IProjectContext?> CreateAsync()
