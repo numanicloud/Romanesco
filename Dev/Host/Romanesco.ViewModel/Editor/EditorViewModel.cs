@@ -29,7 +29,7 @@ namespace Romanesco.ViewModel.Editor
 		public BooleanUsingScopeSource CommandExecution { get; }
 
 		public ReactiveCommand CreateCommand => commandManager.Create;
-		public ReactiveCommand OpenCommand { get; }
+		public ReactiveCommand OpenCommand => commandManager.Open;
 		public ReactiveCommand SaveCommand { get; }
 		public ReactiveCommand SaveAsCommand { get; }
 		public ReactiveCommand ExportCommand { get; }
@@ -55,7 +55,6 @@ namespace Romanesco.ViewModel.Editor
 			/* 各コマンドの実行可能性をUIに伝達する */
 			//*
 			var cav = Editor.CommandAvailabilityPublisher;
-			OpenCommand = ToEditorCommand(cav.CanOpen);
 			SaveCommand = ToEditorCommand(cav.CanSave);
 			SaveAsCommand = ToEditorCommand(cav.CanSaveAs);
 			ExportCommand = ToEditorCommand(cav.CanExport);
@@ -64,9 +63,6 @@ namespace Romanesco.ViewModel.Editor
 			//*/
 
 			/* 各コマンドの実行内容を指定する */
-			OpenCommand.SubscribeSafe(x => OpenAsync().Forget())
-				.AddTo(editor.Disposables);
-
 			ExportCommand.SubscribeSafe(x => ExportAsync().Forget())
 				.AddTo(editor.Disposables);
 
@@ -91,37 +87,6 @@ namespace Romanesco.ViewModel.Editor
 		{
 			var vm = new ProjectSettingsEditorViewModel(editor);
 			Messenger.Raise(new TransitionMessage(vm, "CreateProject"));
-		}
-
-		private async Task CreateAsync()
-		{
-			// 実行をロックする機能は IProjectLoadService 側に入れるべきかも
-			using (CommandExecution.Create())
-			{
-				var projectContext = await Editor.CommandAvailabilityPublisher.CreateAsync();
-				if (projectContext != null)
-				{
-					Roots.Value = projectContext.Project.Root.States
-						.Select(s => interpreter.InterpretAsViewModel(s))
-						.ToArray();
-				}
-			}
-		}
-
-		private async Task OpenAsync()
-		{
-			using (CommandExecution.Create())
-			{
-				var projectContext = await Editor.CommandAvailabilityPublisher.OpenAsync();
-				if (projectContext == null)
-				{
-					return;
-				}
-
-				Roots.Value = projectContext.Project.Root.States
-					.Select(s => interpreter.InterpretAsViewModel(s))
-					.ToArray();
-			}
 		}
 
 		private async Task ExportAsync()
