@@ -92,6 +92,14 @@ namespace Romanesco.Model.Commands
 			UpdateCanExecute(EditorCommandType.Redo, history.CanRedo);
 		}
 		
+		public void UpdateCanExecute(IEditorState editorState)
+		{
+			UpdateCanExecute(editorState.GetLoadService());
+			UpdateCanExecute(editorState.GetSaveService());
+			UpdateCanExecute(editorState.GetHistoryService());
+		}
+
+		
 		public async Task<IProjectContext?> CreateAsync(IEditorState editorState)
 		{
 			return await editorState.GetLoadService().CreateAsync();

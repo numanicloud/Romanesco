@@ -64,9 +64,7 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public void UpdateCanExecute()
 		{
-			commandAvailability.UpdateCanExecute(GetLoadService());
-			commandAvailability.UpdateCanExecute(GetSaveService());
-			commandAvailability.UpdateCanExecute(GetHistoryService());
+			commandAvailability.UpdateCanExecute(this);
 		}
 	}
 }
