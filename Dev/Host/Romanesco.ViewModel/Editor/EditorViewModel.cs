@@ -20,13 +20,9 @@ namespace Romanesco.ViewModel.Editor
 {
 	internal class EditorViewModel : Livet.ViewModel, IEditorViewModel
 	{
-		private readonly IViewModelInterpreter interpreter;
 		private readonly CommandManagerViewModel commandManager;
 
-		public IEditorFacade Editor { get; set; }
 		public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
-
-		public BooleanUsingScopeSource CommandExecution { get; }
 
 		public ReactiveCommand CreateCommand => commandManager.Create;
 		public ReactiveCommand OpenCommand => commandManager.Open;
@@ -34,34 +30,14 @@ namespace Romanesco.ViewModel.Editor
 		public ReactiveCommand SaveAsCommand => commandManager.SaveAs;
 		public ReactiveCommand ExportCommand => commandManager.Export;
 		public ReactiveCommand Undo => commandManager.Undo;
-		public ReactiveCommand Redo { get; }
+		public ReactiveCommand Redo => commandManager.Redo;
 		public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
-		public List<IDisposable> Disposables => Editor.Disposables;
+		public List<IDisposable> Disposables { get; }
 
 		public EditorViewModel(IEditorFacade editor, IViewModelInterpreter interpreter)
 		{
-			ReactiveCommand ToEditorCommand(IObservable<bool> stream)
-			{
-				var isNotUsing = CommandExecution.IsUsing.Select(x => !x);
-				return new ReactiveCommand(stream.Concat(isNotUsing).Do(x => {  }), new SynchronizationContextScheduler(SynchronizationContext.Current));
-			}
-
-			Editor = editor;
-			this.interpreter = interpreter;
-			CommandExecution = new BooleanUsingScopeSource();
-
-			commandManager = new CommandManagerViewModel(Editor.CommandAvailabilityPublisher, Roots, interpreter);
-
-			/* 各コマンドの実行可能性をUIに伝達する */
-			//*
-			var cav = Editor.CommandAvailabilityPublisher;
-			Redo = ToEditorCommand(cav.CanRedo);
-			//*/
-
-			/* 各コマンドの実行内容を指定する */
-			Redo.SubscribeSafe(x => Editor.CommandAvailabilityPublisher.Redo())
-				.AddTo(editor.Disposables);
-
+			Disposables = editor.Disposables;
+			commandManager = new CommandManagerViewModel(editor.CommandAvailabilityPublisher, Roots, interpreter);
 			GcDebugCommand.SubscribeSafe(x => GC.Collect()).AddTo(editor.Disposables);
 		}
 
