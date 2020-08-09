@@ -15,7 +15,7 @@ namespace Romanesco.Model.Commands
 		private readonly IEditorState _currentState;
 
 		public IReadOnlyReactiveProperty<bool> CanExecute { get; }
-		public IObservable<Unit> OnSaveAs => _onSaveAsSubject;
+		public IObservable<Unit> OnExecuted => _onSaveAsSubject;
 
 		internal SaveAsCommand(IObservable<bool> canExecuteObservable, IEditorState currentState)
 		{

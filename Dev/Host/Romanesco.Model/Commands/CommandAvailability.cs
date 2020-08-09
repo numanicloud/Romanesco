@@ -23,8 +23,7 @@ namespace Romanesco.Model.Commands
 		private readonly CreateCommand _createCommand;
 		private readonly OpenCommand _openCommand;
 		private readonly SaveCommand _saveCommand;
-
-		private readonly Subject<Unit> _onSaveAsSubject = new Subject<Unit>();
+		private readonly SaveAsCommand _saveAsCommand;
 
 		private IObserver<(EditorCommandType, bool)> Observer => _canExecuteSubject;
 
@@ -32,7 +31,7 @@ namespace Romanesco.Model.Commands
 
 		/* 各コマンドの実行可能性を保持する */
 		public IReadOnlyReactiveProperty<bool> CanSave => _saveCommand.CanExecute;
-		public IReadOnlyReactiveProperty<bool> CanSaveAs { get; }
+		public IReadOnlyReactiveProperty<bool> CanSaveAs => _saveAsCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanExport { get; }
 		public IReadOnlyReactiveProperty<bool> CanCreate => _createCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanOpen => _openCommand.CanExecute;
@@ -41,7 +40,7 @@ namespace Romanesco.Model.Commands
 
 		public IObservable<IProjectContext> OnCreate => _createCommand.OnExecuted;
 		public IObservable<IProjectContext> OnOpen => _openCommand.OnExecuted;
-		public IObservable<Unit> OnSaveAs => _onSaveAsSubject;
+		public IObservable<Unit> OnSaveAs => _saveAsCommand.OnExecuted;
 
 
 		public CommandAvailability(IEditorState currentState)
@@ -62,8 +61,8 @@ namespace Romanesco.Model.Commands
 			_createCommand = new CreateCommand(GetCanExecute(Create), currentState);
 			_openCommand = new OpenCommand(GetCanExecute(Open), currentState);
 			_saveCommand = new SaveCommand(GetCanExecute(Save), currentState);
+			_saveAsCommand = new SaveAsCommand(GetCanExecute(SaveAs), currentState);
 
-			CanSaveAs = MakeProperty(SaveAs);
 			CanExport = MakeProperty(Export);
 			CanUndo = MakeProperty(EditorCommandType.Undo);
 			CanRedo = MakeProperty(EditorCommandType.Redo);
@@ -113,12 +112,7 @@ namespace Romanesco.Model.Commands
 
 		public async Task SaveAsync() => await _saveCommand.Execute();
 
-		public async Task SaveAsAsync()
-		{
-			await _currentState.GetSaveService().SaveAsAsync();
-			_currentState.OnSaveAs();
-			_onSaveAsSubject.OnNext(Unit.Default);
-		}
+		public async Task SaveAsAsync() => await _saveAsCommand.Execute();
 
 		public async Task ExportAsync()
 		{
