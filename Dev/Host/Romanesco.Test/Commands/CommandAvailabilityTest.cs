@@ -91,5 +91,17 @@ namespace Romanesco.Test.Commands
 
 			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
 		}
+
+		[Fact]
+		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
+		{
+			var saveService = MockHelper.GetSaveServiceMock();
+			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
+			var availability = new CommandAvailability();
+
+			availability.ExportAsync(editorState.Object).Wait();
+
+			saveService.Verify(x => x.ExportAsync(), Times.Once);
+		}
 	}
 }
