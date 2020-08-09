@@ -26,7 +26,7 @@ namespace Romanesco.ViewModel.Editor
 		public ICommand SaveAsCommand => commandManager.SaveAs;
 		public ICommand ExportCommand => commandManager.Export;
 		public ICommand Undo => commandManager.Undo;
-		public ReactiveCommand Redo => commandManager.Redo;
+		public ICommand Redo => commandManager.Redo;
 		public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
 		public List<IDisposable> Disposables { get; }
 

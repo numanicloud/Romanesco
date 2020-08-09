@@ -28,7 +28,7 @@ namespace Romanesco.ViewModel.Commands
 		public ICommand SaveAs { get; }
 		public ICommand Export { get; }
 		public ICommand Undo { get; }
-		public ReactiveCommand Redo { get; }
+		public ICommand Redo { get; }
 
 		public CommandManagerViewModel(ICommandAvailabilityPublisher model,
 			ReactiveProperty<IStateViewModel[]> roots, IViewModelInterpreter interpreter)
@@ -39,21 +39,9 @@ namespace Romanesco.ViewModel.Commands
 			SaveAs = new SaveAsCommandViewModel(model, CommandExecution);
 			Export = new ExportCommandViewModel(model, CommandExecution);
 			Undo = new UndoCommandViewModel(model, CommandExecution);
-
-			Redo = ToEditorCommand(model.CanRedo);
-			
-			Redo.SubscribeSafe(x => model.Redo())
-				.AddTo(disposables);
+			Redo = new RedoCommandViewModel(model, CommandExecution);
 
 			Roots = roots;
-		}
-		
-		private ReactiveCommand ToEditorCommand(IObservable<bool> stream)
-		{
-			var canExecute = stream
-				.Concat(CommandExecution.IsUsing.Select(x => !x));
-			var scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
-			return new ReactiveCommand(canExecute, scheduler);
 		}
 
 		public void Dispose()

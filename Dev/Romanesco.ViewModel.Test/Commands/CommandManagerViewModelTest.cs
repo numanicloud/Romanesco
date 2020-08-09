@@ -168,7 +168,7 @@ namespace Romanesco.ViewModel.Test.Commands
 				new ReactiveProperty<IStateViewModel[]>(),
 				Mock.Of<IViewModelInterpreter>());
 
-			subject.Redo.Execute();
+			subject.Redo.Execute(null);
 
 			commands.Verify(x => x.Redo(), Times.Once);
 		}
