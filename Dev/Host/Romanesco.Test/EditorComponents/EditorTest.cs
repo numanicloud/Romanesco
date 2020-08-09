@@ -95,16 +95,28 @@ namespace Romanesco.Test.EditorComponents
 
 			editor.Undo();
 		}
+
+		[Fact]
+		public void Redoがステートに割り当てられる()
+		{
+			var history = MockHelper.CreateHistoryMock();
+			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+
+			editor.Redo();
+
+			history.Verify(x => x.Redo(), Times.Once);
+		}
 		
 		[Fact]
 		public void RedoするとRedo可能性が更新される()
 		{
 			var commandAvailability = new CommandAvailability();
-
-			var editorState = new Mock<IEditorState>();
-			editorState.Setup(x => x.Redo())
-				.Callback(() => commandAvailability.UpdateCanExecute(Redo, false));
-
+			var history = MockHelper.CreateHistoryMock(redo: () =>
+			{
+				commandAvailability.UpdateCanExecute(Redo, false);
+			});
+			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, commandAvailability);
 
 			using var once = editor.CanExecuteObservable

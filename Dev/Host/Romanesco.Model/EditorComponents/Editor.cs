@@ -96,7 +96,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public void Redo()
 		{
-			editorState.Redo();
+			commandAvailability_xxx.Redo(editorState);
 		}
 
 		public void ChangeState(IEditorState state)
