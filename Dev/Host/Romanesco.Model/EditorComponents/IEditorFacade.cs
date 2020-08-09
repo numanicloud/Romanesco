@@ -10,7 +10,6 @@ namespace Romanesco.Model.EditorComponents
 	public interface IEditorFacade
     {
         List<IDisposable> Disposables { get; }
-        IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable { get; }
         ICommandAvailabilityPublisher CommandAvailabilityPublisher { get; }
         Task<IProjectContext?> CreateAsync();
         Task<IProjectContext?> OpenAsync();

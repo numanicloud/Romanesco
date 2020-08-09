@@ -37,15 +37,7 @@ namespace Romanesco.ViewModel.Editor
 
         public EditorViewModel(IEditorFacade editor, IViewModelInterpreter interpreter)
         {
-            ReactiveCommand ToEditorCommand(EditorCommandType type)
-            {
-                var canExecute = editor.CanExecuteObservable
-                    .Where(x => x.command == type)
-                    .Select(x => x.canExecute)
-                    .Concat(CommandExecution.IsUsing.Select(x => !x));
-                return new ReactiveCommand(canExecute);
-            }
-            ReactiveCommand ToEditorCommand2(IObservable<bool> stream)
+			ReactiveCommand ToEditorCommand(IObservable<bool> stream)
             {
 	            var isNotUsing = CommandExecution.IsUsing.Select(x => !x);
 	            return new ReactiveCommand(stream.Concat(isNotUsing).Do(x => {  }));
@@ -58,13 +50,13 @@ namespace Romanesco.ViewModel.Editor
             /* 各コマンドの実行可能性をUIに伝達する */
             //*
 			var cav = Editor.CommandAvailabilityPublisher;
-			CreateCommand = ToEditorCommand2(cav.CanCreate);
-			OpenCommand = ToEditorCommand2(cav.CanOpen);
-			SaveCommand = ToEditorCommand2(cav.CanSave);
-			SaveAsCommand = ToEditorCommand2(cav.CanSaveAs);
-			ExportCommand = ToEditorCommand2(cav.CanExport);
-			Undo = ToEditorCommand2(cav.CanUndo);
-			Redo = ToEditorCommand2(cav.CanRedo);
+			CreateCommand = ToEditorCommand(cav.CanCreate);
+			OpenCommand = ToEditorCommand(cav.CanOpen);
+			SaveCommand = ToEditorCommand(cav.CanSave);
+			SaveAsCommand = ToEditorCommand(cav.CanSaveAs);
+			ExportCommand = ToEditorCommand(cav.CanExport);
+			Undo = ToEditorCommand(cav.CanUndo);
+			Redo = ToEditorCommand(cav.CanRedo);
             //*/
 
             /* 各コマンドの実行内容を指定する */

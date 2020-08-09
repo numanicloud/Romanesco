@@ -28,12 +28,9 @@ namespace Romanesco.ViewModel.Test.Editor
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
 
-			var availability = new Subject<(EditorCommandType type, bool canExecute)>();
 			var commands = new CommandAvailability(Mock.Of<IEditorState>());
 
 			var model = new Mock<IEditorFacade>();
-			model.Setup(x => x.CanExecuteObservable)
-				.Returns(availability);
 			model.Setup(x => x.CommandAvailabilityPublisher)
 				.Returns(commands);
 
@@ -55,11 +52,9 @@ namespace Romanesco.ViewModel.Test.Editor
 				_ => throw new NotImplementedException(),
 			};
 
-			//availability.OnNext((type, false));
 			commands.UpdateCanExecute(type, false);
 			Assert.False(targetCommand.CanExecute());
 
-			//availability.OnNext((type, true));
 			commands.UpdateCanExecute(type, true);
 			Assert.True(targetCommand.CanExecute());
 		}

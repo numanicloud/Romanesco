@@ -18,9 +18,6 @@ namespace Romanesco.Model.EditorComponents
 
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
-		public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable =>
-			commandAvailability.Observable;
-
 		public ICommandAvailabilityPublisher CommandAvailabilityPublisher => commandAvailability;
 
 		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
