@@ -1,27 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using Romanesco.Common.Model.Helpers;
+using Romanesco.Model.Interfaces;
 
 namespace Romanesco.ViewModel.Commands
 {
-	class SaveCommandViewModel : ICommand
+	internal class SaveCommandViewModel : CommandViewModel
 	{
-		public event EventHandler? CanExecuteChanged;
+		private readonly ICommandAvailabilityPublisher model;
+		private readonly BooleanUsingScopeSource commandExecution;
 
-		public SaveCommandViewModel()
+		public SaveCommandViewModel(ICommandAvailabilityPublisher model,
+			BooleanUsingScopeSource commandExecution)
+			: base(model.CanSave, commandExecution)
 		{
-			
+			this.model = model;
+			this.commandExecution = commandExecution;
 		}
 
-		public bool CanExecute(object parameter)
-		{
-			throw new NotImplementedException();
-		}
+		public override void Execute(object? parameter) => SaveAsync().Forget();
 
-		public void Execute(object parameter)
+		private async Task SaveAsync()
 		{
-			throw new NotImplementedException();
+			using (commandExecution.Create())
+			{
+				await model.SaveAsync();
+			}
 		}
 	}
 }
