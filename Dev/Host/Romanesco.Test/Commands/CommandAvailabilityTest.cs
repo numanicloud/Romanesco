@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reactive.Linq;
 using Moq;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
@@ -128,6 +130,41 @@ namespace Romanesco.Test.Commands
 			availability.Redo(editorState.Object);
 
 			historyService.Verify(x => x.Redo(), Times.Once);
+		}
+		
+
+		[Fact]
+		public void 全コマンドの可用性を更新できる()
+		{
+			var loadService = MockHelper.GetLoaderServiceMock(canCreate: true, canOpen: true);
+			var saveService = MockHelper.GetSaveServiceMock(true, true);
+			var historyService = MockHelper.CreateHistoryMock(canUndo: true, canRedo: true);
+			var availability = new CommandAvailability();
+			var editorState = MockHelper.GetEditorStateMock(
+				availability,
+				loadService.Object,
+				saveService.Object,
+				historyService.Object);
+
+			var disposables = Enum.GetValues(typeof(EditorCommandType))
+				.Cast<EditorCommandType>()
+				.Select(type => type switch
+				{
+					Create => availability.CanCreate,
+					Open => availability.CanOpen,
+					Save => availability.CanSave,
+					SaveAs => availability.CanSaveAs,
+					Export => availability.CanExport,
+					Undo => availability.CanUndo,
+					Redo => availability.CanRedo,
+					_ => throw new NotImplementedException(),
+				})
+				.Select(x => x.ExpectAtLeastOnce())
+				.ToArray();
+
+			availability.UpdateCanExecute(editorState.Object);
+
+			disposables.ForEach(x => x.Dispose());
 		}
 	}
 }
