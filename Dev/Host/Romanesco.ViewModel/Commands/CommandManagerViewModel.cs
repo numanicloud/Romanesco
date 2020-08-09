@@ -18,7 +18,6 @@ namespace Romanesco.ViewModel.Commands
 {
 	internal class CommandManagerViewModel : IDisposable
 	{
-		private readonly ICommandAvailabilityPublisher model;
 		private readonly List<IDisposable> disposables = new List<IDisposable>();
 
 		public ReactiveProperty<IStateViewModel[]> Roots { get; }
@@ -28,7 +27,7 @@ namespace Romanesco.ViewModel.Commands
 		public ICommand Save { get; }
 		public ICommand SaveAs { get; }
 		public ICommand Export { get; }
-		public ReactiveCommand Undo { get; }
+		public ICommand Undo { get; }
 		public ReactiveCommand Redo { get; }
 
 		public CommandManagerViewModel(ICommandAvailabilityPublisher model,
@@ -39,17 +38,13 @@ namespace Romanesco.ViewModel.Commands
 			Save = new SaveCommandViewModel(model, CommandExecution);
 			SaveAs = new SaveAsCommandViewModel(model, CommandExecution);
 			Export = new ExportCommandViewModel(model, CommandExecution);
+			Undo = new UndoCommandViewModel(model, CommandExecution);
 
-			Undo = ToEditorCommand(model.CanUndo);
 			Redo = ToEditorCommand(model.CanRedo);
-			
-			Undo.SubscribeSafe(x => model.Undo())
-				.AddTo(disposables);
 			
 			Redo.SubscribeSafe(x => model.Redo())
 				.AddTo(disposables);
 
-			this.model = model;
 			Roots = roots;
 		}
 		

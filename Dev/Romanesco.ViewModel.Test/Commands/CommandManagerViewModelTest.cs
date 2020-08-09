@@ -151,7 +151,7 @@ namespace Romanesco.ViewModel.Test.Commands
 				new ReactiveProperty<IStateViewModel[]>(),
 				Mock.Of<IViewModelInterpreter>());
 
-			subject.Undo.Execute();
+			subject.Undo.Execute(null);
 
 			commands.Verify(x => x.Undo(), Times.Once);
 		}
