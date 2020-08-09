@@ -2,8 +2,10 @@
 using Moq;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
+using Romanesco.Model.Services.History;
 using Romanesco.Test.Helpers;
 using Xunit;
+using Xunit.Sdk;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Test.Commands
@@ -102,6 +104,30 @@ namespace Romanesco.Test.Commands
 			availability.ExportAsync(editorState.Object).Wait();
 
 			saveService.Verify(x => x.ExportAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void Undoを実行できる()
+		{
+			var historyService = CreateHistoryMock();
+			var editorState = MockHelper.GetEditorStateMock(historyService: historyService.Object);
+			var availability = new CommandAvailability();
+
+			availability.Undo(editorState.Object);
+
+			historyService.Verify(x => x.Undo(), Times.Once);
+		}
+		
+		private static Mock<IProjectHistoryService> CreateHistoryMock()
+		{
+			var history = new Mock<IProjectHistoryService>();
+			history.Setup(x => x.Undo())
+				.Callback(() => { });
+			history.Setup(x => x.CanUndo).Returns(true);
+			history.Setup(x => x.Redo())
+				.Callback(() => { });
+			history.Setup(x => x.CanRedo).Returns(true);
+			return history;
 		}
 	}
 }
