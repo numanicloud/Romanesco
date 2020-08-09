@@ -3,8 +3,6 @@ using Romanesco.Model.EditorComponents.States;
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
@@ -33,6 +31,16 @@ namespace Romanesco.Model.EditorComponents
 			SetUpCommand(commandAvailability);
 		}
 
+		public void ChangeState(IEditorState state)
+		{
+			editorState = state;
+			UpdateTitle();
+
+			commandAvailability = new CommandAvailability(state);
+			commandAvailability.UpdateCanExecute();
+			SetUpCommand(commandAvailability);
+		}
+
 		private void SetUpCommand(CommandAvailability target)
 		{
 			target.OnCreate.Subscribe(SetProject);
@@ -47,43 +55,14 @@ namespace Romanesco.Model.EditorComponents
 			editorState.OnCreate(projectContext);
 		}
 
-		public async Task<IProjectContext?> CreateAsync()
-		{
-			return await commandAvailability.CreateAsync();
-		}
-
-		public async Task<IProjectContext?> OpenAsync()
-		{
-			return await commandAvailability.OpenAsync();
-		}
-
 		private void ObserveEdit(IProjectContext projectContext)
 		{
-			projectContext.ObserveEdit(OnEdit).AddTo(Disposables);
-		}
-
-		/* 各コマンドの実行リクエストを受け付ける */
-		private void OnEdit()
-		{
-			commandAvailability.NotifyEdit();
-		}
-
-		public async Task SaveAsAsync()
-		{
-			await commandAvailability.SaveAsAsync();
-		}
-
-		public void ChangeState(IEditorState state)
-		{
-			editorState = state;
-			UpdateTitle();
-
-			commandAvailability = new CommandAvailability(state);
-			commandAvailability.UpdateCanExecute();
-			SetUpCommand(commandAvailability);
+			projectContext.ObserveEdit(() => commandAvailability.NotifyEdit())
+				.AddTo(Disposables);
 		}
 
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
+
 		public void Dispose()
 		{
 			ApplicationTitle.Dispose();

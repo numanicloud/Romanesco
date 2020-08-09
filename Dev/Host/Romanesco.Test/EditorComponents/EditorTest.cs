@@ -1,12 +1,7 @@
-﻿using System;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
+﻿using System.Reactive.Linq;
 using Moq;
-using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
-using Romanesco.Model.Infrastructure;
 using Romanesco.Test.Helpers;
 using Xunit;
 
@@ -22,51 +17,6 @@ namespace Romanesco.Test.EditorComponents
 			editorStateChanger.Setup(x => x.OnChange)
 				.Returns(() => Observable.Never<EditorState>());
 			this.neverEditorStateChanger = editorStateChanger.Object;
-		}
-
-		[Fact]
-		public void プロジェクトを作成する命令をエディターが現在のステートに割り振る()
-		{
-			var loader = MockHelper.GetLoaderServiceMock();
-			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			_ = editor.CreateAsync().Result;
-
-			loader.Verify(x => x.CreateAsync(), Times.Once);
-		}
-
-		[Fact]
-		public void プロジェクトが作成されるとHistoryの更新をステートに要求する()
-		{
-			var editSubject = new Subject<Unit>();
-			var context = new Mock<IProjectContext>();
-			context.Setup(x => x.ObserveEdit(It.IsAny<Action>()))
-				.Returns((Action action) => editSubject.Subscribe(x => action()));
-
-			var loader = MockHelper.GetLoaderServiceMock(context.Object);
-			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
-			editorState.Setup(x => x.OnEdit()).Callback(() => { });
-
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			_ = editor.CreateAsync().Result;
-			editSubject.OnNext(Unit.Default);
-
-
-			editorState.Verify(x => x.OnEdit(), Times.Once);
-		}
-
-		[Fact]
-		public void プロジェクトを開く命令をエディターが現在のステートに割り振る()
-		{
-			var loadService = MockHelper.GetLoaderServiceMock();
-			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			var _ = editor.OpenAsync().Result;
-
-			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}
 
 		[Fact]
@@ -87,24 +37,6 @@ namespace Romanesco.Test.EditorComponents
 			
 			Assert.False(editor.CommandAvailabilityPublisher.CanUndo.Value);
 			Assert.False(editor.CommandAvailabilityPublisher.CanRedo.Value);
-		}
-
-		[Fact]
-		public void 上書き保存するとタイトルが更新される()
-		{
-			string currentTitle = "Before";
-
-			var editorState = MockHelper.GetEditorStateMock();
-			editorState.Setup(x => x.Title)
-				.Returns(() => currentTitle);
-			editorState.Setup(x => x.OnSaveAs())
-				.Callback(() => currentTitle = "After");
-
-			var editor = new Editor(neverEditorStateChanger, editorState.Object);
-
-			Assert.Equal("Before", editor.ApplicationTitle.Value);
-			editor.SaveAsAsync().Wait();
-			Assert.Equal("After", editor.ApplicationTitle.Value);
 		}
 	}
 }
