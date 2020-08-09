@@ -31,6 +31,7 @@ namespace Romanesco.Model.Commands
 	{
 		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
 			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
+		private readonly IEditorState currentState;
 
 		private IObserver<(EditorCommandType, bool)> Observer => canExecuteSubject;
 
@@ -45,7 +46,7 @@ namespace Romanesco.Model.Commands
 		public IReadOnlyReactiveProperty<bool> CanUndo { get; }
 		public IReadOnlyReactiveProperty<bool> CanRedo { get; }
 
-		public CommandAvailability()
+		public CommandAvailability(IEditorState currentState)
 		{
 			IReadOnlyReactiveProperty<bool> MakeProperty(EditorCommandType type)
 			{
@@ -61,6 +62,7 @@ namespace Romanesco.Model.Commands
 			CanOpen = MakeProperty(Open);
 			CanUndo = MakeProperty(EditorCommandType.Undo);
 			CanRedo = MakeProperty(EditorCommandType.Redo);
+			this.currentState = currentState;
 		}
 
 		public void Dispose()
@@ -138,7 +140,6 @@ namespace Romanesco.Model.Commands
 			editorState.GetHistoryService().Redo();
 			UpdateCanExecute(EditorCommandType.Redo, editorState.GetHistoryService().CanRedo);
 		}
-		
 
 		public void NotifyEdit(IEditorState editorState)
 		{

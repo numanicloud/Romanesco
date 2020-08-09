@@ -49,12 +49,12 @@ namespace Romanesco.Model.Infrastructure
 
 		public IEditorState ResolveEditorState()
 		{
-			return _ResolveEditorStateCache ??= new EmptyEditorState(ResolveProjectLoadService(), this, ResolveEditorSession());
+			return _ResolveEditorStateCache ??= new EmptyEditorState(ResolveProjectLoadService(), this, ResolveEditorStateChanger());
 		}
 
 		public EmptyEditorState ResolveEmptyEditorStateAsTransient()
 		{
-			return new EmptyEditorState(ResolveProjectLoadService(), this, ResolveEditorSession());
+			return new EmptyEditorState(ResolveProjectLoadService(), this, ResolveEditorStateChanger());
 		}
 
 		public IProjectLoadService ResolveProjectLoadService()
@@ -74,7 +74,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public CommandAvailability ResolveCommandAvailability()
 		{
-			return _ResolveCommandAvailabilityCache ??= new CommandAvailability();
+			return _ResolveCommandAvailabilityCache ??= new CommandAvailability(ResolveEditorState());
 		}
 
 		public EditorSession ResolveEditorSession()
@@ -89,7 +89,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public IEditorFacade ResolveEditorFacade()
 		{
-			return _ResolveEditorFacadeCache ??= new Editor(ResolveEditorStateChanger(), ResolveEditorState(), ResolveCommandAvailability());
+			return _ResolveEditorFacadeCache ??= new Editor(ResolveEditorStateChanger(), ResolveEditorState());
 		}
 
 		public IStateSerializer ResolveStateSerializer()

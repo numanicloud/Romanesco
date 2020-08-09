@@ -25,8 +25,8 @@ namespace Romanesco.Test.EditorComponents
 		public void UndoとRedoの状態を更新できる(EditorCommandType type)
 		{
 			// これはもはや CommandAvailability のテスト
-			var availability = new CommandAvailability();
-			var editorState = GetDirtyEditorState(availability, historyService: CreateHistoryMock());
+			var editorState = GetDirtyEditorState(historyService: CreateHistoryMock());
+			var availability = new CommandAvailability(editorState);
 
 			using var once = availability.Observable
 				.Where(x => x.command == type)
@@ -35,22 +35,17 @@ namespace Romanesco.Test.EditorComponents
 			availability.UpdateCanExecute(editorState.GetHistoryService());
 		}
 
-		private static DirtyEditorState GetDirtyEditorState(CommandAvailability? commandAvailability = null,
-			Mock<IProjectLoadService>? loadService = null,
+		private static DirtyEditorState GetDirtyEditorState(Mock<IProjectLoadService>? loadService = null,
 			Mock<IProjectSaveService>? saveService = null,
 			Mock<IProjectHistoryService>? historyService = null)
 		{
-			var editorSession = new EditorSession(
-				Mock.Of<IEditorStateChanger>(),
-				commandAvailability ?? new CommandAvailability());
-
 			return new DirtyEditorState(
 				loadService?.Object ?? Mock.Of<IProjectLoadService>(),
 				historyService?.Object ?? Mock.Of<IProjectHistoryService>(),
 				saveService?.Object ?? Mock.Of<IProjectSaveService>(),
 				Mock.Of<IProjectContext>(),
 				Mock.Of<IProjectModelFactory>(),
-				editorSession);
+				Mock.Of<IEditorStateChanger>());
 		}
 
 		private static Mock<IProjectHistoryService> CreateHistoryMock()

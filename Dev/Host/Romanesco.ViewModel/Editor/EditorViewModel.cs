@@ -57,7 +57,7 @@ namespace Romanesco.ViewModel.Editor
 
             /* 各コマンドの実行可能性をUIに伝達する */
             //*
-			var cav = Editor.CommandAvailability;
+			var cav = Editor.CommandAvailabilityPublisher;
 			CreateCommand = ToEditorCommand2(cav.CanCreate);
 			OpenCommand = ToEditorCommand2(cav.CanOpen);
 			SaveCommand = ToEditorCommand2(cav.CanSave);

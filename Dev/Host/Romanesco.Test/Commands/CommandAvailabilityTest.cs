@@ -24,7 +24,7 @@ namespace Romanesco.Test.Commands
 		[InlineData(Redo)]
 		public void コマンドの実行可能性が通知される(EditorCommandType type)
 		{
-			var availability = new CommandAvailability();
+			var availability = new CommandAvailability(MockHelper.GetEditorStateMock().Object);
 
 			var stream = type switch
 			{
@@ -52,7 +52,7 @@ namespace Romanesco.Test.Commands
 		{
 			var loadService = MockHelper.GetLoaderServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var commandAvailability = new CommandAvailability();
+			var commandAvailability = new CommandAvailability(editorState.Object);
 
 			_ = commandAvailability.CreateAsync(editorState.Object).Result;
 
@@ -64,7 +64,7 @@ namespace Romanesco.Test.Commands
 		{
 			var loadService = MockHelper.GetLoaderServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var commandAvailability = new CommandAvailability();
+			var commandAvailability = new CommandAvailability(editorState.Object);
 
 			_ = commandAvailability.OpenAsync(editorState.Object).Result;
 
@@ -76,7 +76,7 @@ namespace Romanesco.Test.Commands
 		{
 			var saveService = MockHelper.GetSaveServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
-			var availability = new CommandAvailability();
+			var availability = new CommandAvailability(editorState.Object);
 
 			availability.SaveAsync(editorState.Object).Wait();
 
@@ -89,7 +89,7 @@ namespace Romanesco.Test.Commands
 		{
 			var saveService = MockHelper.GetSaveServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
-			var availability = new CommandAvailability();
+			var availability = new CommandAvailability(editorState.Object);
 
 			availability.SaveAsAsync(editorState.Object).Wait();
 
@@ -101,7 +101,7 @@ namespace Romanesco.Test.Commands
 		{
 			var saveService = MockHelper.GetSaveServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
-			var availability = new CommandAvailability();
+			var availability = new CommandAvailability(editorState.Object);
 
 			availability.ExportAsync(editorState.Object).Wait();
 
@@ -113,7 +113,7 @@ namespace Romanesco.Test.Commands
 		{
 			var historyService = MockHelper.CreateHistoryMock();
 			var editorState = MockHelper.GetEditorStateMock(historyService: historyService.Object);
-			var availability = new CommandAvailability();
+			var availability = new CommandAvailability(editorState.Object);
 
 			availability.Undo(editorState.Object);
 
@@ -125,7 +125,7 @@ namespace Romanesco.Test.Commands
 		{
 			var historyService = MockHelper.CreateHistoryMock();
 			var editorState = MockHelper.GetEditorStateMock(historyService: historyService.Object);
-			var availability = new CommandAvailability();
+			var availability = new CommandAvailability(editorState.Object);
 
 			availability.Redo(editorState.Object);
 
@@ -139,12 +139,11 @@ namespace Romanesco.Test.Commands
 			var loadService = MockHelper.GetLoaderServiceMock(canCreate: true, canOpen: true);
 			var saveService = MockHelper.GetSaveServiceMock(true, true);
 			var historyService = MockHelper.CreateHistoryMock(canUndo: true, canRedo: true);
-			var availability = new CommandAvailability();
 			var editorState = MockHelper.GetEditorStateMock(
-				availability,
-				loadService.Object,
-				saveService.Object,
-				historyService.Object);
+				loadService: loadService.Object,
+				saveService: saveService.Object,
+				historyService: historyService.Object);
+			var availability = new CommandAvailability(editorState.Object);
 
 			var disposables = Enum.GetValues(typeof(EditorCommandType))
 				.Cast<EditorCommandType>()

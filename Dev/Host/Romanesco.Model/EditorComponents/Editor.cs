@@ -14,20 +14,20 @@ namespace Romanesco.Model.EditorComponents
 	internal sealed class Editor : IEditorFacade, IDisposable
 	{
 		private IEditorState editorState;
-		private readonly CommandAvailability commandAvailability_xxx;
+		private readonly CommandAvailability commandAvailability;
 
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
 		public IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable { get; }
-		public ICommandAvailabilityPublisher CommandAvailability { get; }
+		public ICommandAvailabilityPublisher CommandAvailabilityPublisher { get; }
 
-		public Editor(IEditorStateChanger stateChanger, IEditorState initialState, CommandAvailability commandAvailability)
+		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
 		{
 			// TODO: コンストラクタパラメータを EditorSession にする
 
+			commandAvailability = new CommandAvailability(initialState);
 			CanExecuteObservable = commandAvailability.Observable;
-			CommandAvailability = commandAvailability;
-			commandAvailability_xxx = commandAvailability;
+			CommandAvailabilityPublisher = commandAvailability;
 
 			stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
 			editorState = initialState;
@@ -36,7 +36,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task<IProjectContext?> CreateAsync()
 		{
-			if (!(await commandAvailability_xxx.CreateAsync(editorState) is { } projectContext))
+			if (!(await commandAvailability.CreateAsync(editorState) is { } projectContext))
 			{
 				return null;
 			}
@@ -50,7 +50,7 @@ namespace Romanesco.Model.EditorComponents
 
 		public async Task<IProjectContext?> OpenAsync()
 		{
-			if (!(await commandAvailability_xxx.OpenAsync(editorState) is {} projectContext))
+			if (!(await commandAvailability.OpenAsync(editorState) is {} projectContext))
 			{
 				return null;
 			}
@@ -70,40 +70,40 @@ namespace Romanesco.Model.EditorComponents
 		/* 各コマンドの実行リクエストを受け付ける */
 		private void OnEdit()
 		{
-			commandAvailability_xxx.NotifyEdit(editorState);
+			commandAvailability.NotifyEdit(editorState);
 		}
 
 		public async Task SaveAsync()
 		{
-			await commandAvailability_xxx.SaveAsync(editorState);
+			await commandAvailability.SaveAsync(editorState);
 		}
 
 		public async Task SaveAsAsync()
 		{
-			await commandAvailability_xxx.SaveAsAsync(editorState);
+			await commandAvailability.SaveAsAsync(editorState);
 			UpdateTitle();
 		}
 
 		public async Task ExportAsync()
 		{
-			await commandAvailability_xxx.ExportAsync(editorState);
+			await commandAvailability.ExportAsync(editorState);
 		}
 
 		public void Undo()
 		{
-			commandAvailability_xxx.Undo(editorState);
+			commandAvailability.Undo(editorState);
 		}
 
 		public void Redo()
 		{
-			commandAvailability_xxx.Redo(editorState);
+			commandAvailability.Redo(editorState);
 		}
 
 		public void ChangeState(IEditorState state)
 		{
 			editorState = state;
 			UpdateTitle();
-			commandAvailability_xxx.UpdateCanExecute(state);
+			commandAvailability.UpdateCanExecute(state);
 		}
 
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;

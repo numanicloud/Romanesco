@@ -6,6 +6,7 @@ using System.Reactive.Subjects;
 using System.Threading;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
+using Romanesco.Model.EditorComponents.States;
 using Romanesco.ViewModel.States;
 using Romanesco.ViewModel.Test.Helpers;
 using Xunit;
@@ -28,12 +29,12 @@ namespace Romanesco.ViewModel.Test.Editor
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
 
 			var availability = new Subject<(EditorCommandType type, bool canExecute)>();
-			var commands = new CommandAvailability();
+			var commands = new CommandAvailability(Mock.Of<IEditorState>());
 
 			var model = new Mock<IEditorFacade>();
 			model.Setup(x => x.CanExecuteObservable)
 				.Returns(availability);
-			model.Setup(x => x.CommandAvailability)
+			model.Setup(x => x.CommandAvailabilityPublisher)
 				.Returns(commands);
 
 			var disposables = new List<IDisposable>();

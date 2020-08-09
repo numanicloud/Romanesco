@@ -11,7 +11,7 @@ namespace Romanesco.Model.EditorComponents
     {
         List<IDisposable> Disposables { get; }
         IObservable<(EditorCommandType command, bool canExecute)> CanExecuteObservable { get; }
-        ICommandAvailabilityPublisher CommandAvailability { get; }
+        ICommandAvailabilityPublisher CommandAvailabilityPublisher { get; }
         Task<IProjectContext?> CreateAsync();
         Task<IProjectContext?> OpenAsync();
         Task SaveAsync();

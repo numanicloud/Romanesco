@@ -30,7 +30,7 @@ namespace Romanesco.Test.EditorComponents
 		{
 			var loader = MockHelper.GetLoaderServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
 			_ = editor.CreateAsync().Result;
 
@@ -49,7 +49,7 @@ namespace Romanesco.Test.EditorComponents
 			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
 			editorState.Setup(x => x.OnEdit()).Callback(() => { });
 
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
 			_ = editor.CreateAsync().Result;
 			editSubject.OnNext(Unit.Default);
@@ -63,7 +63,7 @@ namespace Romanesco.Test.EditorComponents
 		{
 			var loadService = MockHelper.GetLoaderServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
 			var _ = editor.OpenAsync().Result;
 
@@ -75,7 +75,7 @@ namespace Romanesco.Test.EditorComponents
 		{
 			var history = MockHelper.CreateHistoryMock();
 			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
 			editor.Undo();
 
@@ -85,15 +85,12 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void UndoするとUndo可能性が更新される()
 		{
-			var commandAvailability = new CommandAvailability();
-			var history = MockHelper.CreateHistoryMock(undo: () =>
-			{
-				commandAvailability.UpdateCanExecute(Undo, false);
-			});
+			var history = MockHelper.CreateHistoryMock(undo: () => { });
 			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, commandAvailability);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
-			using var once = editor.CanExecuteObservable
+			using var once = editor.CommandAvailabilityPublisher
+				.CanUndo
 				.ExpectAtLeastOnce();
 
 			editor.Undo();
@@ -104,7 +101,7 @@ namespace Romanesco.Test.EditorComponents
 		{
 			var history = MockHelper.CreateHistoryMock();
 			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
 			editor.Redo();
 
@@ -114,15 +111,12 @@ namespace Romanesco.Test.EditorComponents
 		[Fact]
 		public void RedoするとRedo可能性が更新される()
 		{
-			var commandAvailability = new CommandAvailability();
-			var history = MockHelper.CreateHistoryMock(redo: () =>
-			{
-				commandAvailability.UpdateCanExecute(Redo, false);
-			});
+			var history = MockHelper.CreateHistoryMock(redo: () => { });
 			var editorState = MockHelper.GetEditorStateMock(historyService: history.Object);
-			var editor = new Editor(neverEditorStateChanger, editorState.Object, commandAvailability);
+			var editor = new Editor(neverEditorStateChanger, editorState.Object);
 
-			using var once = editor.CanExecuteObservable
+			using var once = editor.CommandAvailabilityPublisher
+				.CanRedo
 				.ExpectAtLeastOnce();
 
 			editor.Redo();

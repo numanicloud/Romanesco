@@ -7,8 +7,8 @@ namespace Romanesco.Model.EditorComponents.States
 	{
 		private readonly IProjectModelFactory factory;
 
-		protected ProjectSpecifiedEditorState(IProjectModelFactory factory, EditorSession editorSession)
-			: base(factory, editorSession)
+		protected ProjectSpecifiedEditorState(IProjectModelFactory factory, IEditorStateChanger editorStateChanger)
+			: base(factory, editorStateChanger)
 		{
 			this.factory = factory;
 		}

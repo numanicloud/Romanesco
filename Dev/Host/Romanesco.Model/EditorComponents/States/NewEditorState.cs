@@ -14,12 +14,13 @@ namespace Romanesco.Model.EditorComponents.States
 
         public override string Title => "Romanesco - 新規プロジェクト";
 
-        public NewEditorState(IProjectLoadService loadService,
-            IProjectHistoryService historyService,
-            IProjectSaveService saveService,
-            IProjectModelFactory factory,
-            EditorSession editorSession)
-            : base(factory, editorSession)
+        public NewEditorState(
+			IProjectLoadService loadService,
+			IProjectHistoryService historyService,
+			IProjectSaveService saveService,
+			IProjectModelFactory factory,
+			IEditorStateChanger editorStateChanger)
+	        : base(factory, editorStateChanger)
         {
 			this.loadService = loadService;
             this.saveService = saveService;
