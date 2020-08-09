@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Romanesco.Common.Model.ProjectComponent;
-using Romanesco.Model.Commands;
+﻿using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
@@ -20,7 +18,5 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnSave();
 		void OnSaveAs();
 		void OnEdit();
-
-		void NotifyEdit();
 	}
 }

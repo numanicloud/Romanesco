@@ -50,9 +50,6 @@ namespace Romanesco.Test.Helpers
 		{
 			var mock = new Mock<IEditorState>();
 
-			mock.Setup(x => x.NotifyEdit())
-				.Callback(() => { });
-
 			mock.Setup(x => x.GetLoadService())
 				.Returns(loadService ?? new NullLoadService());
 

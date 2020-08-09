@@ -55,10 +55,5 @@ namespace Romanesco.Model.EditorComponents.States
 		public virtual void OnEdit()
 		{
 		}
-
-		public void NotifyEdit()
-		{
-			commandAvailability.NotifyEdit(this);
-		}
 	}
 }

@@ -70,7 +70,7 @@ namespace Romanesco.Model.EditorComponents
 		/* 各コマンドの実行リクエストを受け付ける */
 		private void OnEdit()
 		{
-			editorState.NotifyEdit();
+			commandAvailability_xxx.NotifyEdit(editorState);
 		}
 
 		public async Task SaveAsync()

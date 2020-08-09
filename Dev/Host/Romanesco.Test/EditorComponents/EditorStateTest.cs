@@ -35,30 +35,6 @@ namespace Romanesco.Test.EditorComponents
 			availability.UpdateCanExecute(editorState.GetHistoryService());
 		}
 
-		[Fact]
-		public void OnEditを呼ぶとUndoが更新される()
-		{
-			var history = CreateHistoryMock();
-			var commandAvailability = new CommandAvailability();
-			var editorState = GetDirtyEditorState(commandAvailability, historyService: history);
-
-			using var once = commandAvailability.CanUndo.ExpectAtLeastOnce();
-
-			editorState.NotifyEdit();
-		}
-
-		[Fact]
-		public void OnEditを呼ぶとRedoが更新される()
-		{
-			var history = CreateHistoryMock();
-			var commandAvailability = new CommandAvailability();
-			var editorState = GetDirtyEditorState(commandAvailability, historyService: history);
-
-			using var once = commandAvailability.CanRedo.ExpectAtLeastOnce();
-
-			editorState.NotifyEdit();
-		}
-
 		private static DirtyEditorState GetDirtyEditorState(CommandAvailability? commandAvailability = null,
 			Mock<IProjectLoadService>? loadService = null,
 			Mock<IProjectSaveService>? saveService = null,

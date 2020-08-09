@@ -47,12 +47,15 @@ namespace Romanesco.Test.EditorComponents
 
 			var loader = MockHelper.GetLoaderServiceMock(context.Object);
 			var editorState = MockHelper.GetEditorStateMock(loadService: loader.Object);
+			editorState.Setup(x => x.OnEdit()).Callback(() => { });
+
 			var editor = new Editor(neverEditorStateChanger, editorState.Object, new CommandAvailability());
 
 			_ = editor.CreateAsync().Result;
 			editSubject.OnNext(Unit.Default);
 
-			editorState.Verify(x => x.NotifyEdit(), Times.Once);
+
+			editorState.Verify(x => x.OnEdit(), Times.Once);
 		}
 
 		[Fact]
