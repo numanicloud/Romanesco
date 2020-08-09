@@ -94,57 +94,57 @@ namespace Romanesco.Model.Commands
 			UpdateCanExecute(EditorCommandType.Redo, history.CanRedo);
 		}
 		
-		public void UpdateCanExecute(IEditorState editorState)
+		public void UpdateCanExecute()
 		{
-			UpdateCanExecute(editorState.GetLoadService());
-			UpdateCanExecute(editorState.GetSaveService());
-			UpdateCanExecute(editorState.GetHistoryService());
+			UpdateCanExecute(currentState.GetLoadService());
+			UpdateCanExecute(currentState.GetSaveService());
+			UpdateCanExecute(currentState.GetHistoryService());
 		}
 
 		
-		public async Task<IProjectContext?> CreateAsync(IEditorState editorState)
+		public async Task<IProjectContext?> CreateAsync()
 		{
-			return await editorState.GetLoadService().CreateAsync();
+			return await currentState.GetLoadService().CreateAsync();
 		}
 
-		public async Task<IProjectContext?> OpenAsync(IEditorState editorState)
+		public async Task<IProjectContext?> OpenAsync()
 		{
-			return await editorState.GetLoadService().OpenAsync();
+			return await currentState.GetLoadService().OpenAsync();
 		}
 
-		public async Task SaveAsync(IEditorState editorState)
+		public async Task SaveAsync()
 		{
-			await editorState.GetSaveService().SaveAsync();
-			editorState.OnSave();
+			await currentState.GetSaveService().SaveAsync();
+			currentState.OnSave();
 		}
 		
-		public async Task SaveAsAsync(IEditorState editorState)
+		public async Task SaveAsAsync()
 		{
-			await editorState.GetSaveService().SaveAsAsync();
-			editorState.OnSaveAs();
+			await currentState.GetSaveService().SaveAsAsync();
+			currentState.OnSaveAs();
 		}
 		
-		public async Task ExportAsync(IEditorState editorState)
+		public async Task ExportAsync()
 		{
-			await editorState.GetSaveService().ExportAsync();
+			await currentState.GetSaveService().ExportAsync();
 		}
 		
-		public void Undo(IEditorState editorState)
+		public void Undo()
 		{
-			editorState.GetHistoryService().Undo();
-			UpdateCanExecute(EditorCommandType.Undo, editorState.GetHistoryService().CanUndo);
+			currentState.GetHistoryService().Undo();
+			UpdateCanExecute(EditorCommandType.Undo, currentState.GetHistoryService().CanUndo);
 		}
 		
-		public void Redo(IEditorState editorState)
+		public void Redo()
 		{
-			editorState.GetHistoryService().Redo();
-			UpdateCanExecute(EditorCommandType.Redo, editorState.GetHistoryService().CanRedo);
+			currentState.GetHistoryService().Redo();
+			UpdateCanExecute(EditorCommandType.Redo, currentState.GetHistoryService().CanRedo);
 		}
 
-		public void NotifyEdit(IEditorState editorState)
+		public void NotifyEdit()
 		{
-			editorState.OnEdit();
-			UpdateCanExecute(editorState.GetHistoryService());
+			currentState.OnEdit();
+			UpdateCanExecute(currentState.GetHistoryService());
 		}
 	}
 }
