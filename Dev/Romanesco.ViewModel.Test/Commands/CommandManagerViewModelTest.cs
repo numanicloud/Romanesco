@@ -32,7 +32,7 @@ namespace Romanesco.ViewModel.Test.Commands
 			var commands = new CommandAvailability(Mock.Of<IEditorState>());
 			var subject = new CommandManagerViewModel(
 				commands,
-				new ReactiveProperty<IStateViewModel[]>(),
+				new RootViewModel(),
 				Mock.Of<IViewModelInterpreter>());
 
 			var targetCommand = type switch
@@ -63,7 +63,7 @@ namespace Romanesco.ViewModel.Test.Commands
 
 			var subject = new CommandManagerViewModel(
 				commands.Object,
-				new ReactiveProperty<IStateViewModel[]>(),
+				new RootViewModel(),
 				Mock.Of<IViewModelInterpreter>());
 
 			subject.Create.Execute(null);
@@ -80,7 +80,7 @@ namespace Romanesco.ViewModel.Test.Commands
 
 			var subject = new CommandManagerViewModel(
 				commands.Object,
-				new ReactiveProperty<IStateViewModel[]>(),
+				new RootViewModel(),
 				Mock.Of<IViewModelInterpreter>());
 
 			subject.Open.Execute(null);
@@ -97,7 +97,7 @@ namespace Romanesco.ViewModel.Test.Commands
 
 			var subject = new CommandManagerViewModel(
 				commands.Object,
-				new ReactiveProperty<IStateViewModel[]>(),
+				new RootViewModel(),
 				Mock.Of<IViewModelInterpreter>());
 
 			subject.Save.Execute(null);
@@ -114,7 +114,7 @@ namespace Romanesco.ViewModel.Test.Commands
 
 			var subject = new CommandManagerViewModel(
 				commands.Object,
-				new ReactiveProperty<IStateViewModel[]>(),
+				new RootViewModel(),
 				Mock.Of<IViewModelInterpreter>());
 
 			subject.SaveAs.Execute(null);
@@ -131,7 +131,7 @@ namespace Romanesco.ViewModel.Test.Commands
 
 			var subject = new CommandManagerViewModel(
 				commands.Object,
-				new ReactiveProperty<IStateViewModel[]>(),
+				new RootViewModel(),
 				Mock.Of<IViewModelInterpreter>());
 
 			subject.Export.Execute(null);
@@ -148,7 +148,7 @@ namespace Romanesco.ViewModel.Test.Commands
 
 			var subject = new CommandManagerViewModel(
 				commands.Object,
-				new ReactiveProperty<IStateViewModel[]>(),
+				new RootViewModel(),
 				Mock.Of<IViewModelInterpreter>());
 
 			subject.Undo.Execute(null);
@@ -165,7 +165,7 @@ namespace Romanesco.ViewModel.Test.Commands
 
 			var subject = new CommandManagerViewModel(
 				commands.Object,
-				new ReactiveProperty<IStateViewModel[]>(),
+				new RootViewModel(),
 				Mock.Of<IViewModelInterpreter>());
 
 			subject.Redo.Execute(null);

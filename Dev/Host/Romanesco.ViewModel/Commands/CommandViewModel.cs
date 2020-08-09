@@ -14,7 +14,7 @@ namespace Romanesco.ViewModel.Commands
 
 		public event EventHandler? CanExecuteChanged;
 
-		public CommandViewModel(IReadOnlyReactiveProperty<bool> canExecuteObservable,
+		protected CommandViewModel(IReadOnlyReactiveProperty<bool> canExecuteObservable,
 			BooleanUsingScopeSource commandExecution)
 		{
 			subscription = canExecuteObservable.Concat(commandExecution.IsUsing.Select(x => !x))

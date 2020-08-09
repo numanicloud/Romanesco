@@ -19,7 +19,7 @@ namespace Romanesco.ViewModel.Editor
 		private readonly RootViewModel root;
 		private readonly CommandManagerViewModel commandManager;
 
-		public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
+		public ReactiveProperty<IStateViewModel[]> Roots => root.Fields;
 
 		public ICommand CreateCommand => commandManager.Create;
 		public ICommand OpenCommand => commandManager.Open;
@@ -35,8 +35,10 @@ namespace Romanesco.ViewModel.Editor
 		{
 			root = new RootViewModel();
 
+			// TODO: この実装だとCommandAvilityPublisherプロパティの中身が変わったときにバグる
+			commandManager = new CommandManagerViewModel(editor.CommandAvailabilityPublisher, root, interpreter);
+
 			Disposables = editor.Disposables;
-			commandManager = new CommandManagerViewModel(editor.CommandAvailabilityPublisher, Roots, interpreter);
 			GcDebugCommand.SubscribeSafe(x => GC.Collect()).AddTo(editor.Disposables);
 		}
 

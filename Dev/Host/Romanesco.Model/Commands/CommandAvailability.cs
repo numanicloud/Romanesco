@@ -103,7 +103,7 @@ namespace Romanesco.Model.Commands
 			UpdateCanExecute(EditorCommandType.Undo, history.CanUndo);
 			UpdateCanExecute(EditorCommandType.Redo, history.CanRedo);
 		}
-		
+
 		public void UpdateCanExecute()
 		{
 			UpdateCanExecute(currentState.GetLoadService());
@@ -111,7 +111,7 @@ namespace Romanesco.Model.Commands
 			UpdateCanExecute(currentState.GetHistoryService());
 		}
 
-		
+		/* コマンドを実行する */
 		public async Task<IProjectContext?> CreateAsync()
 		{
 			var project = await currentState.GetLoadService().CreateAsync();
@@ -139,25 +139,25 @@ namespace Romanesco.Model.Commands
 			await currentState.GetSaveService().SaveAsync();
 			currentState.OnSave();
 		}
-		
+
 		public async Task SaveAsAsync()
 		{
 			await currentState.GetSaveService().SaveAsAsync();
 			currentState.OnSaveAs();
 			onSaveAsSubject.OnNext(Unit.Default);
 		}
-		
+
 		public async Task ExportAsync()
 		{
 			await currentState.GetSaveService().ExportAsync();
 		}
-		
+
 		public void Undo()
 		{
 			currentState.GetHistoryService().Undo();
 			UpdateCanExecute(EditorCommandType.Undo, currentState.GetHistoryService().CanUndo);
 		}
-		
+
 		public void Redo()
 		{
 			currentState.GetHistoryService().Redo();

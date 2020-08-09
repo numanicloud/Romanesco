@@ -1,26 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
+﻿using System.Windows.Input;
 using Romanesco.Common.Model.Helpers;
-using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model.Interfaces;
 using Romanesco.ViewModel.States;
 
 namespace Romanesco.ViewModel.Commands
 {
-	internal class CommandManagerViewModel : IDisposable
+	internal class CommandManagerViewModel
 	{
-		private readonly List<IDisposable> disposables = new List<IDisposable>();
-
-		public BooleanUsingScopeSource CommandExecution { get; } = new BooleanUsingScopeSource();
 		public ICommand Create { get; }
 		public ICommand Open { get; }
 		public ICommand Save { get; }
@@ -30,20 +16,16 @@ namespace Romanesco.ViewModel.Commands
 		public ICommand Redo { get; }
 
 		public CommandManagerViewModel(ICommandAvailabilityPublisher model,
-			ReactiveProperty<IStateViewModel[]> roots, IViewModelInterpreter interpreter)
+			RootViewModel root, IViewModelInterpreter interpreter)
 		{
-			Create = new CreateCommandViewModel(model, roots, interpreter, CommandExecution);
-			Open = new OpenCommandViewModel(model, CommandExecution, roots, interpreter);
-			Save = new SaveCommandViewModel(model, CommandExecution);
-			SaveAs = new SaveAsCommandViewModel(model, CommandExecution);
-			Export = new ExportCommandViewModel(model, CommandExecution);
-			Undo = new UndoCommandViewModel(model, CommandExecution);
-			Redo = new RedoCommandViewModel(model, CommandExecution);
-		}
-
-		public void Dispose()
-		{
-			disposables.ForEach(x => x.Dispose());
+			var commandExecution = new BooleanUsingScopeSource();
+			Create = new CreateCommandViewModel(model, root.Fields, interpreter, commandExecution);
+			Open = new OpenCommandViewModel(model, commandExecution, root.Fields, interpreter);
+			Save = new SaveCommandViewModel(model, commandExecution);
+			SaveAs = new SaveAsCommandViewModel(model, commandExecution);
+			Export = new ExportCommandViewModel(model, commandExecution);
+			Undo = new UndoCommandViewModel(model, commandExecution);
+			Redo = new RedoCommandViewModel(model, commandExecution);
 		}
 	}
 }
