@@ -23,7 +23,7 @@ namespace Romanesco.Model.Commands
 	 * クライアントクラスは EditorViewModel でもいいが、最終的には CommandAvailabilityViewModel が理想かな？
 	 */
 
-	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher
+	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher, ICommandInvoker
 	{
 		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
 			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
@@ -125,6 +125,41 @@ namespace Romanesco.Model.Commands
 		{
 			editorState.GetHistoryService().Redo();
 			UpdateCanExecute(EditorCommandType.Redo, editorState.GetHistoryService().CanRedo);
+		}
+
+		public async Task<IProjectContext?> CreateAsync()
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<IProjectContext?> OpenAsync()
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task SaveAsync()
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task SaveAsAsync()
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task ExportAsync()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Undo()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Redo()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
