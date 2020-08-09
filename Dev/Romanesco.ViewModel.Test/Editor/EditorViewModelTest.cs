@@ -2,8 +2,6 @@
 using Romanesco.ViewModel.Editor;
 using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using Reactive.Bindings;
 using Romanesco.Model.Commands;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Moq;
 using Reactive.Bindings;
@@ -10,7 +8,6 @@ using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Interfaces;
 using Romanesco.ViewModel.Commands;
-using Romanesco.ViewModel.Editor;
 using Romanesco.ViewModel.States;
 using Romanesco.ViewModel.Test.Helpers;
 using Xunit;
