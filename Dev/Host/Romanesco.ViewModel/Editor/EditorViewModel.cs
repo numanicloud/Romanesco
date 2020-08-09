@@ -26,11 +26,11 @@ namespace Romanesco.ViewModel.Editor
 
 		public BooleanUsingScopeSource CommandExecution { get; }
 
-		public ReactiveCommand CreateCommand { get; set; }
+		public ReactiveCommand CreateCommand { get; }
 		public ReactiveCommand OpenCommand { get; }
-		public ReactiveCommand SaveCommand { get; set; }
-		public ReactiveCommand SaveAsCommand { get; set; }
-		public ReactiveCommand ExportCommand { get; set; }
+		public ReactiveCommand SaveCommand { get; }
+		public ReactiveCommand SaveAsCommand { get; }
+		public ReactiveCommand ExportCommand { get; }
 		public ReactiveCommand Undo { get; }
 		public ReactiveCommand Redo { get; }
 		public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();

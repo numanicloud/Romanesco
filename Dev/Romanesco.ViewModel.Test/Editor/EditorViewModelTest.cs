@@ -27,7 +27,7 @@ namespace Romanesco.ViewModel.Test.Editor
 		[InlineData(Export)]
 		[InlineData(Undo)]
 		[InlineData(Redo)]
-		public void CreateCommandの実行可能性が反映される(EditorCommandType type)
+		public void コマンドの実行可能性が反映される(EditorCommandType type)
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
 
