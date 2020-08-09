@@ -25,7 +25,7 @@ namespace Romanesco.ViewModel.Commands
 		public BooleanUsingScopeSource CommandExecution { get; } = new BooleanUsingScopeSource();
 		public ICommand Create { get; }
 		public ICommand Open { get; }
-		public ReactiveCommand Save { get; }
+		public ICommand Save { get; }
 		public ReactiveCommand SaveAs { get; }
 		public ReactiveCommand Export { get; }
 		public ReactiveCommand Undo { get; }
@@ -36,16 +36,13 @@ namespace Romanesco.ViewModel.Commands
 		{
 			Create = new CreateCommandViewModel(model, roots, interpreter, CommandExecution);
 			Open = new OpenCommandViewModel(model, CommandExecution, roots, interpreter);
+			Save = new SaveCommandViewModel(model, CommandExecution);
 
-			Save = ToEditorCommand(model.CanSave);
 			SaveAs = ToEditorCommand(model.CanSaveAs);
 			Export = ToEditorCommand(model.CanExport);
 			Undo = ToEditorCommand(model.CanUndo);
 			Redo = ToEditorCommand(model.CanRedo);
 			
-			Save.SubscribeSafe(x => SaveAsync().Forget())
-				.AddTo(disposables);
-
 			SaveAs.SubscribeSafe(x => SaveAsAsync().Wait())
 				.AddTo(disposables);
 			
@@ -68,14 +65,6 @@ namespace Romanesco.ViewModel.Commands
 				.Concat(CommandExecution.IsUsing.Select(x => !x));
 			var scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
 			return new ReactiveCommand(canExecute, scheduler);
-		}
-
-		private async Task SaveAsync()
-		{
-			using (CommandExecution.Create())
-			{
-				await model.SaveAsync();
-			}
 		}
 
 		private async Task SaveAsAsync()
