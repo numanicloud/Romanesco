@@ -9,16 +9,15 @@ namespace Romanesco.Model.Commands
 {
 	public class CreateCommand
 	{
-		private readonly Subject<IProjectContext> _onCreateSubject = new Subject<IProjectContext>();
+		private readonly Subject<IProjectContext> _onExecutedSubject = new Subject<IProjectContext>();
 		private readonly IEditorState _currentState;
 
 		public IReadOnlyReactiveProperty<bool> CanExecute { get; }
-		public IObservable<IProjectContext> OnCreate => _onCreateSubject;
+		public IObservable<IProjectContext> OnExecuted => _onExecutedSubject;
 
 		internal CreateCommand(IObservable<bool> canExecuteObservable, IEditorState currentState)
 		{
-			this._currentState = currentState;
-
+			_currentState = currentState;
 			CanExecute = new ReactiveProperty<bool>(canExecuteObservable);
 		}
 		
@@ -27,7 +26,7 @@ namespace Romanesco.Model.Commands
 			var project = await _currentState.GetLoadService().CreateAsync();
 			if (project is { })
 			{
-				_onCreateSubject.OnNext(project);
+				_onExecutedSubject.OnNext(project);
 			}
 
 			return project;

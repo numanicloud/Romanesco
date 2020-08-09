@@ -15,26 +15,13 @@ using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Model.Commands
 {
-	/*
-	 * コマンド実装方針
-	 * Model側のコマンドクラス、ViewModel側のコマンドクラスで分ける。(CommandAvailabilityViewModelとする)
-	 * コマンドの実行をEditorStateから剥がし、まずはここに持ってくる
-	 * ReactiveCommandをSubscribeする機能をこのクラスに持ってくる(あるいはViewModel側に)
-	 * ViewModel側から、Editor.CommandAvailability.Create というようにコマンドに直接アクセスする
-	 * クライアントクラスは EditorViewModel でもいいが、最終的には CommandAvailabilityViewModel が理想かな？
-	 * 
-	 * Editorの各種メソッドを経由せずにこのクラスで直接コマンド実行を受け付けたいが、
-	 * IEditorState が internal である、CommandAvailable は EditorState に依存されている、
-	 * などの問題がある
-	 */
-
 	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher
 	{
 		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
 			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
 		private readonly IEditorState currentState;
+		private readonly CreateCommand _createCommand;
 
-		private readonly Subject<IProjectContext> onCreateSubject = new Subject<IProjectContext>();
 		private readonly Subject<IProjectContext> onOpenSubject = new Subject<IProjectContext>();
 		private readonly Subject<Unit> onSaveAsSubject = new Subject<Unit>();
 
@@ -46,12 +33,12 @@ namespace Romanesco.Model.Commands
 		public IReadOnlyReactiveProperty<bool> CanSave { get; }
 		public IReadOnlyReactiveProperty<bool> CanSaveAs { get; }
 		public IReadOnlyReactiveProperty<bool> CanExport { get; }
-		public IReadOnlyReactiveProperty<bool> CanCreate { get; }
+		public IReadOnlyReactiveProperty<bool> CanCreate => _createCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanOpen { get; }
 		public IReadOnlyReactiveProperty<bool> CanUndo { get; }
 		public IReadOnlyReactiveProperty<bool> CanRedo { get; }
 
-		public IObservable<IProjectContext> OnCreate => onCreateSubject;
+		public IObservable<IProjectContext> OnCreate => _createCommand.OnExecuted;
 		public IObservable<IProjectContext> OnOpen => onOpenSubject;
 		public IObservable<Unit> OnSaveAs => onSaveAsSubject;
 
@@ -65,10 +52,17 @@ namespace Romanesco.Model.Commands
 				return new ReactiveProperty<bool>(stream);
 			}
 
+			IObservable<bool> GetCanExecute(EditorCommandType type)
+			{
+				return canExecuteSubject.Where(x => x.command == type)
+					.Select(x => x.canExecute);
+			}
+
+			_createCommand = new CreateCommand(GetCanExecute(Create), currentState);
+
 			CanSave = MakeProperty(Save);
 			CanSaveAs = MakeProperty(SaveAs);
 			CanExport = MakeProperty(Export);
-			CanCreate = MakeProperty(Create);
 			CanOpen = MakeProperty(Open);
 			CanUndo = MakeProperty(EditorCommandType.Undo);
 			CanRedo = MakeProperty(EditorCommandType.Redo);
@@ -112,16 +106,7 @@ namespace Romanesco.Model.Commands
 		}
 
 		/* コマンドを実行する */
-		public async Task<IProjectContext?> CreateAsync()
-		{
-			var project = await currentState.GetLoadService().CreateAsync();
-			if (project is { })
-			{
-				onCreateSubject.OnNext(project);
-			}
-
-			return project;
-		}
+		public async Task<IProjectContext?> CreateAsync() => await _createCommand.Execute();
 
 		public async Task<IProjectContext?> OpenAsync()
 		{
