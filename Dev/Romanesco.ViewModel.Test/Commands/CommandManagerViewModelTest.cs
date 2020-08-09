@@ -27,6 +27,7 @@ namespace Romanesco.ViewModel.Test.Commands
 		[InlineData(SaveAs)]
 		[InlineData(Export)]
 		[InlineData(Undo)]
+		[InlineData(Redo)]
 		public void コマンドの実行可能性が反映される(EditorCommandType type)
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
@@ -45,6 +46,7 @@ namespace Romanesco.ViewModel.Test.Commands
 				SaveAs => subject.SaveAs,
 				Export => subject.Export,
 				Undo => subject.Undo,
+				Redo => subject.Redo,
 				_ => throw new NotImplementedException(),
 			};
 
@@ -155,6 +157,23 @@ namespace Romanesco.ViewModel.Test.Commands
 			subject.Undo.Execute();
 
 			commands.Verify(x => x.Undo(), Times.Once);
+		}
+		
+		[Fact]
+		public void Redoコマンドがモデルに伝わる()
+		{
+			var commands = GetCommands();
+			commands.Setup(x => x.Redo())
+				.Callback(async () => { });
+
+			var subject = new CommandManagerViewModel(
+				commands.Object,
+				new ReactiveProperty<IStateViewModel[]>(),
+				Mock.Of<IViewModelInterpreter>());
+
+			subject.Redo.Execute();
+
+			commands.Verify(x => x.Redo(), Times.Once);
 		}
 
 		private static Mock<ICommandAvailabilityPublisher> GetCommands()
