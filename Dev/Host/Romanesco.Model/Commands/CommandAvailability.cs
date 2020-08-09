@@ -21,6 +21,7 @@ namespace Romanesco.Model.Commands
 			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
 		private readonly IEditorState currentState;
 		private readonly CreateCommand _createCommand;
+		private readonly OpenCommand _openCommand;
 
 		private readonly Subject<IProjectContext> onOpenSubject = new Subject<IProjectContext>();
 		private readonly Subject<Unit> onSaveAsSubject = new Subject<Unit>();
@@ -34,12 +35,12 @@ namespace Romanesco.Model.Commands
 		public IReadOnlyReactiveProperty<bool> CanSaveAs { get; }
 		public IReadOnlyReactiveProperty<bool> CanExport { get; }
 		public IReadOnlyReactiveProperty<bool> CanCreate => _createCommand.CanExecute;
-		public IReadOnlyReactiveProperty<bool> CanOpen { get; }
+		public IReadOnlyReactiveProperty<bool> CanOpen => _openCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanUndo { get; }
 		public IReadOnlyReactiveProperty<bool> CanRedo { get; }
 
 		public IObservable<IProjectContext> OnCreate => _createCommand.OnExecuted;
-		public IObservable<IProjectContext> OnOpen => onOpenSubject;
+		public IObservable<IProjectContext> OnOpen => _openCommand.OnExecuted;
 		public IObservable<Unit> OnSaveAs => onSaveAsSubject;
 
 
@@ -59,11 +60,11 @@ namespace Romanesco.Model.Commands
 			}
 
 			_createCommand = new CreateCommand(GetCanExecute(Create), currentState);
+			_openCommand = new OpenCommand(GetCanExecute(Open), currentState);
 
 			CanSave = MakeProperty(Save);
 			CanSaveAs = MakeProperty(SaveAs);
 			CanExport = MakeProperty(Export);
-			CanOpen = MakeProperty(Open);
 			CanUndo = MakeProperty(EditorCommandType.Undo);
 			CanRedo = MakeProperty(EditorCommandType.Redo);
 			this.currentState = currentState;
@@ -108,16 +109,7 @@ namespace Romanesco.Model.Commands
 		/* コマンドを実行する */
 		public async Task<IProjectContext?> CreateAsync() => await _createCommand.Execute();
 
-		public async Task<IProjectContext?> OpenAsync()
-		{
-			var project = await currentState.GetLoadService().OpenAsync();
-			if (project is { })
-			{
-				onOpenSubject.OnNext(project);
-			}
-
-			return project;
-		}
+		public async Task<IProjectContext?> OpenAsync() => await _openCommand.Execute();
 
 		public async Task SaveAsync()
 		{
