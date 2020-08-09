@@ -21,9 +21,13 @@ namespace Romanesco.Model.Commands
 	 * ReactiveCommandをSubscribeする機能をこのクラスに持ってくる(あるいはViewModel側に)
 	 * ViewModel側から、Editor.CommandAvailability.Create というようにコマンドに直接アクセスする
 	 * クライアントクラスは EditorViewModel でもいいが、最終的には CommandAvailabilityViewModel が理想かな？
+	 * 
+	 * Editorの各種メソッドを経由せずにこのクラスで直接コマンド実行を受け付けたいが、
+	 * IEditorState が internal である、CommandAvailable は EditorState に依存されている、
+	 * などの問題がある
 	 */
 
-	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher, ICommandInvoker
+	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher
 	{
 		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> canExecuteSubject
 			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
@@ -125,41 +129,6 @@ namespace Romanesco.Model.Commands
 		{
 			editorState.GetHistoryService().Redo();
 			UpdateCanExecute(EditorCommandType.Redo, editorState.GetHistoryService().CanRedo);
-		}
-
-		public async Task<IProjectContext?> CreateAsync()
-		{
-			throw new NotImplementedException();
-		}
-
-		public async Task<IProjectContext?> OpenAsync()
-		{
-			throw new NotImplementedException();
-		}
-
-		public async Task SaveAsync()
-		{
-			throw new NotImplementedException();
-		}
-
-		public async Task SaveAsAsync()
-		{
-			throw new NotImplementedException();
-		}
-
-		public async Task ExportAsync()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Undo()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Redo()
-		{
-			throw new NotImplementedException();
 		}
 	}
 }
