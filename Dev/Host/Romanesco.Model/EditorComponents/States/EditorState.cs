@@ -58,13 +58,7 @@ namespace Romanesco.Model.EditorComponents.States
 
 		public void NotifyEdit()
 		{
-			OnEdit();
-			commandAvailability.UpdateCanExecute(GetHistoryService());
-		}
-
-		public void UpdateCanExecute()
-		{
-			commandAvailability.UpdateCanExecute(this);
+			commandAvailability.NotifyEdit(this);
 		}
 	}
 }

@@ -138,5 +138,12 @@ namespace Romanesco.Model.Commands
 			editorState.GetHistoryService().Redo();
 			UpdateCanExecute(EditorCommandType.Redo, editorState.GetHistoryService().CanRedo);
 		}
+		
+
+		public void NotifyEdit(IEditorState editorState)
+		{
+			editorState.OnEdit();
+			UpdateCanExecute(editorState.GetHistoryService());
+		}
 	}
 }

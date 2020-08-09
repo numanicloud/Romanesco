@@ -59,41 +59,6 @@ namespace Romanesco.Test.EditorComponents
 			editorState.NotifyEdit();
 		}
 
-		[Fact]
-		public void 全コマンドの可用性を更新できる()
-		{
-			IDisposable Expect(CommandAvailability ca, EditorCommandType type)
-			{
-				return ca.Observable.Where(x => x.command == type)
-					.ExpectAtLeastOnce();
-			}
-
-			var loadService = MockHelper.GetLoaderServiceMock(canCreate: true, canOpen: true);
-			var saveService = MockHelper.GetSaveServiceMock(true, true);
-
-			var historyService = new Mock<IProjectHistoryService>();
-			historyService.Setup(x => x.CanUndo).Returns(true);
-			historyService.Setup(x => x.CanRedo).Returns(true);
-
-			var availability = new CommandAvailability();
-			var editorState = GetDirtyEditorState(availability, loadService, saveService, historyService);
-
-			var disposables = new[]
-			{
-				Expect(availability, EditorCommandType.Create),
-				Expect(availability, EditorCommandType.Open),
-				Expect(availability, EditorCommandType.Save),
-				Expect(availability, EditorCommandType.SaveAs),
-				Expect(availability, EditorCommandType.Export),
-				Expect(availability, EditorCommandType.Undo),
-				Expect(availability, EditorCommandType.Redo),
-			};
-
-			editorState.UpdateCanExecute();
-
-			disposables.ForEach(x => x.Dispose());
-		}
-
 		private static DirtyEditorState GetDirtyEditorState(CommandAvailability? commandAvailability = null,
 			Mock<IProjectLoadService>? loadService = null,
 			Mock<IProjectSaveService>? saveService = null,

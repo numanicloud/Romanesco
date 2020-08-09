@@ -19,13 +19,8 @@ namespace Romanesco.Model.EditorComponents.States
 		void OnOpen(IProjectContext project);
 		void OnSave();
 		void OnSaveAs();
+		void OnEdit();
 
 		void NotifyEdit();
-
-		// このへんはCommandAvailabilityの責務かも？
-		// あるいはEditor側がCommandAvailabilityを使うようにするとよいか？
-		// EditorとEditorStateの両方に、CommandAvailabilityを注入するという手がある
-		// その場合EditorViewModelにもCommandAvailabilityを注入すれば実装可能そう
-		void UpdateCanExecute();
 	}
 }
