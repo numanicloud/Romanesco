@@ -26,6 +26,7 @@ namespace Romanesco.ViewModel.Test.Commands
 		[InlineData(Open)]
 		[InlineData(Save)]
 		[InlineData(SaveAs)]
+		[InlineData(Export)]
 		public void コマンドの実行可能性が反映される(EditorCommandType type)
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
@@ -41,6 +42,7 @@ namespace Romanesco.ViewModel.Test.Commands
 				Open => new OpenCommandViewModel(commands, commandExecution, roots, interpreter),
 				Save => new SaveCommandViewModel(commands, commandExecution),
 				SaveAs => new SaveAsCommandViewModel(commands, commandExecution),
+				Export => new ExportCommandViewModel(commands, commandExecution),
 				_ => throw new NotImplementedException(),
 			};
 
@@ -121,6 +123,23 @@ namespace Romanesco.ViewModel.Test.Commands
 			subject.Execute(null);
 
 			commands.Verify(x => x.SaveAsAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void Exportコマンドがモデルに伝わる()
+		{
+			var commands = new Mock<ICommandAvailabilityPublisher>();
+			commands.Setup(x => x.CanExport)
+				.Returns(new ReactiveProperty<bool>(true));
+			commands.Setup(x => x.ExportAsync())
+				.Callback(async () => { });
+			
+			var commandExecution = new BooleanUsingScopeSource();
+			var subject = new ExportCommandViewModel(commands.Object, commandExecution);
+
+			subject.Execute(null);
+
+			commands.Verify(x => x.ExportAsync(), Times.Once);
 		}
 	}
 }
