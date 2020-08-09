@@ -23,7 +23,7 @@ namespace Romanesco.ViewModel.Editor
 		public ICommand CreateCommand => commandManager.Create;
 		public ICommand OpenCommand => commandManager.Open;
 		public ICommand SaveCommand => commandManager.Save;
-		public ReactiveCommand SaveAsCommand => commandManager.SaveAs;
+		public ICommand SaveAsCommand => commandManager.SaveAs;
 		public ReactiveCommand ExportCommand => commandManager.Export;
 		public ReactiveCommand Undo => commandManager.Undo;
 		public ReactiveCommand Redo => commandManager.Redo;
