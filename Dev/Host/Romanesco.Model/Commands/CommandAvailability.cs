@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -33,6 +34,10 @@ namespace Romanesco.Model.Commands
 			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
 		private readonly IEditorState currentState;
 
+		private readonly Subject<IProjectContext> onCreateSubject = new Subject<IProjectContext>();
+		private readonly Subject<IProjectContext> onOpenSubject = new Subject<IProjectContext>();
+		private readonly Subject<Unit> onSaveAsSubject = new Subject<Unit>();
+
 		private IObserver<(EditorCommandType, bool)> Observer => canExecuteSubject;
 
 		public IObservable<(EditorCommandType command, bool canExecute)> Observable => canExecuteSubject;
@@ -45,6 +50,11 @@ namespace Romanesco.Model.Commands
 		public IReadOnlyReactiveProperty<bool> CanOpen { get; }
 		public IReadOnlyReactiveProperty<bool> CanUndo { get; }
 		public IReadOnlyReactiveProperty<bool> CanRedo { get; }
+
+		public IObservable<IProjectContext> OnCreate => onCreateSubject;
+		public IObservable<IProjectContext> OnOpen => onOpenSubject;
+		public IObservable<Unit> OnSaveAs => onSaveAsSubject;
+
 
 		public CommandAvailability(IEditorState currentState)
 		{
@@ -104,12 +114,24 @@ namespace Romanesco.Model.Commands
 		
 		public async Task<IProjectContext?> CreateAsync()
 		{
-			return await currentState.GetLoadService().CreateAsync();
+			var project = await currentState.GetLoadService().CreateAsync();
+			if (project is { })
+			{
+				onCreateSubject.OnNext(project);
+			}
+
+			return project;
 		}
 
 		public async Task<IProjectContext?> OpenAsync()
 		{
-			return await currentState.GetLoadService().OpenAsync();
+			var project = await currentState.GetLoadService().OpenAsync();
+			if (project is { })
+			{
+				onOpenSubject.OnNext(project);
+			}
+
+			return project;
 		}
 
 		public async Task SaveAsync()
@@ -122,6 +144,7 @@ namespace Romanesco.Model.Commands
 		{
 			await currentState.GetSaveService().SaveAsAsync();
 			currentState.OnSaveAs();
+			onSaveAsSubject.OnNext(Unit.Default);
 		}
 		
 		public async Task ExportAsync()

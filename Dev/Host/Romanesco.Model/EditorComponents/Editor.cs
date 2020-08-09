@@ -22,7 +22,6 @@ namespace Romanesco.Model.EditorComponents
 
 		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
 		{
-			// TODO: コンストラクタパラメータを EditorSession にする
 			stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
 
 			// commandAvailability の初期化を保証しなければならないので、ChangeStateをインライン化した
