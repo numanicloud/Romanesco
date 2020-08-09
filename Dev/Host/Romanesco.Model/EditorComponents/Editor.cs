@@ -24,14 +24,14 @@ namespace Romanesco.Model.EditorComponents
 		public Editor(IEditorStateChanger stateChanger, IEditorState initialState, CommandAvailability commandAvailability)
 		{
 			// TODO: コンストラクタパラメータを EditorSession にする
-			stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
-
-			editorState = initialState;
-			ChangeState(editorState);
 
 			CanExecuteObservable = commandAvailability.Observable;
 			CommandAvailability = commandAvailability;
 			commandAvailability_xxx = commandAvailability;
+
+			stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
+			editorState = initialState;
+			ChangeState(editorState);
 		}
 
 		public async Task<IProjectContext?> CreateAsync()
@@ -103,7 +103,7 @@ namespace Romanesco.Model.EditorComponents
 		{
 			editorState = state;
 			UpdateTitle();
-			editorState.UpdateCanExecute();
+			commandAvailability_xxx.UpdateCanExecute(state);
 		}
 
 		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;

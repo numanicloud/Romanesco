@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Moq;
+using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
@@ -41,38 +42,29 @@ namespace Romanesco.Test.Helpers
 
 			return mock;
 		}
-		
+
 		public static Mock<IEditorState> GetEditorStateMock(CommandAvailability? commandAvailability = null,
 			IProjectLoadService? loadService = null,
 			IProjectSaveService? saveService = null,
 			IProjectHistoryService? historyService = null)
 		{
 			var mock = new Mock<IEditorState>();
-			
+
 			mock.Setup(x => x.NotifyEdit())
 				.Callback(() => { });
 
-			if (loadService is {})
-			{
-				mock.Setup(x => x.GetLoadService())
-					.Returns(loadService);
-			}
+			mock.Setup(x => x.GetLoadService())
+				.Returns(loadService ?? new NullLoadService());
 
-			if (saveService is { })
-			{
-				mock.Setup(x => x.GetSaveService())
-					.Returns(saveService);
-			}
+			mock.Setup(x => x.GetSaveService())
+				.Returns(saveService ?? new NullSaveService());
 
-			if (historyService is { })
-			{
-				mock.Setup(x => x.GetHistoryService())
-					.Returns(historyService);
-			}
+			mock.Setup(x => x.GetHistoryService())
+				.Returns(historyService ?? new SimpleHistoryService(new CommandHistory()));
 
 			return mock;
 		}
-		
+
 		public static Mock<IProjectSaveService> GetSaveServiceMock(bool? canSave = null, bool? canExport = null)
 		{
 			var saveService = new Mock<IProjectSaveService>();
@@ -97,7 +89,7 @@ namespace Romanesco.Test.Helpers
 
 			return saveService;
 		}
-		
+
 		public static Mock<IProjectHistoryService> CreateHistoryMock(Action? undo = null, Action? redo = null,
 			bool? canUndo = null, bool? canRedo = null)
 		{
