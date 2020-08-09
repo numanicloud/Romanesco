@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 using Livet.Messaging;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -19,7 +20,7 @@ namespace Romanesco.ViewModel.Editor
 
 		public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
 
-		public ReactiveCommand CreateCommand => commandManager.Create;
+		public ICommand CreateCommand => commandManager.Create;
 		public ReactiveCommand OpenCommand => commandManager.Open;
 		public ReactiveCommand SaveCommand => commandManager.Save;
 		public ReactiveCommand SaveAsCommand => commandManager.SaveAs;

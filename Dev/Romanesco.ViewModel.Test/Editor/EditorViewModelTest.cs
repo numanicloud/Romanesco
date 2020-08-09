@@ -54,10 +54,10 @@ namespace Romanesco.ViewModel.Test.Editor
 			};
 
 			commands.UpdateCanExecute(type, false);
-			Assert.False(targetCommand.CanExecute());
+			Assert.False(targetCommand.CanExecute(null));
 
 			commands.UpdateCanExecute(type, true);
-			Assert.True(targetCommand.CanExecute());
+			Assert.True(targetCommand.CanExecute(null));
 		}
 
 		[Fact]
@@ -73,7 +73,7 @@ namespace Romanesco.ViewModel.Test.Editor
 
 			var viewModel = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
 
-			viewModel.CreateCommand.Execute();
+			viewModel.CreateCommand.Execute(null);
 
 			commands.Verify(x => x.CreateAsync(), Times.Once);
 		}

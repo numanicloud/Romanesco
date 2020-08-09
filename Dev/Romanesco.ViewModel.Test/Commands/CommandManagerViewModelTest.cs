@@ -48,10 +48,10 @@ namespace Romanesco.ViewModel.Test.Commands
 			};
 
 			commands.UpdateCanExecute(type, false);
-			Assert.False(targetCommand.CanExecute());
+			Assert.False(targetCommand.CanExecute(null));
 
 			commands.UpdateCanExecute(type, true);
-			Assert.True(targetCommand.CanExecute());
+			Assert.True(targetCommand.CanExecute(null));
 		}
 
 		[Fact]
@@ -66,7 +66,7 @@ namespace Romanesco.ViewModel.Test.Commands
 				new ReactiveProperty<IStateViewModel[]>(),
 				Mock.Of<IViewModelInterpreter>());
 
-			subject.Create.Execute();
+			subject.Create.Execute(null);
 
 			commands.Verify(x => x.CreateAsync(), Times.Once);
 		}
