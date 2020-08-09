@@ -28,6 +28,7 @@ namespace Romanesco.ViewModel.Commands
 		public ReactiveCommand Save { get; }
 		public ReactiveCommand SaveAs { get; }
 		public ReactiveCommand Export { get; }
+		public ReactiveCommand Undo { get; }
 
 		public CommandManagerViewModel(ICommandAvailabilityPublisher model,
 			ReactiveProperty<IStateViewModel[]> roots, IViewModelInterpreter interpreter)
@@ -37,6 +38,7 @@ namespace Romanesco.ViewModel.Commands
 			Save = ToEditorCommand(model.CanSave);
 			SaveAs = ToEditorCommand(model.CanSaveAs);
 			Export = ToEditorCommand(model.CanExport);
+			Undo = ToEditorCommand(model.CanUndo);
 			
 			Create.SubscribeSafe(x => CreateAsync().Forget())
 				.AddTo(disposables);
@@ -51,6 +53,9 @@ namespace Romanesco.ViewModel.Commands
 				.AddTo(disposables);
 			
 			Export.SubscribeSafe(x => ExportAsync().Forget())
+				.AddTo(disposables);
+			
+			Undo.SubscribeSafe(x => model.Undo())
 				.AddTo(disposables);
 
 			this.model = model;
