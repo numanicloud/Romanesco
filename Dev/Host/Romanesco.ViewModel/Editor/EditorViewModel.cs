@@ -33,7 +33,7 @@ namespace Romanesco.ViewModel.Editor
 		public ReactiveCommand SaveCommand => commandManager.Save;
 		public ReactiveCommand SaveAsCommand => commandManager.SaveAs;
 		public ReactiveCommand ExportCommand => commandManager.Export;
-		public ReactiveCommand Undo { get; }
+		public ReactiveCommand Undo => commandManager.Undo;
 		public ReactiveCommand Redo { get; }
 		public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
 		public List<IDisposable> Disposables => Editor.Disposables;
@@ -55,14 +55,10 @@ namespace Romanesco.ViewModel.Editor
 			/* 各コマンドの実行可能性をUIに伝達する */
 			//*
 			var cav = Editor.CommandAvailabilityPublisher;
-			Undo = ToEditorCommand(cav.CanUndo);
 			Redo = ToEditorCommand(cav.CanRedo);
 			//*/
 
 			/* 各コマンドの実行内容を指定する */
-			Undo.SubscribeSafe(x => Editor.CommandAvailabilityPublisher.Undo())
-				.AddTo(editor.Disposables);
-
 			Redo.SubscribeSafe(x => Editor.CommandAvailabilityPublisher.Redo())
 				.AddTo(editor.Disposables);
 
