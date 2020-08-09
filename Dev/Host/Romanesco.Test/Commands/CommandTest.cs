@@ -14,14 +14,16 @@ namespace Romanesco.Test.Commands
 	{
 		[Theory]
 		[InlineData(Create)]
+		[InlineData(Open)]
 		public void コマンドの実行可能性が通知される(EditorCommandType type)
 		{
 			var editorState = MockHelper.GetEditorStateMock();
 			var availability = new CommandAvailability(editorState.Object);
 
-			var command = type switch
+			ICommandModel command = type switch
 			{
 				Create => new CreateCommand(availability.CanCreate, editorState.Object),
+				Open => new OpenCommand(availability.CanOpen, editorState.Object),
 				_ => throw new NotImplementedException(),
 			};
 
@@ -45,6 +47,19 @@ namespace Romanesco.Test.Commands
 			_ = command.Execute().Result;
 
 			loadService.Verify(x => x.CreateAsync(), Times.Once);
+		}
+
+		[Fact]
+		public void プロジェクトを開くサービスを実行できる()
+		{
+			var loadService = MockHelper.GetLoaderServiceMock();
+			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
+			var commandAvailability = new CommandAvailability(editorState.Object);
+			var command = new OpenCommand(commandAvailability.CanOpen, editorState.Object);
+
+			_ = command.Execute().Result;
+
+			loadService.Verify(x => x.OpenAsync(), Times.Once);
 		}
 	}
 }

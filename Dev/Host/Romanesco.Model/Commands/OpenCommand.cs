@@ -7,7 +7,7 @@ using Romanesco.Model.EditorComponents.States;
 
 namespace Romanesco.Model.Commands
 {
-	public class CreateCommand : ICommandModel
+	public class OpenCommand : ICommandModel
 	{
 		private readonly Subject<IProjectContext> _onExecutedSubject = new Subject<IProjectContext>();
 		private readonly IEditorState _currentState;
@@ -15,15 +15,15 @@ namespace Romanesco.Model.Commands
 		public IReadOnlyReactiveProperty<bool> CanExecute { get; }
 		public IObservable<IProjectContext> OnExecuted => _onExecutedSubject;
 
-		internal CreateCommand(IObservable<bool> canExecuteObservable, IEditorState currentState)
+		internal OpenCommand(IObservable<bool> canExecuteObservable, IEditorState currentState)
 		{
-			_currentState = currentState;
+			this._currentState = currentState;
 			CanExecute = new ReactiveProperty<bool>(canExecuteObservable);
 		}
 		
 		public async Task<IProjectContext?> Execute()
 		{
-			var project = await _currentState.GetLoadService().CreateAsync();
+			var project = await _currentState.GetLoadService().OpenAsync();
 			if (project is { })
 			{
 				_onExecutedSubject.OnNext(project);
