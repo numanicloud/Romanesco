@@ -25,18 +25,23 @@ namespace Romanesco.ViewModel.Commands
 		public BooleanUsingScopeSource CommandExecution { get; } = new BooleanUsingScopeSource();
 		public ReactiveCommand Create { get; }
 		public ReactiveCommand Open { get; }
+		public ReactiveCommand Save { get; }
 
 		public CommandManagerViewModel(ICommandAvailabilityPublisher model,
 			ReactiveProperty<IStateViewModel[]> roots, IViewModelInterpreter interpreter)
 		{
 			Create = ToEditorCommand(model.CanCreate);
 			Open = ToEditorCommand(model.CanOpen);
+			Save = ToEditorCommand(model.CanSave);
 			
 			Create.SubscribeSafe(x => CreateAsync().Forget())
 				.AddTo(disposables);
 
 			
 			Open.SubscribeSafe(x => OpenAsync().Forget())
+				.AddTo(disposables);
+			
+			Save.SubscribeSafe(x => SaveAsync().Forget())
 				.AddTo(disposables);
 
 			this.model = model;
@@ -80,6 +85,14 @@ namespace Romanesco.ViewModel.Commands
 				Roots.Value = projectContext.Project.Root.States
 					.Select(s => interpreter.InterpretAsViewModel(s))
 					.ToArray();
+			}
+		}
+
+		private async Task SaveAsync()
+		{
+			using (CommandExecution.Create())
+			{
+				await model.SaveAsync();
 			}
 		}
 

@@ -23,6 +23,7 @@ namespace Romanesco.ViewModel.Test.Commands
 		[Theory]
 		[InlineData(Create)]
 		[InlineData(Open)]
+		[InlineData(Save)]
 		public void コマンドの実行可能性が反映される(EditorCommandType type)
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
@@ -37,6 +38,7 @@ namespace Romanesco.ViewModel.Test.Commands
 			{
 				Create => subject.Create,
 				Open => subject.Open,
+				Save => subject.Save,
 				_ => throw new NotImplementedException(),
 			};
 
@@ -79,6 +81,23 @@ namespace Romanesco.ViewModel.Test.Commands
 			subject.Open.Execute();
 
 			commands.Verify(x => x.OpenAsync(), Times.Once);
+		}
+		
+		[Fact]
+		public void Saveコマンドがモデルに伝わる()
+		{
+			var commands = GetCommands();
+			commands.Setup(x => x.SaveAsync())
+				.Callback(async () => { });
+
+			var subject = new CommandManagerViewModel(
+				commands.Object,
+				new ReactiveProperty<IStateViewModel[]>(),
+				Mock.Of<IViewModelInterpreter>());
+
+			subject.Save.Execute();
+
+			commands.Verify(x => x.SaveAsync(), Times.Once);
 		}
 
 		private static Mock<ICommandAvailabilityPublisher> GetCommands()
