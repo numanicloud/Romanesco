@@ -12,6 +12,7 @@ using Romanesco.Common.Model.Helpers;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
+using Romanesco.ViewModel.Commands;
 using Romanesco.ViewModel.Project;
 using Romanesco.ViewModel.States;
 
@@ -20,13 +21,14 @@ namespace Romanesco.ViewModel.Editor
 	internal class EditorViewModel : Livet.ViewModel, IEditorViewModel
 	{
 		private readonly IViewModelInterpreter interpreter;
+		private readonly CommandManagerViewModel commandManager;
 
 		public IEditorFacade Editor { get; set; }
 		public ReactiveProperty<IStateViewModel[]> Roots { get; } = new ReactiveProperty<IStateViewModel[]>();
 
 		public BooleanUsingScopeSource CommandExecution { get; }
 
-		public ReactiveCommand CreateCommand { get; }
+		public ReactiveCommand CreateCommand => commandManager.Create;
 		public ReactiveCommand OpenCommand { get; }
 		public ReactiveCommand SaveCommand { get; }
 		public ReactiveCommand SaveAsCommand { get; }
@@ -48,10 +50,11 @@ namespace Romanesco.ViewModel.Editor
 			this.interpreter = interpreter;
 			CommandExecution = new BooleanUsingScopeSource();
 
+			commandManager = new CommandManagerViewModel(Editor.CommandAvailabilityPublisher, Roots, interpreter);
+
 			/* 各コマンドの実行可能性をUIに伝達する */
 			//*
 			var cav = Editor.CommandAvailabilityPublisher;
-			CreateCommand = ToEditorCommand(cav.CanCreate);
 			OpenCommand = ToEditorCommand(cav.CanOpen);
 			SaveCommand = ToEditorCommand(cav.CanSave);
 			SaveAsCommand = ToEditorCommand(cav.CanSaveAs);
@@ -61,9 +64,6 @@ namespace Romanesco.ViewModel.Editor
 			//*/
 
 			/* 各コマンドの実行内容を指定する */
-			CreateCommand.SubscribeSafe(x => CreateAsync().Forget())
-				.AddTo(editor.Disposables);
-
 			OpenCommand.SubscribeSafe(x => OpenAsync().Forget())
 				.AddTo(editor.Disposables);
 
