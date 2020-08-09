@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Windows.Input;
 using Moq;
@@ -53,93 +52,74 @@ namespace Romanesco.ViewModel.Test.Commands
 			Assert.True(targetCommand.CanExecute(null));
 		}
 
+		private void AssertCommandGoToModel<TCommandResult>(
+			Expression<Func<ICommandAvailabilityPublisher, IReadOnlyReactiveProperty<bool>>> canExecuteExpression,
+			Expression<Func<ICommandAvailabilityPublisher, TCommandResult>> executeExpression,
+			Func<ICommandAvailabilityPublisher, ICommand> createCommand)
+		{
+			var model = new Mock<ICommandAvailabilityPublisher>();
+			model.Setup(canExecuteExpression).Returns(new ReactiveProperty<bool>(true));
+			model.Setup(executeExpression).Callback(async () => { });
+
+			var command = createCommand(model.Object);
+
+			command.Execute(null);
+
+			model.Verify(executeExpression, Times.Once);
+		}
+
 		[Fact]
 		public void Createコマンドがモデルに伝わる()
 		{
-			var commands = new Mock<ICommandAvailabilityPublisher>();
-			commands.Setup(x => x.CanCreate)
-				.Returns(new ReactiveProperty<bool>(true));
-			commands.Setup(x => x.CreateAsync())
-				.Callback(async () => { });
-			
 			var roots = new ReactiveProperty<IStateViewModel[]>();
 			var interpreter = Mock.Of<IViewModelInterpreter>();
 			var commandExecution = new BooleanUsingScopeSource();
-			var subject = new CreateCommandViewModel(commands.Object, roots, interpreter, commandExecution);
 
-			subject.Execute(null);
-
-			commands.Verify(x => x.CreateAsync(), Times.Once);
+			AssertCommandGoToModel(x => x.CanCreate,
+				x => x.CreateAsync(),
+				p => new CreateCommandViewModel(p, roots, interpreter, commandExecution));
 		}
 
 		[Fact]
 		public void Openコマンドがモデルに伝わる()
 		{
-			var commands = new Mock<ICommandAvailabilityPublisher>();
-			commands.Setup(x => x.CanOpen)
-				.Returns(new ReactiveProperty<bool>(true));
-			commands.Setup(x => x.OpenAsync())
-				.Callback(async () => { });
-			
 			var roots = new ReactiveProperty<IStateViewModel[]>();
 			var interpreter = Mock.Of<IViewModelInterpreter>();
 			var commandExecution = new BooleanUsingScopeSource();
-			var subject = new OpenCommandViewModel(commands.Object, commandExecution, roots, interpreter);
-
-			subject.Execute(null);
-
-			commands.Verify(x => x.OpenAsync(), Times.Once);
+			
+			AssertCommandGoToModel(x => x.CanOpen,
+				x => x.OpenAsync(),
+				p => new OpenCommandViewModel(p, commandExecution, roots, interpreter));
 		}
 
 		[Fact]
 		public void Saveコマンドがモデルに伝わる()
 		{
-			var commands = new Mock<ICommandAvailabilityPublisher>();
-			commands.Setup(x => x.CanSave)
-				.Returns(new ReactiveProperty<bool>(true));
-			commands.Setup(x => x.SaveAsync())
-				.Callback(async () => { });
-			
 			var commandExecution = new BooleanUsingScopeSource();
-			var subject = new SaveCommandViewModel(commands.Object, commandExecution);
 
-			subject.Execute(null);
-
-			commands.Verify(x => x.SaveAsync(), Times.Once);
+			AssertCommandGoToModel(x => x.CanSave,
+				x => x.SaveAsync(),
+				p => new SaveCommandViewModel(p, commandExecution));
 		}
 
 		[Fact]
 		public void SaveAsコマンドがモデルに伝わる()
 		{
-			var commands = new Mock<ICommandAvailabilityPublisher>();
-			commands.Setup(x => x.CanSaveAs)
-				.Returns(new ReactiveProperty<bool>(true));
-			commands.Setup(x => x.SaveAsAsync())
-				.Callback(async () => { });
-			
 			var commandExecution = new BooleanUsingScopeSource();
-			var subject = new SaveAsCommandViewModel(commands.Object, commandExecution);
 
-			subject.Execute(null);
-
-			commands.Verify(x => x.SaveAsAsync(), Times.Once);
+			AssertCommandGoToModel(x => x.CanSaveAs,
+				x => x.SaveAsAsync(),
+				p => new SaveAsCommandViewModel(p, commandExecution));
 		}
 
 		[Fact]
 		public void Exportコマンドがモデルに伝わる()
 		{
-			var commands = new Mock<ICommandAvailabilityPublisher>();
-			commands.Setup(x => x.CanExport)
-				.Returns(new ReactiveProperty<bool>(true));
-			commands.Setup(x => x.ExportAsync())
-				.Callback(async () => { });
-			
 			var commandExecution = new BooleanUsingScopeSource();
-			var subject = new ExportCommandViewModel(commands.Object, commandExecution);
 
-			subject.Execute(null);
-
-			commands.Verify(x => x.ExportAsync(), Times.Once);
+			AssertCommandGoToModel(x => x.CanExport,
+				x => x.ExportAsync(),
+				p => new ExportCommandViewModel(p, commandExecution));
 		}
 	}
 }
