@@ -60,13 +60,26 @@ namespace Romanesco.ViewModel.Editor
             //*/
 
             /* 各コマンドの実行内容を指定する */
-            CreateCommand.SubscribeSafe(x => CreateAsync().Forget()).AddTo(editor.Disposables);
-            OpenCommand.SubscribeSafe(x => OpenAsync().Forget()).AddTo(editor.Disposables);
-            ExportCommand.SubscribeSafe(x => ExportAsync().Forget()).AddTo(editor.Disposables);
-            SaveCommand.SubscribeSafe(x => SaveAsync().Forget()).AddTo(editor.Disposables);
-            SaveAsCommand.SubscribeSafe(x => SaveAsAsync().Wait()).AddTo(editor.Disposables);
-            Undo.SubscribeSafe(x => Editor.Undo()).AddTo(editor.Disposables);
-            Redo.SubscribeSafe(x => Editor.Redo()).AddTo(editor.Disposables);
+            CreateCommand.SubscribeSafe(x => CreateAsync().Forget())
+	            .AddTo(editor.Disposables);
+
+            OpenCommand.SubscribeSafe(x => OpenAsync().Forget())
+	            .AddTo(editor.Disposables);
+
+            ExportCommand.SubscribeSafe(x => ExportAsync().Forget())
+	            .AddTo(editor.Disposables);
+
+            SaveCommand.SubscribeSafe(x => SaveAsync().Forget())
+	            .AddTo(editor.Disposables);
+
+            SaveAsCommand.SubscribeSafe(x => SaveAsAsync().Wait())
+	            .AddTo(editor.Disposables);
+
+            Undo.SubscribeSafe(x => Editor.CommandAvailabilityPublisher.Undo())
+	            .AddTo(editor.Disposables);
+
+            Redo.SubscribeSafe(x => Editor.CommandAvailabilityPublisher.Redo())
+	            .AddTo(editor.Disposables);
 
             GcDebugCommand.SubscribeSafe(x => GC.Collect()).AddTo(editor.Disposables);
 
@@ -81,9 +94,11 @@ namespace Romanesco.ViewModel.Editor
 
         private async Task CreateAsync()
         {
+            // 実行をロックする機能は IProjectLoadService 側に入れるべきかも
             using (CommandExecution.Create())
             {
                 var projectContext = await Editor.CreateAsync();
+                // Editor 側のメソッドに副作用があるので、インライン化は保留
                 if (projectContext != null)
                 {
                     Roots.Value = projectContext.Project.Root.States
@@ -98,6 +113,7 @@ namespace Romanesco.ViewModel.Editor
             using (CommandExecution.Create())
             {
                 var projectContext = await Editor.OpenAsync();
+                // Editor 側のメソッドに副作用があるので、インライン化は保留
                 if (projectContext == null)
                 {
                     return;
@@ -113,7 +129,7 @@ namespace Romanesco.ViewModel.Editor
         {
             using (CommandExecution.Create())
             {
-                await Editor.ExportAsync();
+                await Editor.CommandAvailabilityPublisher.ExportAsync();
             }
         }
 
@@ -121,7 +137,7 @@ namespace Romanesco.ViewModel.Editor
         {
             using (CommandExecution.Create())
             {
-                await Editor.SaveAsync();
+                await Editor.CommandAvailabilityPublisher.SaveAsync();
             }
         }
 
@@ -130,6 +146,7 @@ namespace Romanesco.ViewModel.Editor
             using (CommandExecution.Create())
             {
                 await Editor.SaveAsAsync();
+                // Editor 側のメソッドに副作用があるので、インライン化は保留
             }
         }
     }

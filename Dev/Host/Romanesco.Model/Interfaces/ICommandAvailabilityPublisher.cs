@@ -2,7 +2,7 @@
 
 namespace Romanesco.Model.Interfaces
 {
-	public interface ICommandAvailabilityPublisher
+	public interface ICommandAvailabilityPublisher : ICommandInvoker
 	{
 		IReadOnlyReactiveProperty<bool> CanSave { get; }
 		IReadOnlyReactiveProperty<bool> CanSaveAs { get; }
