@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Windows.Input;
 using Moq;
 using Reactive.Bindings;
 using Romanesco.Common.Model.Helpers;
@@ -22,6 +23,7 @@ namespace Romanesco.ViewModel.Test.Commands
 	{
 		[Theory]
 		[InlineData(Create)]
+		[InlineData(Open)]
 		public void コマンドの実行可能性が反映される(EditorCommandType type)
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
@@ -31,9 +33,10 @@ namespace Romanesco.ViewModel.Test.Commands
 			var interpreter = Mock.Of<IViewModelInterpreter>();
 			var commandExecution = new BooleanUsingScopeSource();
 
-			var targetCommand = type switch
+			ICommand targetCommand = type switch
 			{
 				Create => new CreateCommandViewModel(commands, roots, interpreter, commandExecution),
+				Open => new OpenCommandViewModel(commands, commandExecution, roots, interpreter),
 				_ => throw new NotImplementedException(),
 			};
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -12,12 +13,13 @@ using Romanesco.ViewModel.States;
 
 namespace Romanesco.ViewModel.Commands
 {
-	class CreateCommandViewModel : ICommand
+	class CreateCommandViewModel : ICommand, IDisposable
 	{
 		private readonly ICommandAvailabilityPublisher model;
 		private readonly IViewModelInterpreter interpreter;
 		private readonly ReactiveProperty<IStateViewModel[]> roots;
 		private readonly BooleanUsingScopeSource commandExecution;
+		private readonly IDisposable subscription;
 
 		private bool isCanExecute;
 
@@ -31,7 +33,8 @@ namespace Romanesco.ViewModel.Commands
 			this.commandExecution = commandExecution;
 			this.roots = roots;
 
-			model.CanCreate.Subscribe(x =>
+			subscription = model.CanCreate.Concat(commandExecution.IsUsing.Select(x => !x))
+				.Subscribe(x =>
 			{
 				isCanExecute = x;
 				CanExecuteChanged?.Invoke(this, EventArgs.Empty);
@@ -56,6 +59,11 @@ namespace Romanesco.ViewModel.Commands
 						.ToArray();
 				}
 			}
+		}
+
+		public void Dispose()
+		{
+			subscription.Dispose();
 		}
 
 		public event EventHandler? CanExecuteChanged;
