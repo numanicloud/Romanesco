@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Moq;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
+using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.Services.Load;
 using Romanesco.Test.Helpers;
 using Xunit;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
+using Expression = Castle.DynamicProxy.Generators.Emitters.SimpleAST.Expression;
 
 namespace Romanesco.Test.Commands
 {
@@ -18,6 +23,7 @@ namespace Romanesco.Test.Commands
 		[InlineData(Save)]
 		[InlineData(SaveAs)]
 		[InlineData(Export)]
+		[InlineData(Undo)]
 		public void コマンドの実行可能性が通知される(EditorCommandType type)
 		{
 			var editorState = MockHelper.GetEditorStateMock();
@@ -42,17 +48,28 @@ namespace Romanesco.Test.Commands
 			Assert.False(command.CanExecute.Value);
 		}
 
-		[Fact]
-		public void プロジェクトを作成するサービスを実行できる()
+		private static void AssertCommandExecution<TCommandResult>(
+			Expression<Func<IProjectLoadService, TCommandResult>> methodToVerify,
+			Action<CommandAvailability, IEditorState> execution)
 		{
 			var loadService = MockHelper.GetLoaderServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
 			var commandAvailability = new CommandAvailability(editorState.Object);
-			var command = new CreateCommand(commandAvailability.CanCreate, editorState.Object);
 
-			_ = command.Execute().Result;
+			execution(commandAvailability, editorState.Object);
+			
+			loadService.Verify(methodToVerify, Times.Once);
+		}
 
-			loadService.Verify(x => x.CreateAsync(), Times.Once);
+		[Fact]
+		public void プロジェクトを作成するサービスを実行できる()
+		{
+			AssertCommandExecution(x => x.CreateAsync(),
+				(p, s) =>
+				{
+					var command = new CreateCommand(p.CanCreate, s);
+					_ = command.Execute().Result;
+				});
 		}
 
 		[Fact]
