@@ -138,7 +138,8 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクト作成時にイベントが発行される()
 		{
-			AssertEvent((p, s) =>
+			var suite = CommandTestSuite<IProjectLoadService>.CreateLoad();
+			suite.Run((p, s) =>
 			{
 				var command = new CreateCommand(p.CanCreate, s);
 				using var once = command.OnExecuted.ExpectAtLeastOnce();
@@ -160,7 +161,8 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクトを開くときにイベントが発行される()
 		{
-			AssertEvent((p, s) =>
+			var suite = CommandTestSuite<IProjectLoadService>.CreateLoad();
+			suite.Run((p, s) =>
 			{
 				var command = new OpenCommand(p.CanOpen, s);
 				using var once = command.OnExecuted.ExpectAtLeastOnce();
@@ -171,17 +173,46 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクトを開くときにステートのイベントを呼び出す()
 		{
-			var loadService = MockHelper.GetLoaderServiceMock(Mock.Of<IProjectContext>());
-			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			editorState.Setup(x => x.OnOpen(It.IsAny<IProjectContext>()))
-				.Callback(() => { });
+			AssertStateEvent(x => x.OnOpen(It.IsAny<IProjectContext>()),
+				(p, s) =>
+				{
+					var command = new OpenCommand(p.CanOpen, s);
+					_ = command.Execute().Result;
+				});
+		}
+		
+		[Fact]
+		public void プロジェクトの保存時にステートのイベントを呼び出す()
+		{
+			AssertStateEvent(x => x.OnSave(),
+				(p, s) =>
+				{
+					var command = new SaveCommand(p.CanSave, s);
+					command.Execute().Wait();
+				});
+		}
 
-			var commandAvailability = new CommandAvailability(editorState.Object);
-			var command = new OpenCommand(commandAvailability.CanOpen, editorState.Object);
-
-			_ = command.Execute().Result;
-
-			editorState.Verify(x => x.OnOpen(It.IsAny<IProjectContext>()), Times.Once);
+		[Fact]
+		public void プロジェクトの上書き保存時にイベントが発行される()
+		{
+			var suite = CommandTestSuite<IProjectSaveService>.CreateLoad();
+			suite.Run((p, s) =>
+			{
+				var command = new SaveAsCommand(p.CanSaveAs, s);
+				using var once = command.OnExecuted.ExpectAtLeastOnce();
+				command.Execute().Wait();
+			});
+		}
+		
+		[Fact]
+		public void プロジェクトの上書き保存時にステートのイベントを呼び出す()
+		{
+			AssertStateEvent(x => x.OnSaveAs(),
+				(p, s) =>
+				{
+					var command = new SaveAsCommand(p.CanSaveAs, s);
+					command.Execute().Wait();
+				});
 		}
 
 		class CommandTestSuite<TService> where TService : class
@@ -215,6 +246,16 @@ namespace Romanesco.Test.Commands
 			{
 				return new CommandTestSuite<IProjectLoadService>(MockHelper.GetLoaderServiceMock(Mock.Of<IProjectContext>()));
 			}
+
+			public static CommandTestSuite<IProjectSaveService> CreateSave()
+			{
+				return new CommandTestSuite<IProjectSaveService>(MockHelper.GetSaveServiceMock());
+			}
+
+			public static CommandTestSuite<IProjectHistoryService> CreateHistory()
+			{
+				return new CommandTestSuite<IProjectHistoryService>(MockHelper.CreateHistoryMock());
+			}
 		}
 
 		private static void AssertStateEvent(
@@ -230,50 +271,31 @@ namespace Romanesco.Test.Commands
 			suite.EditorStateMock.Verify(methodToVerify, Times.Once);
 		}
 
-		private static void AssertEvent(
-			Action<CommandAvailability, IEditorState> execution)
-		{
-			var suite = CommandTestSuite<IProjectLoadService>.CreateLoad();
-			suite.Run(execution);
-		}
-
 		private static void AssertCommandExecution<TCommandResult>(
 			Expression<Func<IProjectLoadService, TCommandResult>> methodToVerify,
 			Action<CommandAvailability, IEditorState> execution)
 		{
-			var loadService = MockHelper.GetLoaderServiceMock();
-			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var commandAvailability = new CommandAvailability(editorState.Object);
-
-			execution(commandAvailability, editorState.Object);
-			
-			loadService.Verify(methodToVerify, Times.Once);
+			var suite = CommandTestSuite<IProjectLoadService>.CreateLoad();
+			suite.Run(execution);
+			suite.Service.Verify(methodToVerify, Times.Once);
 		}
 		
 		private static void AssertCommandExecution<TCommandResult>(
 			Expression<Func<IProjectSaveService, TCommandResult>> methodToVerify,
 			Action<CommandAvailability, IEditorState> execution)
 		{
-			var saveService = MockHelper.GetSaveServiceMock();
-			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
-			var commandAvailability = new CommandAvailability(editorState.Object);
-
-			execution(commandAvailability, editorState.Object);
-			
-			saveService.Verify(methodToVerify, Times.Once);
+			var suite = CommandTestSuite<IProjectSaveService>.CreateSave();
+			suite.Run(execution);
+			suite.Service.Verify(methodToVerify, Times.Once);
 		}
 		
 		private static void AssertCommandExecution(
 			Expression<Action<IProjectHistoryService>> methodToVerify,
 			Action<CommandAvailability, IEditorState> execution)
 		{
-			var historyService = MockHelper.CreateHistoryMock();
-			var editorState = MockHelper.GetEditorStateMock(historyService: historyService.Object);
-			var commandAvailability = new CommandAvailability(editorState.Object);
-
-			execution(commandAvailability, editorState.Object);
-			
-			historyService.Verify(methodToVerify, Times.Once);
+			var suite = CommandTestSuite<IProjectHistoryService>.CreateHistory();
+			suite.Run(execution);
+			suite.Service.Verify(methodToVerify, Times.Once);
 		}
 	}
 }
