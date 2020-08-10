@@ -39,10 +39,18 @@ namespace Romanesco.Test.Commands
 
 			Assert.False(stream.Value);
 
-			availability.UpdateCanExecute(type, true);
+			{
+				using var once = stream.ExpectAtLeastOnce();
+				availability.UpdateCanExecute(type, true);
+			}
+
 			Assert.True(stream.Value);
 
-			availability.UpdateCanExecute(type, false);
+			{
+				using var once = stream.ExpectAtLeastOnce();
+				availability.UpdateCanExecute(type, false);
+			}
+
 			Assert.False(stream.Value);
 		}
 

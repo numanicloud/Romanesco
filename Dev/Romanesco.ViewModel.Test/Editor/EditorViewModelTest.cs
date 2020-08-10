@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Reactive.Bindings;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
@@ -134,6 +135,21 @@ namespace Romanesco.ViewModel.Test.Editor
 			commands.Setup(x => x.CanUndo).Returns(new ReactiveProperty<bool>(true));
 			commands.Setup(x => x.CanRedo).Returns(new ReactiveProperty<bool>(true));
 			return commands;
+		}
+
+		public void プロジェクトを作成した際に新しいステートへのメッセージが届く()
+		{
+			var project = new Mock<IProjectContext>();
+			var currentState = new Mock<IEditorState>();
+			currentState.Setup(x => x.OnCreate(project.Object))
+				.Callback(() => { });
+			var currentCommands = new CommandAvailability(currentState.Object);
+
+			var model = GetEditorModel();
+			model.Setup(x => x.CommandAvailabilityPublisher)
+				.Returns(() => currentCommands);
+
+			var editor = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
 		}
 	}
 }

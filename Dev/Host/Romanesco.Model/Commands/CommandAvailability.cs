@@ -15,6 +15,14 @@ using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.Model.Commands
 {
+	/*
+	 * 次のステップへ行く前に、恐らくステート切り替えが起きると
+	 * CommandAvailability が同一であると思って書いている部分がバグると思われるので整理したい
+	 *
+	 * まずは CommandAvailability あるいはクッションとなるクラスに、
+	 * ステートが切り替わった際のインパクトを吸収させたい
+	 */
+
 	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher
 	{
 		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> _canExecuteSubject

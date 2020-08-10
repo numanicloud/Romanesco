@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Moq;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
@@ -42,10 +43,18 @@ namespace Romanesco.Test.Commands
 
 			Assert.False(command.CanExecute.Value);
 
-			availability.UpdateCanExecute(type, true);
+			{
+				using var once = command.CanExecute.ExpectAtLeastOnce();
+				availability.UpdateCanExecute(type, true);
+			}
+
 			Assert.True(command.CanExecute.Value);
 
-			availability.UpdateCanExecute(type, false);
+			{
+				using var once = command.CanExecute.ExpectAtLeastOnce();
+				availability.UpdateCanExecute(type, false);
+			}
+
 			Assert.False(command.CanExecute.Value);
 		}
 
@@ -124,6 +133,35 @@ namespace Romanesco.Test.Commands
 					var command = new RedoCommand(p.CanRedo, s);
 					command.Execute();
 				});
+		}
+
+		[Fact]
+		public void プロジェクト作成時にイベントが発行される()
+		{
+			var loadService = MockHelper.GetLoaderServiceMock(Mock.Of<IProjectContext>());
+			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
+			var commandAvailability = new CommandAvailability(editorState.Object);
+			var command = new CreateCommand(commandAvailability.CanCreate, editorState.Object);
+
+			using var once = command.OnExecuted.ExpectAtLeastOnce();
+
+			_ = command.Execute().Result;
+		}
+		
+		[Fact]
+		public void プロジェクト作成時にステートのイベントを呼び出す()
+		{
+			var loadService = MockHelper.GetLoaderServiceMock(Mock.Of<IProjectContext>());
+			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
+			editorState.Setup(x => x.OnCreate(It.IsAny<IProjectContext>()))
+				.Callback(() => { });
+
+			var commandAvailability = new CommandAvailability(editorState.Object);
+			var command = new CreateCommand(commandAvailability.CanCreate, editorState.Object);
+
+			_ = command.Execute().Result;
+
+			editorState.Verify(x => x.OnCreate(It.IsAny<IProjectContext>()), Times.Once);
 		}
 
 		private static void AssertCommandExecution<TCommandResult>(
