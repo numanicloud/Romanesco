@@ -160,14 +160,12 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクトを開くときにイベントが発行される()
 		{
-			var loadService = MockHelper.GetLoaderServiceMock(Mock.Of<IProjectContext>());
-			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var commandAvailability = new CommandAvailability(editorState.Object);
-			var command = new OpenCommand(commandAvailability.CanOpen, editorState.Object);
-
-			using var once = command.OnExecuted.ExpectAtLeastOnce();
-
-			_ = command.Execute().Result;
+			AssertEvent((p, s) =>
+			{
+				var command = new OpenCommand(p.CanOpen, s);
+				using var once = command.OnExecuted.ExpectAtLeastOnce();
+				_ = command.Execute().Result;
+			});
 		}
 		
 		[Fact]
@@ -186,30 +184,57 @@ namespace Romanesco.Test.Commands
 			editorState.Verify(x => x.OnOpen(It.IsAny<IProjectContext>()), Times.Once);
 		}
 
+		class CommandTestSuite<TService> where TService : class
+		{
+			public Mock<TService> Service { get; }
+			public Mock<IEditorState> EditorStateMock { get; }
+			public CommandAvailability Commands { get; }
+
+			public CommandTestSuite(Mock<TService> service)
+			{
+				var serviceObject = service.Object;
+				Service = service;
+
+				EditorStateMock = serviceObject switch
+				{
+					IProjectLoadService load => MockHelper.GetEditorStateMock(loadService: load),
+					IProjectSaveService save => MockHelper.GetEditorStateMock(saveService: save),
+					IProjectHistoryService history => MockHelper.GetEditorStateMock(historyService: history),
+					_ => throw new NotImplementedException(),
+				};
+
+				Commands = new CommandAvailability(EditorStateMock.Object);
+			}
+
+			public void Run(Action<CommandAvailability, IEditorState> execution)
+			{
+				execution(Commands, EditorStateMock.Object);
+			}
+
+			public static CommandTestSuite<IProjectLoadService> CreateLoad()
+			{
+				return new CommandTestSuite<IProjectLoadService>(MockHelper.GetLoaderServiceMock(Mock.Of<IProjectContext>()));
+			}
+		}
+
 		private static void AssertStateEvent(
 			Expression<Action<IEditorState>> methodToVerify,
 			Action<CommandAvailability, IEditorState> execution)
 		{
-			var loadService = MockHelper.GetLoaderServiceMock(Mock.Of<IProjectContext>());
-			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			editorState.Setup(methodToVerify)
+			var suite = CommandTestSuite<IProjectLoadService>.CreateLoad();
+			suite.EditorStateMock.Setup(methodToVerify)
 				.Callback(() => { });
 
-			var commandAvailability = new CommandAvailability(editorState.Object);
+			suite.Run(execution);
 
-			execution(commandAvailability, editorState.Object);
-
-			editorState.Verify(methodToVerify, Times.Once);
+			suite.EditorStateMock.Verify(methodToVerify, Times.Once);
 		}
 
 		private static void AssertEvent(
 			Action<CommandAvailability, IEditorState> execution)
 		{
-			var loadService = MockHelper.GetLoaderServiceMock(Mock.Of<IProjectContext>());
-			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var commandAvailability = new CommandAvailability(editorState.Object);
-
-			execution(commandAvailability, editorState.Object);
+			var suite = CommandTestSuite<IProjectLoadService>.CreateLoad();
+			suite.Run(execution);
 		}
 
 		private static void AssertCommandExecution<TCommandResult>(
