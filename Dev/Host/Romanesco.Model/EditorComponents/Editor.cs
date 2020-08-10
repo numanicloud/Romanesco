@@ -52,7 +52,6 @@ namespace Romanesco.Model.EditorComponents
 		{
 			UpdateTitle();
 			ObserveEdit(projectContext);
-			editorState.OnCreate(projectContext);
 		}
 
 		private void ObserveEdit(IProjectContext projectContext)
