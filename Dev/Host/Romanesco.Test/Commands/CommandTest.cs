@@ -22,6 +22,7 @@ namespace Romanesco.Test.Commands
 		[InlineData(SaveAs)]
 		[InlineData(Export)]
 		[InlineData(Undo)]
+		[InlineData(Redo)]
 		public void コマンドの実行可能性が通知される(EditorCommandType type)
 		{
 			var editorState = MockHelper.GetEditorStateMock();
@@ -35,6 +36,7 @@ namespace Romanesco.Test.Commands
 				SaveAs => new SaveAsCommand(availability.CanSaveAs, editorState.Object),
 				Export => new ExportCommand(availability.CanExport, editorState.Object),
 				Undo => new UndoCommand(availability.CanUndo, editorState.Object),
+				Redo => new RedoCommand(availability.CanRedo, editorState.Object),
 				_ => throw new NotImplementedException(),
 			};
 
@@ -109,6 +111,17 @@ namespace Romanesco.Test.Commands
 				(p, s) =>
 				{
 					var command = new UndoCommand(p.CanUndo, s);
+					command.Execute();
+				});
+		}
+
+		[Fact]
+		public void Redoを呼び出せる()
+		{
+			AssertCommandExecution(x => x.Redo(),
+				(p, s) =>
+				{
+					var command = new RedoCommand(p.CanRedo, s);
 					command.Execute();
 				});
 		}

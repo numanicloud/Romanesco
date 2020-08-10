@@ -67,6 +67,8 @@ namespace Romanesco.Model.Commands
 			_exportCommand = new ExportCommand(GetCanExecute(Export), currentState);
 			_undoCommand = new UndoCommand(GetCanExecute(EditorCommandType.Undo), currentState);
 
+			_undoCommand.OnExecuted.Subscribe(x => UpdateCanExecute(EditorCommandType.Undo, currentState.GetHistoryService().CanUndo));
+
 			CanRedo = MakeProperty(EditorCommandType.Redo);
 			this._currentState = currentState;
 		}
