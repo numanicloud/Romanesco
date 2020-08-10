@@ -25,6 +25,7 @@ namespace Romanesco.Model.Commands
 		private readonly SaveCommand _saveCommand;
 		private readonly SaveAsCommand _saveAsCommand;
 		private readonly ExportCommand _exportCommand;
+		private readonly UndoCommand _undoCommand;
 
 		private IObserver<(EditorCommandType, bool)> Observer => _canExecuteSubject;
 
@@ -36,7 +37,7 @@ namespace Romanesco.Model.Commands
 		public IReadOnlyReactiveProperty<bool> CanExport => _exportCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanCreate => _createCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanOpen => _openCommand.CanExecute;
-		public IReadOnlyReactiveProperty<bool> CanUndo { get; }
+		public IReadOnlyReactiveProperty<bool> CanUndo => _undoCommand.CanExecute;
 		public IReadOnlyReactiveProperty<bool> CanRedo { get; }
 
 		public IObservable<IProjectContext> OnCreate => _createCommand.OnExecuted;
@@ -64,8 +65,8 @@ namespace Romanesco.Model.Commands
 			_saveCommand = new SaveCommand(GetCanExecute(Save), currentState);
 			_saveAsCommand = new SaveAsCommand(GetCanExecute(SaveAs), currentState);
 			_exportCommand = new ExportCommand(GetCanExecute(Export), currentState);
+			_undoCommand = new UndoCommand(GetCanExecute(EditorCommandType.Undo), currentState);
 
-			CanUndo = MakeProperty(EditorCommandType.Undo);
 			CanRedo = MakeProperty(EditorCommandType.Redo);
 			this._currentState = currentState;
 		}
@@ -117,11 +118,7 @@ namespace Romanesco.Model.Commands
 
 		public async Task ExportAsync() => await _exportCommand.Execute();
 
-		public void Undo()
-		{
-			_currentState.GetHistoryService().Undo();
-			UpdateCanExecute(EditorCommandType.Undo, _currentState.GetHistoryService().CanUndo);
-		}
+		public void Undo() => _undoCommand.Execute();
 
 		public void Redo()
 		{
