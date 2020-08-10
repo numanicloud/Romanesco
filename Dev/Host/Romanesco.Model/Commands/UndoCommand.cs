@@ -21,7 +21,7 @@ namespace Romanesco.Model.Commands
 			CanExecute = new ReactiveProperty<bool>(canExecuteObservable);
 		}
 		
-		public async Task Execute()
+		public void Execute()
 		{
 			_currentState.GetHistoryService().Undo();
 			_onExecutedSubject.OnNext(Unit.Default);

@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Moq;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
+using Romanesco.Model.Services.Save;
 using Romanesco.Test.Helpers;
 using Xunit;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
-using Expression = Castle.DynamicProxy.Generators.Emitters.SimpleAST.Expression;
 
 namespace Romanesco.Test.Commands
 {
@@ -36,6 +34,7 @@ namespace Romanesco.Test.Commands
 				Save => new SaveCommand(availability.CanSave, editorState.Object),
 				SaveAs => new SaveAsCommand(availability.CanSaveAs, editorState.Object),
 				Export => new ExportCommand(availability.CanExport, editorState.Object),
+				Undo => new UndoCommand(availability.CanUndo, editorState.Object),
 				_ => throw new NotImplementedException(),
 			};
 
@@ -46,19 +45,6 @@ namespace Romanesco.Test.Commands
 
 			availability.UpdateCanExecute(type, false);
 			Assert.False(command.CanExecute.Value);
-		}
-
-		private static void AssertCommandExecution<TCommandResult>(
-			Expression<Func<IProjectLoadService, TCommandResult>> methodToVerify,
-			Action<CommandAvailability, IEditorState> execution)
-		{
-			var loadService = MockHelper.GetLoaderServiceMock();
-			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var commandAvailability = new CommandAvailability(editorState.Object);
-
-			execution(commandAvailability, editorState.Object);
-			
-			loadService.Verify(methodToVerify, Times.Once);
 		}
 
 		[Fact]
@@ -75,53 +61,95 @@ namespace Romanesco.Test.Commands
 		[Fact]
 		public void プロジェクトを開くサービスを実行できる()
 		{
-			var loadService = MockHelper.GetLoaderServiceMock();
-			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
-			var commandAvailability = new CommandAvailability(editorState.Object);
-			var command = new OpenCommand(commandAvailability.CanOpen, editorState.Object);
-
-			_ = command.Execute().Result;
-
-			loadService.Verify(x => x.OpenAsync(), Times.Once);
+			AssertCommandExecution(x => x.OpenAsync(),
+				(p, s) =>
+				{
+					var command = new OpenCommand(p.CanOpen, s);
+					_ = command.Execute().Result;
+				});
 		}
 
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを保存できる()
 		{
-			var saveService = MockHelper.GetSaveServiceMock();
-			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
-			var availability = new CommandAvailability(editorState.Object);
-			var command = new SaveCommand(availability.CanSave, editorState.Object);
-
-			command.Execute().Wait();
-
-			saveService.Verify(x => x.SaveAsync(), Times.Once);
+			AssertCommandExecution(x => x.SaveAsync(),
+				(p, s) =>
+				{
+					var command = new SaveCommand(p.CanSave, s);
+					command.Execute().Wait();
+				});
 		}
 
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトを上書き保存できる()
 		{
-			var saveService = MockHelper.GetSaveServiceMock();
-			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
-			var availability = new CommandAvailability(editorState.Object);
-			var command = new SaveAsCommand(availability.CanSave, editorState.Object);
-
-			command.Execute().Wait();
-
-			saveService.Verify(x => x.SaveAsAsync(), Times.Once);
+			AssertCommandExecution(x => x.SaveAsAsync(),
+				(p, s) =>
+				{
+					var command = new SaveAsCommand(p.CanSaveAs, s);
+					command.Execute().Wait();
+				});
 		}
 
 		[Fact]
 		public void 与えたIProjectSaveServiceでプロジェクトをエクスポートできる()
 		{
+			AssertCommandExecution(x => x.ExportAsync(),
+				(p, s) =>
+				{
+					var command = new ExportCommand(p.CanExport, s);
+					command.Execute().Wait();
+				});
+		}
+
+		[Fact]
+		public void Undoを呼び出せる()
+		{
+			AssertCommandExecution(x => x.Undo(),
+				(p, s) =>
+				{
+					var command = new UndoCommand(p.CanUndo, s);
+					command.Execute();
+				});
+		}
+
+		private static void AssertCommandExecution<TCommandResult>(
+			Expression<Func<IProjectLoadService, TCommandResult>> methodToVerify,
+			Action<CommandAvailability, IEditorState> execution)
+		{
+			var loadService = MockHelper.GetLoaderServiceMock();
+			var editorState = MockHelper.GetEditorStateMock(loadService: loadService.Object);
+			var commandAvailability = new CommandAvailability(editorState.Object);
+
+			execution(commandAvailability, editorState.Object);
+			
+			loadService.Verify(methodToVerify, Times.Once);
+		}
+		
+		private static void AssertCommandExecution<TCommandResult>(
+			Expression<Func<IProjectSaveService, TCommandResult>> methodToVerify,
+			Action<CommandAvailability, IEditorState> execution)
+		{
 			var saveService = MockHelper.GetSaveServiceMock();
 			var editorState = MockHelper.GetEditorStateMock(saveService: saveService.Object);
-			var availability = new CommandAvailability(editorState.Object);
-			var command = new ExportCommand(availability.CanExport, editorState.Object);
+			var commandAvailability = new CommandAvailability(editorState.Object);
 
-			command.Execute().Wait();
+			execution(commandAvailability, editorState.Object);
+			
+			saveService.Verify(methodToVerify, Times.Once);
+		}
+		
+		private static void AssertCommandExecution(
+			Expression<Action<IProjectHistoryService>> methodToVerify,
+			Action<CommandAvailability, IEditorState> execution)
+		{
+			var historyService = MockHelper.CreateHistoryMock();
+			var editorState = MockHelper.GetEditorStateMock(historyService: historyService.Object);
+			var commandAvailability = new CommandAvailability(editorState.Object);
 
-			saveService.Verify(x => x.ExportAsync(), Times.Once);
+			execution(commandAvailability, editorState.Object);
+			
+			historyService.Verify(methodToVerify, Times.Once);
 		}
 	}
 }
