@@ -9,6 +9,7 @@ using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Interfaces;
+using Romanesco.Model.Services.Load;
 using Romanesco.ViewModel.States;
 using Romanesco.ViewModel.Test.Helpers;
 using Xunit;
@@ -137,19 +138,39 @@ namespace Romanesco.ViewModel.Test.Editor
 			return commands;
 		}
 
+		[Fact]
 		public void プロジェクトを作成した際に新しいステートへのメッセージが届く()
 		{
 			var project = new Mock<IProjectContext>();
 			var currentState = new Mock<IEditorState>();
-			currentState.Setup(x => x.OnCreate(project.Object))
-				.Callback(() => { });
+			var nextState = new Mock<IEditorState>();
 			var currentCommands = new CommandAvailability(currentState.Object);
+			var loadService = new Mock<IProjectLoadService>();
+
+			var projectContext = project.Object;
+
+			loadService.Setup(x => x.CreateAsync())
+				.Returns(async () => projectContext);
+
+			currentState.Setup(x => x.GetLoadService())
+				.Returns(loadService.Object);
+			currentState.Setup(x => x.OnCreate(projectContext))
+				.Callback(() => currentCommands = new CommandAvailability(nextState.Object));
+			nextState.Setup(x => x.GetLoadService())
+				.Returns(loadService.Object);
+			nextState.Setup(x => x.OnCreate(projectContext))
+				.Callback(() => { });
 
 			var model = GetEditorModel();
 			model.Setup(x => x.CommandAvailabilityPublisher)
 				.Returns(() => currentCommands);
 
 			var editor = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
+			editor.CreateCommand.Execute(null);
+			editor.CreateCommand.Execute(null);
+
+			currentState.Verify(x => x.OnCreate(projectContext), Times.Once);
+			nextState.Verify(x => x.OnCreate(projectContext), Times.Once);
 		}
 	}
 }
