@@ -14,6 +14,7 @@ namespace Romanesco.Model.EditorComponents
 	{
 		private IEditorState editorState;
 		private CommandAvailability commandAvailability;
+		private CommandRouter commandRouter;
 
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
@@ -26,9 +27,12 @@ namespace Romanesco.Model.EditorComponents
 			// commandAvailability の初期化を保証しなければならないので、ChangeStateをインライン化した
 			editorState = initialState;
 			UpdateTitle();
+
 			commandAvailability = new CommandAvailability(initialState);
 			commandAvailability.UpdateCanExecute();
 			SetUpCommand(commandAvailability);
+
+			commandRouter = new CommandRouter(new CommandAvailability(initialState));
 		}
 
 		public void ChangeState(IEditorState state)
