@@ -14,7 +14,7 @@ using Romanesco.Model.Services.Save;
 
 namespace Romanesco.Test.Helpers
 {
-	static class MockHelper
+	internal static class MockHelper
 	{
 		public static Mock<IProjectLoadService> GetLoaderServiceMock(IProjectContext? projectContext = null,
 			bool? canCreate = null,

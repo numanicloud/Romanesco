@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reactive.Linq;
+using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.Common.Model.ProjectComponent
@@ -9,6 +10,7 @@ namespace Romanesco.Common.Model.ProjectComponent
 	{
 		public IProjectTypeExporter Exporter { get; }
 		public IProject Project { get; }
+		public StateRoot StateRoot => Project.Root;
 
 		public ProjectContext(IProject project, IProjectTypeExporter exporter)
 		{

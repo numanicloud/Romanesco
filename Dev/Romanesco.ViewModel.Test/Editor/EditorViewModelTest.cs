@@ -4,12 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Reactive.Bindings;
+using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Interfaces;
 using Romanesco.Model.Services.Load;
+using Romanesco.Model.Services.Save;
+using Romanesco.Test.Helpers;
 using Romanesco.ViewModel.States;
 using Romanesco.ViewModel.Test.Helpers;
 using Xunit;
@@ -79,7 +83,7 @@ namespace Romanesco.ViewModel.Test.Editor
 
 			commands.Verify(x => x.CreateAsync(), Times.Once);
 		}
-		
+
 		[Fact]
 		public void Openコマンドがモデルに伝わる()
 		{
@@ -97,7 +101,7 @@ namespace Romanesco.ViewModel.Test.Editor
 
 			commands.Verify(x => x.OpenAsync(), Times.Once);
 		}
-		
+
 		[Fact]
 		public void SaveAsコマンドがモデルに伝わる()
 		{
@@ -141,36 +145,49 @@ namespace Romanesco.ViewModel.Test.Editor
 		[Fact]
 		public void プロジェクトを作成した際に新しいステートへのメッセージが届く()
 		{
+			static Mock<IEditorState> GetMockEditorState(string name, IProjectLoadService load)
+			{
+				var mock = new Mock<IEditorState>() { Name = name };
+				mock.Setup(x => x.GetLoadService()).Returns(load);
+				mock.Setup(x => x.GetSaveService())
+					.Returns(MockHelper.GetSaveServiceMock(false, false).Object);
+				mock.Setup(x => x.GetHistoryService())
+					.Returns(MockHelper.CreateHistoryMock(canUndo: false, canRedo: false).Object);
+				mock.Setup(x => x.OnCreate(It.IsAny<IProjectContext>()))
+					.Callback(() => { });
+				return mock;
+			}
+
 			var project = new Mock<IProjectContext>();
-			var currentState = new Mock<IEditorState>();
-			var nextState = new Mock<IEditorState>();
-			var currentCommands = new CommandAvailability(currentState.Object);
+			project.Setup(x => x.Project)
+				.Returns(() =>
+				{
+					var p = new Mock<IProject>();
+					p.Setup(x => x.Root)
+						.Returns(() => new StateRoot(new object(), new IFieldState[0]));
+					return p.Object;
+				});
+
 			var loadService = new Mock<IProjectLoadService>();
-
-			var projectContext = project.Object;
-
 			loadService.Setup(x => x.CreateAsync())
-				.Returns(async () => projectContext);
+				.Returns(async () => project.Object);
 
-			currentState.Setup(x => x.GetLoadService())
-				.Returns(loadService.Object);
-			currentState.Setup(x => x.OnCreate(projectContext))
-				.Callback(() => currentCommands = new CommandAvailability(nextState.Object));
-			nextState.Setup(x => x.GetLoadService())
-				.Returns(loadService.Object);
-			nextState.Setup(x => x.OnCreate(projectContext))
-				.Callback(() => { });
+			var currentState = GetMockEditorState("Current", loadService.Object);
+			var nextState = GetMockEditorState("Next", loadService.Object);
+			var commandRouter = new CommandRouter(currentState.Object);
+			commandRouter.OnCreate.Subscribe(x => commandRouter.UpdateState(nextState.Object));
 
 			var model = GetEditorModel();
+
 			model.Setup(x => x.CommandAvailabilityPublisher)
-				.Returns(() => currentCommands);
+				.Returns(() => commandRouter);
 
 			var editor = new EditorViewModel(model.Object, Mock.Of<IViewModelInterpreter>());
 			editor.CreateCommand.Execute(null);
 			editor.CreateCommand.Execute(null);
 
-			currentState.Verify(x => x.OnCreate(projectContext), Times.Once);
-			nextState.Verify(x => x.OnCreate(projectContext), Times.Once);
+			nextState.Verify(x => x.OnCreate(It.IsAny<IProjectContext>()), Times.Once);
+			currentState.Verify(x => x.OnCreate(It.IsAny<IProjectContext>()), Times.Once);
 		}
 	}
 }

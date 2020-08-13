@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Reactive.Bindings;
@@ -13,75 +14,78 @@ namespace Romanesco.Model.Commands
 {
 	internal class CommandRouter : ICommandAvailabilityPublisher
 	{
-		public CommandAvailability CommandAvailability { get; private set; }
+		private ReactiveProperty<CommandAvailability> CommandAvailability { get; } = new ReactiveProperty<CommandAvailability>();
 
 		public CommandRouter(IEditorState state)
 		{
-			CommandAvailability = new CommandAvailability(state);
-			CommandAvailability.UpdateCanExecute();
+			CommandAvailability.Value = new CommandAvailability(state);
+			CommandAvailability.Value.UpdateCanExecute();
+
+			var canCreateStream = CommandAvailability.SelectMany(x => x.CanCreate);
+			CanCreate = new ReactiveProperty<bool>(canCreateStream);
 		}
 
 		public void UpdateState(IEditorState state)
 		{
-			CommandAvailability = new CommandAvailability(state);
-			CommandAvailability.UpdateCanExecute();
+			CommandAvailability.Value = new CommandAvailability(state);
+			CommandAvailability.Value.UpdateCanExecute();
 		}
 
-		public IObservable<IProjectContext> OnCreate => CommandAvailability.OnCreate;
+		public IObservable<IProjectContext> OnCreate => CommandAvailability.Value.OnCreate;
 
-		public IObservable<IProjectContext> OnOpen => CommandAvailability.OnOpen;
+		public IObservable<IProjectContext> OnOpen => CommandAvailability.Value.OnOpen;
 
-		public IObservable<Unit> OnSaveAs => CommandAvailability.OnSaveAs;
+		public IObservable<Unit> OnSaveAs => CommandAvailability.Value.OnSaveAs;
 
-		public IReadOnlyReactiveProperty<bool> CanSave => ((ICommandAvailabilityPublisher)CommandAvailability).CanSave;
+		public IReadOnlyReactiveProperty<bool> CanCreate { get; set; }
 
-		public IReadOnlyReactiveProperty<bool> CanSaveAs => ((ICommandAvailabilityPublisher)CommandAvailability).CanSaveAs;
+		public IReadOnlyReactiveProperty<bool> CanOpen => ((ICommandAvailabilityPublisher)CommandAvailability.Value).CanOpen;
 
-		public IReadOnlyReactiveProperty<bool> CanExport => ((ICommandAvailabilityPublisher)CommandAvailability).CanExport;
+		public IReadOnlyReactiveProperty<bool> CanSave => ((ICommandAvailabilityPublisher)CommandAvailability.Value).CanSave;
 
-		public IReadOnlyReactiveProperty<bool> CanCreate => ((ICommandAvailabilityPublisher)CommandAvailability).CanCreate;
+		public IReadOnlyReactiveProperty<bool> CanSaveAs => ((ICommandAvailabilityPublisher)CommandAvailability.Value).CanSaveAs;
 
-		public IReadOnlyReactiveProperty<bool> CanOpen => ((ICommandAvailabilityPublisher)CommandAvailability).CanOpen;
+		public IReadOnlyReactiveProperty<bool> CanExport => ((ICommandAvailabilityPublisher)CommandAvailability.Value).CanExport;
 
-		public IReadOnlyReactiveProperty<bool> CanUndo => ((ICommandAvailabilityPublisher)CommandAvailability).CanUndo;
+		public IReadOnlyReactiveProperty<bool> CanUndo => ((ICommandAvailabilityPublisher)CommandAvailability.Value).CanUndo;
 
-		public IReadOnlyReactiveProperty<bool> CanRedo => ((ICommandAvailabilityPublisher)CommandAvailability).CanRedo;
+		public IReadOnlyReactiveProperty<bool> CanRedo => ((ICommandAvailabilityPublisher)CommandAvailability.Value).CanRedo;
 
-		public void NotifyEdit() => CommandAvailability.NotifyEdit();
+		public void NotifyEdit() => CommandAvailability.Value.NotifyEdit();
 
 		public Task<IProjectContext?> CreateAsync()
 		{
-			return ((ICommandInvoker)CommandAvailability).CreateAsync();
+			return ((ICommandInvoker)CommandAvailability.Value).CreateAsync();
 		}
 
 		public Task ExportAsync()
 		{
-			return ((ICommandInvoker)CommandAvailability).ExportAsync();
+			return ((ICommandInvoker)CommandAvailability.Value).ExportAsync();
 		}
 
 		public Task<IProjectContext?> OpenAsync()
 		{
-			return ((ICommandInvoker)CommandAvailability).OpenAsync();
+			return ((ICommandInvoker)CommandAvailability.Value).OpenAsync();
 		}
 
 		public void Redo()
 		{
-			((ICommandInvoker)CommandAvailability).Redo();
+			((ICommandInvoker)CommandAvailability.Value).Redo();
 		}
 
 		public Task SaveAsAsync()
 		{
-			return ((ICommandInvoker)CommandAvailability).SaveAsAsync();
+			return ((ICommandInvoker)CommandAvailability.Value).SaveAsAsync();
 		}
 
 		public Task SaveAsync()
 		{
-			return ((ICommandInvoker)CommandAvailability).SaveAsync();
+			return ((ICommandInvoker)CommandAvailability.Value).SaveAsync();
 		}
 
 		public void Undo()
 		{
-			((ICommandInvoker)CommandAvailability).Undo();
+			((ICommandInvoker)CommandAvailability.Value).Undo();
 		}
 	}
 }

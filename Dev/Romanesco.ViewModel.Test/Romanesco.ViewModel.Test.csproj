@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Host\Romanesco.Test\Romanesco.Test.csproj" />
     <ProjectReference Include="..\Host\Romanesco.ViewModel\Romanesco.ViewModel.csproj" />
   </ItemGroup>
 
