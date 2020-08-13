@@ -13,12 +13,12 @@ namespace Romanesco.Model.EditorComponents
 	internal sealed class Editor : IEditorFacade, IDisposable
 	{
 		private IEditorState editorState;
-		private CommandAvailability commandAvailability;
-		private CommandRouter commandRouter;
+		private readonly CommandAvailability commandAvailability;
+		private readonly CommandRouter commandRouter;
 
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
-		public ICommandAvailabilityPublisher CommandAvailabilityPublisher => commandAvailability;
+		public ICommandAvailabilityPublisher CommandAvailabilityPublisher => commandRouter;
 
 		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
 		{
@@ -28,24 +28,20 @@ namespace Romanesco.Model.EditorComponents
 			editorState = initialState;
 			UpdateTitle();
 
-			commandAvailability = new CommandAvailability(initialState);
-			commandAvailability.UpdateCanExecute();
-			SetUpCommand(commandAvailability);
+			commandRouter = new CommandRouter(initialState);
+			SetUpCommand(commandRouter);
 
-			commandRouter = new CommandRouter(new CommandAvailability(initialState));
+			commandAvailability = new CommandAvailability(initialState);
 		}
 
 		public void ChangeState(IEditorState state)
 		{
 			editorState = state;
 			UpdateTitle();
-
-			commandAvailability = new CommandAvailability(state);
-			commandAvailability.UpdateCanExecute();
-			SetUpCommand(commandAvailability);
+			commandRouter.UpdateState(state);
 		}
 
-		private void SetUpCommand(CommandAvailability target)
+		private void SetUpCommand(CommandRouter target)
 		{
 			target.OnCreate.Subscribe(SetProject);
 			target.OnOpen.Subscribe(SetProject);
@@ -60,7 +56,7 @@ namespace Romanesco.Model.EditorComponents
 
 		private void ObserveEdit(IProjectContext projectContext)
 		{
-			projectContext.ObserveEdit(() => commandAvailability.NotifyEdit())
+			projectContext.ObserveEdit(() => commandRouter.NotifyEdit())
 				.AddTo(Disposables);
 		}
 

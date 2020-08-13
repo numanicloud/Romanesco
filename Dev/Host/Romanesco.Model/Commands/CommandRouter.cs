@@ -1,28 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using Reactive.Bindings;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.EditorComponents;
+using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Interfaces;
 
 namespace Romanesco.Model.Commands
 {
 	internal class CommandRouter : ICommandAvailabilityPublisher
 	{
-		private CommandAvailability _commandAvailability;
+		public CommandAvailability CommandAvailability { get; private set; }
 
-		public CommandAvailability CommandAvailability
+		public CommandRouter(IEditorState state)
 		{
-			get => _commandAvailability;
-			set => _commandAvailability = value;
+			CommandAvailability = new CommandAvailability(state);
+			CommandAvailability.UpdateCanExecute();
 		}
 
-		public CommandRouter(CommandAvailability initialCommands)
+		public void UpdateState(IEditorState state)
 		{
-			this._commandAvailability = initialCommands;
+			CommandAvailability = new CommandAvailability(state);
+			CommandAvailability.UpdateCanExecute();
 		}
+
+		public IObservable<IProjectContext> OnCreate => CommandAvailability.OnCreate;
+
+		public IObservable<IProjectContext> OnOpen => CommandAvailability.OnOpen;
+
+		public IObservable<Unit> OnSaveAs => CommandAvailability.OnSaveAs;
 
 		public IReadOnlyReactiveProperty<bool> CanSave => ((ICommandAvailabilityPublisher)CommandAvailability).CanSave;
 
@@ -37,6 +46,8 @@ namespace Romanesco.Model.Commands
 		public IReadOnlyReactiveProperty<bool> CanUndo => ((ICommandAvailabilityPublisher)CommandAvailability).CanUndo;
 
 		public IReadOnlyReactiveProperty<bool> CanRedo => ((ICommandAvailabilityPublisher)CommandAvailability).CanRedo;
+
+		public void NotifyEdit() => CommandAvailability.NotifyEdit();
 
 		public Task<IProjectContext?> CreateAsync()
 		{
