@@ -20,14 +20,8 @@ namespace Romanesco.Test.Commands
 		{
 			// IProjectContextから直接StateRootが取れないとテストが大変だ
 			var project = new Mock<IProjectContext>();
-			project.Setup(x => x.Project)
-				.Returns(() =>
-				{
-					var p = new Mock<IProject>();
-					p.Setup(x => x.Root)
-						.Returns(() => new StateRoot(new object(), new IFieldState[0]));
-					return p.Object;
-				});
+			project.Setup(x => x.StateRoot)
+				.Returns(() => new StateRoot(new object(), new IFieldState[0]));
 
 			Mock<IProjectLoadService> loadService = new Mock<IProjectLoadService>();
 			loadService.Setup(x => x.CreateAsync())
@@ -52,6 +46,21 @@ namespace Romanesco.Test.Commands
 
 			currentState.Verify(x => x.OnCreate(It.IsAny<IProjectContext>()), Times.Once);
 			nextState.Verify(x => x.OnCreate(It.IsAny<IProjectContext>()), Times.Once);
+		}
+
+		[Fact]
+		public void ステートが変わるとCanCreateが更新される()
+		{
+			var loadService1 = MockHelper.GetLoaderServiceMock(canCreate: true, canOpen: true);
+			var loadService2 = MockHelper.GetLoaderServiceMock(canCreate: false, canOpen: false);
+			var currentState = MockHelper.GetEditorStateMock(loadService: loadService1.Object);
+			var nextState = MockHelper.GetEditorStateMock(loadService: loadService2.Object);
+
+			var commandRouter = new CommandRouter(currentState.Object);
+
+			Assert.True(commandRouter.CanCreate.Value);
+			commandRouter.UpdateState(nextState.Object);
+			Assert.False(commandRouter.CanCreate.Value);
 		}
 	}
 }

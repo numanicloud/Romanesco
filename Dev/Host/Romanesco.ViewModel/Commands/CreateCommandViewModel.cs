@@ -38,7 +38,7 @@ namespace Romanesco.ViewModel.Commands
 				var projectContext = await model.CreateAsync();
 				if (projectContext != null)
 				{
-					roots.Value = projectContext.Project.Root.States
+					roots.Value = projectContext.StateRoot.States
 						.Select(s => interpreter.InterpretAsViewModel(s))
 						.ToArray();
 				}

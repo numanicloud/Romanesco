@@ -105,6 +105,10 @@ namespace Romanesco.Model.Commands
 			UpdateCanExecute(EditorCommandType.Redo, history.CanRedo);
 		}
 
+		// ここで全ての実行可能性を一律で更新していると、
+		// Load,Save,History が常に揃っている必要がありテストがしづらい
+		// 各コマンドをモックして、LoadServiceなどが要らないバージョンを作れるようにすべき？
+		// コマンド自身が CommandRouter のようにステートを参照すべき？
 		public void UpdateCanExecute()
 		{
 			UpdateCanExecute(_currentState.GetLoadService());

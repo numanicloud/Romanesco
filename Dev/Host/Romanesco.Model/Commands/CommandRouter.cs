@@ -12,6 +12,7 @@ using Romanesco.Model.Interfaces;
 
 namespace Romanesco.Model.Commands
 {
+	// ステートが変わった際のイベントのつながり等のギャップを吸収する層
 	internal class CommandRouter : ICommandAvailabilityPublisher
 	{
 		private ReactiveProperty<CommandAvailability> CommandAvailability { get; } = new ReactiveProperty<CommandAvailability>();
