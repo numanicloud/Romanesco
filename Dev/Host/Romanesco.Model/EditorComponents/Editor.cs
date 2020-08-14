@@ -10,35 +10,36 @@ using Romanesco.Model.Interfaces;
 
 namespace Romanesco.Model.EditorComponents
 {
-	internal sealed class Editor : IEditorFacade, IDisposable
+	internal sealed class Editor : IEditorFacade, IDisposable, IEditorStateRepository
 	{
-		private IEditorState editorState;
-		private readonly CommandAvailability commandAvailability;
-		private readonly CommandRouter commandRouter;
+		private readonly ReactiveProperty<IEditorState> _editorState = new ReactiveProperty<IEditorState>();
+		private readonly CommandAvailability _commandAvailability;
+		private readonly CommandRouter _commandRouter;
 
 		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
 		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
-		public ICommandAvailabilityPublisher CommandAvailabilityPublisher => commandRouter;
+		public ICommandAvailabilityPublisher CommandAvailabilityPublisher => _commandRouter;
+		public IReadOnlyReactiveProperty<IEditorState> EditorState => _editorState;
 
 		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
 		{
 			stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
 
 			// commandAvailability の初期化を保証しなければならないので、ChangeStateをインライン化した
-			editorState = initialState;
+			_editorState.Value = initialState;
 			UpdateTitle();
 
-			commandRouter = new CommandRouter(initialState);
-			SetUpCommand(commandRouter);
+			_commandRouter = new CommandRouter(initialState);
+			SetUpCommand(_commandRouter);
 
-			commandAvailability = new CommandAvailability(initialState);
+			_commandAvailability = new CommandAvailability(initialState);
 		}
 
 		public void ChangeState(IEditorState state)
 		{
-			editorState = state;
+			_editorState.Value = state;
 			UpdateTitle();
-			commandRouter.UpdateState(state);
+			_commandRouter.UpdateState(state);
 		}
 
 		private void SetUpCommand(CommandRouter target)
@@ -56,11 +57,11 @@ namespace Romanesco.Model.EditorComponents
 
 		private void ObserveEdit(IProjectContext projectContext)
 		{
-			projectContext.ObserveEdit(() => commandRouter.NotifyEdit())
+			projectContext.ObserveEdit(() => _commandRouter.NotifyEdit())
 				.AddTo(Disposables);
 		}
 
-		private void UpdateTitle() => ApplicationTitle.Value = editorState.Title;
+		private void UpdateTitle() => ApplicationTitle.Value = _editorState.Value.Title;
 
 		public void Dispose()
 		{
