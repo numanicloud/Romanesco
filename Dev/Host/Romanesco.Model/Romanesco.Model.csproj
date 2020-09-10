@@ -11,8 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Deptorygen" Version="1.0.0-16" />
-    <PackageReference Include="Deptorygen.Annotations" Version="1.0.0-16" />
+    <PackageReference Include="Deptorygen" Version="1.0.4" />
+    <PackageReference Include="Deptorygen.Annotations" Version="1.0.4" />
+    <PackageReference Include="Deptorygen.GenericHost" Version="1.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />

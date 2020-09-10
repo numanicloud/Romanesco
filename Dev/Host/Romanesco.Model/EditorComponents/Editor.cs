@@ -29,10 +29,10 @@ namespace Romanesco.Model.EditorComponents
 			_editorState.Value = initialState;
 			UpdateTitle();
 
-			_commandRouter = new CommandRouter(initialState);
+			_commandRouter = new CommandRouter(initialState, this);
 			SetUpCommand(_commandRouter);
 
-			_commandAvailability = new CommandAvailability(initialState);
+			_commandAvailability = new CommandAvailability(initialState, this);
 		}
 
 		public void ChangeState(IEditorState state)

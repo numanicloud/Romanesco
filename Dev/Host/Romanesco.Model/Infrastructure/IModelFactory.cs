@@ -20,7 +20,7 @@ namespace Romanesco.Model.Infrastructure
 	{
 		[Resolution(typeof(Editor))]
 		IEditorFacade ResolveEditorFacade();
-		
+
 		[Resolution(typeof(NewtonsoftStateSerializer))]
 		IStateSerializer ResolveStateSerializer();
 		[Resolution(typeof(NewtonsoftStateDeserializer))]
@@ -48,6 +48,8 @@ namespace Romanesco.Model.Infrastructure
 	[Factory]
 	internal interface IModelFactory : IOpenModelFactory
 	{
+		Editor ResolveEditorDummy();
+
 		IModelRequirementFactory Requirement { get; }
 		IPluginFactory Plugin { get; }
 

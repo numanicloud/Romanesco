@@ -19,9 +19,12 @@ namespace Romanesco.Model.Infrastructure
 	internal partial class ModelFactory : IModelFactory
 		, IDisposable
 	{
+		private readonly IEditorStateRepository _iEditorStateRepository;
+
 		public IModelRequirementFactory Requirement { get; }
 		public IPluginFactory Plugin { get; }
 
+		private Editor? _ResolveEditorDummyCache;
 		private EditorStateChanger? _ResolveEditorStateChangerCache;
 		private EmptyEditorState? _ResolveEditorStateCache;
 		private WindowsLoadService? _ResolveProjectLoadServiceCache;
@@ -36,10 +39,16 @@ namespace Romanesco.Model.Infrastructure
 		private ObjectInterpreter? _ResolveObjectInterpreterCache;
 		private ObjectInterpreter? _ResolveIObjectInterpreterCache;
 
-		public ModelFactory(IModelRequirementFactory requirement, IPluginFactory plugin)
+		public ModelFactory(IEditorStateRepository iEditorStateRepository, IModelRequirementFactory requirement, IPluginFactory plugin)
 		{
+			_iEditorStateRepository = iEditorStateRepository;
 			Requirement = requirement;
 			Plugin = plugin;
+		}
+
+		public Editor ResolveEditorDummy()
+		{
+			return _ResolveEditorDummyCache ??= new Editor(ResolveEditorStateChanger(), ResolveEditorState());
 		}
 
 		public IEditorStateChanger ResolveEditorStateChanger()
@@ -74,7 +83,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public CommandAvailability ResolveCommandAvailability()
 		{
-			return _ResolveCommandAvailabilityCache ??= new CommandAvailability(ResolveEditorState());
+			return _ResolveCommandAvailabilityCache ??= new CommandAvailability(ResolveEditorState(), _iEditorStateRepository);
 		}
 
 		public EditorSession ResolveEditorSession()
@@ -119,6 +128,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public void Dispose()
 		{
+			_ResolveEditorDummyCache?.Dispose();
 			_ResolveCommandAvailabilityCache?.Dispose();
 			_ResolveProjectModelFactoryCache?.Dispose();
 			_ResolveEditorFacadeCache?.Dispose();

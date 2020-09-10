@@ -35,7 +35,7 @@ namespace Romanesco.ViewModel.Test.Editor
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
 
-			var commands = new CommandAvailability(Mock.Of<IEditorState>());
+			var commands = new CommandAvailability(Mock.Of<IEditorState>(), Mock.Of<IEditorStateRepository>());
 
 			var model = new Mock<IEditorFacade>();
 			model.Setup(x => x.CommandAvailabilityPublisher)
@@ -174,7 +174,7 @@ namespace Romanesco.ViewModel.Test.Editor
 
 			var currentState = GetMockEditorState("Current", loadService.Object);
 			var nextState = GetMockEditorState("Next", loadService.Object);
-			var commandRouter = new CommandRouter(currentState.Object);
+			var commandRouter = new CommandRouter(currentState.Object, Mock.Of<IEditorStateRepository>());
 			commandRouter.OnCreate.Subscribe(x => commandRouter.UpdateState(nextState.Object));
 
 			var model = GetEditorModel();

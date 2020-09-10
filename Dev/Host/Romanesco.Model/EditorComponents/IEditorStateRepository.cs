@@ -3,7 +3,7 @@ using Romanesco.Model.EditorComponents.States;
 
 namespace Romanesco.Model.EditorComponents
 {
-	interface IEditorStateRepository
+	internal interface IEditorStateRepository
 	{
 		IReadOnlyReactiveProperty<IEditorState> EditorState { get; }
 	}

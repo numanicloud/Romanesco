@@ -52,9 +52,8 @@ namespace Romanesco.Model.Commands
 		public IObservable<IProjectContext> OnCreate => _createCommand.OnExecuted;
 		public IObservable<IProjectContext> OnOpen => _openCommand.OnExecuted;
 		public IObservable<Unit> OnSaveAs => _saveAsCommand.OnExecuted;
-
-
-		public CommandAvailability(IEditorState currentState)
+		
+		public CommandAvailability(IEditorState currentState, IEditorStateRepository repository)
 		{
 			IObservable<bool> GetCanExecute(EditorCommandType type)
 			{

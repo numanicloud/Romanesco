@@ -15,20 +15,23 @@ namespace Romanesco.Model.Commands
 	// ステートが変わった際のイベントのつながり等のギャップを吸収する層
 	internal class CommandRouter : ICommandAvailabilityPublisher
 	{
+		private readonly IEditorStateRepository repository;
+
 		private ReactiveProperty<CommandAvailability> CommandAvailability { get; } = new ReactiveProperty<CommandAvailability>();
 
-		public CommandRouter(IEditorState state)
+		public CommandRouter(IEditorState state, IEditorStateRepository repository)
 		{
-			CommandAvailability.Value = new CommandAvailability(state);
+			CommandAvailability.Value = new CommandAvailability(state, repository);
 			CommandAvailability.Value.UpdateCanExecute();
 
 			var canCreateStream = CommandAvailability.SelectMany(x => x.CanCreate);
 			CanCreate = new ReactiveProperty<bool>(canCreateStream);
+			this.repository = repository;
 		}
 
 		public void UpdateState(IEditorState state)
 		{
-			CommandAvailability.Value = new CommandAvailability(state);
+			CommandAvailability.Value = new CommandAvailability(state, repository);
 			CommandAvailability.Value.UpdateCanExecute();
 		}
 
