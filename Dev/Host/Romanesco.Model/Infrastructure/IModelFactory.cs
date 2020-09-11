@@ -18,7 +18,7 @@ namespace Romanesco.Model.Infrastructure
 {
 	public interface IOpenModelFactory
 	{
-		[Resolution(typeof(Editor))]
+		[Delegation("ResolveEditor")]
 		IEditorFacade ResolveEditorFacade();
 
 		[Resolution(typeof(NewtonsoftStateSerializer))]
@@ -45,10 +45,11 @@ namespace Romanesco.Model.Infrastructure
 		IEnumerable<IStateFactory> ResolveStateFactories();
 	}
 
+	// TODO: IEditorFacade と IEditorStateRepository で同じインスタンスを返したい
 	[Factory]
 	internal interface IModelFactory : IOpenModelFactory
 	{
-		Editor ResolveEditorDummy();
+		Editor ResolveEditor();
 
 		IModelRequirementFactory Requirement { get; }
 		IPluginFactory Plugin { get; }
@@ -57,6 +58,8 @@ namespace Romanesco.Model.Infrastructure
 		IEditorStateChanger ResolveEditorStateChanger();
 		[Resolution(typeof(EmptyEditorState))]
 		IEditorState ResolveEditorState();
+		[Delegation(nameof(ResolveEditor))]
+		IEditorStateRepository ResolveEditorStateRepository();
 		EmptyEditorState ResolveEmptyEditorStateAsTransient();
 		[Resolution(typeof(WindowsLoadService))]
 		IProjectLoadService ResolveProjectLoadService();

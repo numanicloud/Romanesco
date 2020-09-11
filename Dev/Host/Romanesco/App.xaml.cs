@@ -23,7 +23,7 @@ namespace Romanesco
 			host = new HostBuilder()
 				.ConfigureServices((context, services) =>
 				{
-					services.UseDeprovgenFactory(new HostFactory())
+					services.UseDeptorygenFactory(new HostFactory())
 						.AddHostedService<StartUp>();
 				})
 				.Build();

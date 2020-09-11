@@ -6,6 +6,7 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
+using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Services.Load;
 using Romanesco.Test.Helpers;
@@ -38,7 +39,7 @@ namespace Romanesco.Test.Commands
 
 			var currentState = GetMockEditorState("Current");
 			var nextState = GetMockEditorState("Next");
-			var commandRouter = new CommandRouter(currentState.Object);
+			var commandRouter = new CommandRouter(currentState.Object, Mock.Of<IEditorStateRepository>());
 			commandRouter.OnCreate.Subscribe(x => commandRouter.UpdateState(nextState.Object));
 
 			_ = commandRouter.CreateAsync().Result;
@@ -56,7 +57,7 @@ namespace Romanesco.Test.Commands
 			var currentState = MockHelper.GetEditorStateMock(loadService: loadService1.Object);
 			var nextState = MockHelper.GetEditorStateMock(loadService: loadService2.Object);
 
-			var commandRouter = new CommandRouter(currentState.Object);
+			var commandRouter = new CommandRouter(currentState.Object, Mock.Of<IEditorStateRepository>());
 
 			Assert.True(commandRouter.CanCreate.Value);
 			commandRouter.UpdateState(nextState.Object);

@@ -26,7 +26,7 @@ namespace Romanesco.Test.EditorComponents
 		{
 			// これはもはや CommandAvailability のテスト
 			var editorState = GetDirtyEditorState(historyService: CreateHistoryMock());
-			var availability = new CommandAvailability(editorState);
+			var availability = new CommandAvailability(editorState, Mock.Of<IEditorStateRepository>());
 
 			using var once = availability.Observable
 				.Where(x => x.command == type)

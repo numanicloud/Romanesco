@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Deptorygen" Version="1.0.4" />
-    <PackageReference Include="Deptorygen.Annotations" Version="1.0.4" />
-    <PackageReference Include="Deptorygen.GenericHost" Version="1.0.4" />
+    <PackageReference Include="Deptorygen" Version="1.0.5" />
+    <PackageReference Include="Deptorygen.Annotations" Version="1.0.5" />
+    <PackageReference Include="Deptorygen.GenericHost" Version="1.0.5" />
     <PackageReference Include="LivetCask" Version="3.2.1" />
     <PackageReference Include="ReactiveProperty" Version="7.1.0" />
     <PackageReference Include="System.Interactive" Version="3.2.0" />

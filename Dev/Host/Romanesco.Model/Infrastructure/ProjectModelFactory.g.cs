@@ -55,9 +55,9 @@ namespace Romanesco.Model.Infrastructure
 			return _ResolveProjectSaveServiceCache ??= new WindowsSaveService(Model.ResolveStateSerializer(), _iProjectContext);
 		}
 
-		public Editor ResolveEditorDummy()
+		public Editor ResolveEditor()
 		{
-			return Model.ResolveEditorDummy();
+			return Model.ResolveEditor();
 		}
 
 		public IEditorStateChanger ResolveEditorStateChanger()
@@ -68,6 +68,11 @@ namespace Romanesco.Model.Infrastructure
 		public IEditorState ResolveEditorState()
 		{
 			return Model.ResolveEditorState();
+		}
+
+		public IEditorStateRepository ResolveEditorStateRepository()
+		{
+			return ResolveEditor();
 		}
 
 		public EmptyEditorState ResolveEmptyEditorStateAsTransient()
@@ -107,7 +112,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public IEditorFacade ResolveEditorFacade()
 		{
-			return Model.ResolveEditorFacade();
+			return ResolveEditor();
 		}
 
 		public IStateSerializer ResolveStateSerializer()

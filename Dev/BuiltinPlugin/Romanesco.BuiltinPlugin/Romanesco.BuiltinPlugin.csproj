@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Deptorygen" Version="1.0.4" />
-    <PackageReference Include="Deptorygen.Annotations" Version="1.0.4" />
-    <PackageReference Include="Deptorygen.GenericHost" Version="1.0.4" />
+    <PackageReference Include="Deptorygen" Version="1.0.5" />
+    <PackageReference Include="Deptorygen.Annotations" Version="1.0.5" />
+    <PackageReference Include="Deptorygen.GenericHost" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>

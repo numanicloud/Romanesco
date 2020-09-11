@@ -27,7 +27,7 @@ namespace Romanesco.Test.Commands
 		public void コマンドの実行可能性が通知される(EditorCommandType type)
 		{
 			var editorState = MockHelper.GetEditorStateMock();
-			var availability = new CommandAvailability(editorState.Object);
+			var availability = new CommandAvailability(editorState.Object, Mock.Of<IEditorStateRepository>());
 
 			ICommandModel command = type switch
 			{
@@ -234,7 +234,7 @@ namespace Romanesco.Test.Commands
 					_ => throw new NotImplementedException(),
 				};
 
-				Commands = new CommandAvailability(EditorStateMock.Object);
+				Commands = new CommandAvailability(EditorStateMock.Object, Mock.Of<IEditorStateRepository>());
 			}
 
 			public void Run(Action<CommandAvailability, IEditorState> execution)

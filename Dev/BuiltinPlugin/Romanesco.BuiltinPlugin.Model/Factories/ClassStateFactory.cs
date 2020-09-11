@@ -54,7 +54,7 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 						Nothing _ => -1,
 						_ => throw new Exception()
 					}
-					where m.order is Nothing
+					where !(m.order is Nothing)
 					select m.state;
 
 				return members.FilterNullRef().ToArray();

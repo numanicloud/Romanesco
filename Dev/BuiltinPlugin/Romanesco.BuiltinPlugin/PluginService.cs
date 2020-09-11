@@ -11,7 +11,7 @@ namespace Romanesco.BuiltinPlugin
 		public void ConfigureServices(IServiceCollection services, IApiFactory hostFactory)
 		{
 			var master = new MasterListContext();
-			services.UseDeprovgenFactory(new Factory(master, hostFactory));
+			services.UseDeptorygenFactory(new Factory(master, hostFactory));
 		}
 	}
 }

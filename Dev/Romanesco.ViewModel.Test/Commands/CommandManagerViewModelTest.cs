@@ -29,7 +29,7 @@ namespace Romanesco.ViewModel.Test.Commands
 		{
 			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
 
-			var commands = new CommandAvailability(Mock.Of<IEditorState>());
+			var commands = new CommandAvailability(Mock.Of<IEditorState>(), Mock.Of<IEditorStateRepository>());
 			var subject = new CommandManagerViewModel(
 				commands,
 				new RootViewModel(),
