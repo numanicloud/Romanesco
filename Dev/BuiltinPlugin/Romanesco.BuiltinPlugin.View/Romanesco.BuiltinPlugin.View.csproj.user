@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="View\EnumView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\IdChoiceView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ListBlockView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ListInlineView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\CheckboxView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ClassInlineView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ClassBlockView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\PrimitiveListBlockView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\SubtypingBlockView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\SubtypingInlineView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\TextView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="View\EnumView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\IdChoiceView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ListBlockView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ListInlineView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\CheckboxView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ClassInlineView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ClassBlockView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Import.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\PrimitiveListBlockView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\SubtypingBlockView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\SubtypingInlineView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\TextView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

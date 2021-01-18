@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Reactive.Bindings;
+﻿using Reactive.Bindings;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Interfaces;
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Romanesco.Model.Commands
 {
 	// ステートが変わった際のイベントのつながり等のギャップを吸収する層
+	// ここより下の層で吸収できるようになったら削除するが、それまでの間ギャップによるバグを防ぐ
 	internal class CommandRouter : ICommandAvailabilityPublisher
 	{
 		private readonly IEditorStateRepository repository;
 
+		// CommandAvailability と IEditorState がスコープを共にしているのが気持ち悪いかも
+		// ステートごとに異なるインスタンスとるものは IEditorState だけにしたいかも
 		private ReactiveProperty<CommandAvailability> CommandAvailability { get; } = new ReactiveProperty<CommandAvailability>();
 
 		public CommandRouter(IEditorState state, IEditorStateRepository repository)

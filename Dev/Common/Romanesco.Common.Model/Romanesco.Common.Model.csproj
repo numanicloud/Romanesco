@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Romanesco.Annotations\Romanesco.Annotations.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ValueStorage\" />
+  </ItemGroup>
+
 </Project>
