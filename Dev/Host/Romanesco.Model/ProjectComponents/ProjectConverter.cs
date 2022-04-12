@@ -39,7 +39,7 @@ namespace Romanesco.Model.ProjectComponents
 				.Where(p => mock.GetAttributeData<EditorMemberAttribute>(p) != null)
 				.Select(p => interpreter.InterpretAsState(factory.FromDynamicMocksMember(mock, p)))
 				.ToArray();
-			return await MakeProject(members, settings, deserializer, interpreter);
+			return await MakeProject(members, settings, deserializer, interpreter, mock);
 		}
 
 		public static async Task<Project> FromInstanceAsync(ProjectSettings settings, IStateDeserializer deserializer, ObjectInterpreter interpreter, object instance)
@@ -52,7 +52,7 @@ namespace Romanesco.Model.ProjectComponents
 				.Select(f => interpreter.InterpretRootAsState(instance, f));
 			var states = properties.Concat(fields).ToArray();
 
-			return await MakeProject(states, settings, deserializer, interpreter);
+			return await MakeProject(states, settings, deserializer, interpreter, instance);
 		}
 
 		public static async Task<Project> FromDataAsync(ProjectData data, IStateDeserializer deserializer, ObjectInterpreter interpreter)
@@ -81,7 +81,8 @@ namespace Romanesco.Model.ProjectComponents
 			IFieldState[] topFields,
 			ProjectSettings settings,
 			IStateDeserializer deserializer,
-			ObjectInterpreter interpreter)
+			ObjectInterpreter interpreter,
+			object instance)
 		{
 			// àÀë∂ä÷åWÇì«Ç›çûÇﬁ
 			var list = new List<ProjectDependency>();
@@ -94,7 +95,7 @@ namespace Romanesco.Model.ProjectComponents
 				list.Add(new ProjectDependency(project, item));
 			}
 
-			var root = new StateRoot(topFields, topFields);
+			var root = new StateRoot(instance, topFields);
 
 			return new Project(settings, root, list.ToArray());
 		}

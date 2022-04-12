@@ -25,8 +25,7 @@ namespace Romanesco.Model.Commands
 
 	internal class CommandAvailability : IDisposable, ICommandAvailabilityPublisher
 	{
-		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> _canExecuteSubject
-			= new ReplaySubject<(EditorCommandType command, bool canExecute)>();
+		private readonly ReplaySubject<(EditorCommandType command, bool canExecute)> _canExecuteSubject = new();
 		private readonly IEditorState _currentState;
 		private readonly CreateCommand _createCommand;
 		private readonly OpenCommand _openCommand;

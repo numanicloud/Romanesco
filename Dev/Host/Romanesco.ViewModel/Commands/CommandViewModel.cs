@@ -17,7 +17,7 @@ namespace Romanesco.ViewModel.Commands
 		protected CommandViewModel(IReadOnlyReactiveProperty<bool> canExecuteObservable,
 			BooleanUsingScopeSource commandExecution)
 		{
-			subscription = canExecuteObservable.Concat(commandExecution.IsUsing.Select(x => !x))
+			subscription = canExecuteObservable.Merge(commandExecution.IsUsing.Select(x => !x))
 				.Subscribe(x =>
 				{
 					IsCanExecute = x;

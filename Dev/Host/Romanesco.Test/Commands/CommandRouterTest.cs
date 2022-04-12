@@ -63,5 +63,20 @@ namespace Romanesco.Test.Commands
 			commandRouter.UpdateState(nextState.Object);
 			Assert.False(commandRouter.CanCreate.Value);
 		}
+
+		[Fact]
+		public void ステートが変わるとCanSaveが更新される()
+		{
+			var saverService1 = MockHelper.GetSaveServiceMock(canSave: false, canExport: false);
+			var saverService2 = MockHelper.GetSaveServiceMock(canSave: true, canExport: true);
+			var currentState = MockHelper.GetEditorStateMock(saveService: saverService1.Object);
+			var nextState = MockHelper.GetEditorStateMock(saveService: saverService2.Object);
+
+			var commandRouter = new CommandRouter(currentState.Object, Mock.Of<IEditorStateRepository>());
+
+			Assert.False(commandRouter.CanSave.Value);
+			commandRouter.UpdateState(nextState.Object);
+			Assert.True(commandRouter.CanSave.Value);
+		}
 	}
 }
