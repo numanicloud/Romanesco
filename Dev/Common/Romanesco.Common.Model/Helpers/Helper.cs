@@ -80,7 +80,7 @@ namespace Romanesco.Common.Model.Helpers
             var disposable = new CompositeDisposable();
 
             source.CollectionChangedAsObservable().Where(x => x.Action == Add)
-                .Select(x => new { Index = x.NewStartingIndex, Item = x.NewItems.Cast<T>().First() })
+                .Select(x => new { Index = x.NewStartingIndex, Item = x.NewItems!.Cast<T>().First() })
                 .Subscribe(x => proxy.Insert(x.Index, converter(x.Item)))
                 .AddTo(disposable);
 
@@ -100,7 +100,7 @@ namespace Romanesco.Common.Model.Helpers
                 .AddTo(disposable);
 
             source.CollectionChangedAsObservable().Where(x => x.Action == Replace)
-                .Select(x => new { Index = x.NewStartingIndex, Item = x.NewItems.Cast<T>().First() })
+                .Select(x => new { Index = x.NewStartingIndex, Item = x.NewItems!.Cast<T>().First() })
                 .Subscribe(x => proxy[x.Index] = converter(x.Item))
                 .AddTo(disposable);
 

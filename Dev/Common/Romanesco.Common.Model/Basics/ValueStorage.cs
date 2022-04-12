@@ -20,7 +20,7 @@ namespace Romanesco.Common.Model.Basics
 
         public Type Type { get; }
         public string MemberName { get; }
-        public Attribute[] Attributes { get; set; }
+        public Attribute[] Attributes { get; private set; }
         public IObservable<object?> OnValueChanged => onValueChangedSubject;
         public IObservable<(object? value, object? old)> OnValueChangedWithOldValue => onValueChangedSubjectWithOldValue;
 

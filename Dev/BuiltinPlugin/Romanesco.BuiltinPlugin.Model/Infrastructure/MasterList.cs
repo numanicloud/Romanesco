@@ -1,6 +1,7 @@
 ﻿using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -51,7 +52,7 @@ namespace Romanesco.BuiltinPlugin.Model.Infrastructure
                 state.Storage.GetValue() is { } currentItem
                     && getter(currentItem) is { } currentId
                     && currentId.Equals(id));
-            return result;
+            return result ?? throw new KeyNotFoundException($"与えられたID {id} を持つ要素がありません。");
         }
 
         public object GetId(object subject)

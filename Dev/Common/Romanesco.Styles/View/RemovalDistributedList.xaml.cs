@@ -110,7 +110,7 @@ namespace Romanesco.Styles.View
 
 			if (itemsSource is INotifyCollectionChanged collectionChanged)
 			{
-				collectionChanged.CollectionChanged += CollectionChanged_CollectionChanged;
+				collectionChanged.CollectionChanged += CollectionChanged_CollectionChanged!;
 			}
 		}
 

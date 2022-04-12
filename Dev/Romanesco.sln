@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28729.10
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin", "BuiltinPlugin\Romanesco.BuiltinPlugin\Romanesco.BuiltinPlugin.csproj", "{7BACE71E-2D77-43D1-A31E-152F99383ED1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuiltinPlugin", "BuiltinPlugin", "{F5D542FD-12EF-4403-90D7-341A515BE1C9}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.BuiltinPlugin.Test", "BuiltinPlugin\Romanesco.BuiltinPlugin.Test\Romanesco.BuiltinPlugin.Test.csproj", "{D71384DB-B0E8-4880-838C-8D08B1EA0B7E}"
 EndProject
@@ -26,6 +29,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8315B547-3B96-42D3-901D-62376D548FC1}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Styles", "Common\Romanesco.Styles\Romanesco.Styles.csproj", "{E238D36A-6F79-478D-BFD6-76607FDE6FDF}"
@@ -50,7 +54,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco", "Host\Romanesco
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.Test", "Host\Romanesco.Test\Romanesco.Test.csproj", "{4AB38475-CEC5-4484-B480-559756E3BE95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Romanesco.ViewModel.Test", "Romanesco.ViewModel.Test\Romanesco.ViewModel.Test.csproj", "{19FB8267-3621-4BA2-8715-3878BB1F3CC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.ViewModel.Test", "Romanesco.ViewModel.Test\Romanesco.ViewModel.Test.csproj", "{19FB8267-3621-4BA2-8715-3878BB1F3CC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{95C95A51-EEAE-41FC-935F-31787FABCA39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -204,6 +210,14 @@ Global
 		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Release|x64.ActiveCfg = Release|Any CPU
 		{19FB8267-3621-4BA2-8715-3878BB1F3CC7}.Release|x64.Build.0 = Release|Any CPU
+		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Debug|x64.Build.0 = Debug|Any CPU
+		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Release|x64.ActiveCfg = Release|Any CPU
+		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
