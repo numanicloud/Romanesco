@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
@@ -106,6 +107,11 @@ namespace Romanesco.Model.Services.Load
 
 				var json = await reader.ReadToEndAsync();
 				var data = JsonConvert.DeserializeObject<ProjectData>(json);
+				if (data is null)
+				{
+					throw new SerializationException();
+				}
+
 				var project = await ProjectConverter.FromDataAsync(data, deserializer, interpreter);
 				project.DefaultSavePath = dialog.FileName;
 				return project;

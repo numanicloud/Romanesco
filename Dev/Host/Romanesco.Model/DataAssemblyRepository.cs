@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -81,7 +82,8 @@ namespace Romanesco.Model
 
 				if (path is {})
 				{
-					var assembly = context.LoadFromAssemblyPath(path.ToStringRepresentation());
+					Assembly assembly;
+					assembly = context.LoadFromAssemblyPath(path.ToStringRepresentation());
 					yield return LoadDependencies(context, assembly).ToLinear();
 				}
 			}

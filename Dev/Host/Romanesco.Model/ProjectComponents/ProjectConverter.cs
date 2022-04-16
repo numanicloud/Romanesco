@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Romanesco.Annotations;
@@ -91,6 +92,11 @@ namespace Romanesco.Model.ProjectComponents
 				using var file = new StreamReader(item);
 				var contents = await file.ReadToEndAsync();
 				var data = JsonConvert.DeserializeObject<ProjectData>(contents);
+				if (data is null)
+				{
+					throw new SerializationException();
+				}
+
 				var project = await FromDataAsync(data, deserializer, interpreter);
 				list.Add(new ProjectDependency(project, item));
 			}

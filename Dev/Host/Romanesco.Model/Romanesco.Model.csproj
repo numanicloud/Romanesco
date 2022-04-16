@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <UseWPF>true</UseWPF>
@@ -9,7 +9,7 @@
     <PackageReference Include="Deptorygen" Version="1.0.5" />
     <PackageReference Include="Deptorygen.Annotations" Version="1.0.5" />
     <PackageReference Include="Deptorygen.GenericHost" Version="1.0.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
