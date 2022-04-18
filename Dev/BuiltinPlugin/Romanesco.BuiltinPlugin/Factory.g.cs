@@ -55,7 +55,7 @@ namespace Romanesco.BuiltinPlugin
 
 		public IdStateFactory ResolveIdStateFactory()
 		{
-			return _ResolveIdStateFactoryCache ??= new IdStateFactory(_masterListContext);
+			return _ResolveIdStateFactoryCache ??= new IdStateFactory(_masterListContext, Host.ResolveCommandHistory());
 		}
 
 		public ListStateFactory ResolveListStateFactory()

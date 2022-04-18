@@ -1,4 +1,5 @@
-﻿using Romanesco.Annotations;
+﻿using System.Collections.Generic;
+using Romanesco.Annotations;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
@@ -9,11 +10,13 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
     public class IdStateFactory : IStateFactory
     {
         private readonly MasterListContext context;
+		private readonly CommandHistory _commandHistory;
 
-        public IdStateFactory(MasterListContext context)
-        {
-            this.context = context;
-        }
+		public IdStateFactory(MasterListContext context, CommandHistory commandHistory)
+		{
+			this.context = context;
+			_commandHistory = commandHistory;
+		}
 
         public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
         {
@@ -25,6 +28,11 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
                 {
                     return new States.IntIdChoiceState(settability, attr.MasterName, context);
                 }
+                else if (type == typeof(List<int>))
+				{
+					return new States.IntIdChoiceListState(settability, attr.MasterName, context,
+						_commandHistory);
+				}
             }
             return null;
         }

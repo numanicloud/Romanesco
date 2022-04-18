@@ -16,7 +16,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 {
 	public sealed class ListState : SimpleStateBase
 	{
-		private class Element : IDisposable
+		public class Element : IDisposable
 		{
 			private Element(IFieldState state, IDisposable subscription)
 			{
