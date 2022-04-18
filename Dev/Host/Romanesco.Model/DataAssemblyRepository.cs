@@ -83,7 +83,14 @@ namespace Romanesco.Model
 				if (path is {})
 				{
 					Assembly assembly;
-					assembly = context.LoadFromAssemblyPath(path.ToStringRepresentation());
+					try
+					{
+						assembly = context.LoadFromAssemblyPath(path.ToStringRepresentation());
+					}
+					catch (FileLoadException)
+					{
+						continue;
+					}
 					yield return LoadDependencies(context, assembly).ToLinear();
 				}
 			}

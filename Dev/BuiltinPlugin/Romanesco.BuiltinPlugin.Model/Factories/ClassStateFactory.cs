@@ -39,7 +39,9 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 
 			IFieldState[] MakeClassMembers()
 			{
+				// インデクサーは取り除く
 				var properties = from p in type.GetProperties()
+					where p.GetIndexParameters().IsEmpty()
 					let order = GetMemberAttributesOrder(p)
 					select (state: interpret(new ValueStorage(subject, p)), order);
 
