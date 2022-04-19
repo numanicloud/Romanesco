@@ -11,12 +11,6 @@ using Romanesco.Common.Model.Reflections;
 
 namespace Romanesco.BuiltinPlugin.Model.Factories
 {
-	class Hoge
-	{
-		[EditorMember(order:99)]
-		public int I { get; set; }
-	}
-
     public class ClassStateFactory : IStateFactory
     {
 		private readonly IDataAssemblyRepository asmRepo;
@@ -73,7 +67,13 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			}
 			else
 			{
-				if (asmRepo.CreateInstance(type) is { } classInstance)
+				if (type == typeof(string))
+				{
+					var str = "";
+					storage.SetValue(str);
+					subject = str;
+				}
+				else if (asmRepo.CreateInstance(type) is { } classInstance)
 				{
 					storage.SetValue(classInstance);
 					subject = classInstance;

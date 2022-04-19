@@ -15,8 +15,8 @@ namespace Romanesco.BuiltinPlugin
 				hostFactory.ResolveCommandHistory(),
 				hostFactory.ResolveDataAssemblyRepository());
 
-			factory.ConfigureServices(services);
 			services.AddTransient<IStateFactory>(_ => factory.ResolvePrimitiveStateFactory());
+			factory.ConfigureServices(services);
 		}
 	}
 }

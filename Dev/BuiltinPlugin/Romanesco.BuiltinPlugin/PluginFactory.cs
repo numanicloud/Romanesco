@@ -2,6 +2,7 @@
 using Imfact.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Romanesco.BuiltinPlugin.Model.Factories;
+using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.BuiltinPlugin.View.Factories;
 using Romanesco.BuiltinPlugin.ViewModel.Factories;
 using Romanesco.Common.Model.Interfaces;
@@ -95,6 +96,10 @@ namespace Romanesco.BuiltinPlugin
 		[Resolution(typeof(SubtypingViewFactory))]
 		[Cache]
 		public partial IViewFactory ResolveSubtypingViewFactory();
+
+		[Resolution(typeof(IdListViewFactory))]
+		[Cache]
+		public partial IViewFactory ResolveIntIdChoiceListViewFactory();
 
 		[Exporter]
 		public void ConfigureServices<TInterface>
