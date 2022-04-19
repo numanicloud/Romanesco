@@ -19,19 +19,34 @@ namespace Romanesco.BuiltinPlugin.Model.States
 {
 	public class IntIdChoiceListState : SimpleStateBase
 	{
+		record Element(IntIdChoiceState State, IDisposable Subscription)
+		{
+			public static Element Create(IntIdChoiceState state, IObserver<Unit> onContentsChanged)
+			{
+				var subscription = state.OnEdited
+					.Subscribe(_ => onContentsChanged.OnNext(Unit.Default));
+				return new Element(state, subscription);
+			}
+		}
+
+		private readonly string _masterName;
+		private readonly MasterListContext _masterList;
 		private readonly CommandHistory _history;
 		private readonly Subject<Unit> _onContentsChanged = new();
-		private readonly ObservableCollection<ListState.Element> _elements = new();
+		private readonly ObservableCollection<Element> _elements = new();
 		private readonly List<int> _listInstance;
 		private readonly ValueStorageFactory _valueStorageFactory = new();
 
 		public ReactiveProperty<MasterList?> Master { get; } = new();
-		public ReadOnlyReactiveCollection<string?> SelectedItemStrings { get; }
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
+
+		public ReadOnlyReactiveCollection<IntIdChoiceState> ChoiceStates { get; }
 
 		public IntIdChoiceListState(ValueStorage storage, string masterName, MasterListContext masterList, CommandHistory history)
 			: base(storage)
 		{
+			_masterName = masterName;
+			_masterList = masterList;
 			_history = history;
 			if (storage.GetValue() is List<int> list)
 			{
@@ -48,33 +63,26 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 			UpdateChoices(masterName, masterList);
 
-			SelectedItemStrings = _onContentsChanged
-				.SelectMany(_ => _listInstance.Select(x => Master.Value?.State.Elements[x].ToString()))
-				.ToReadOnlyReactiveCollection();
+			ChoiceStates = _elements.ToReadOnlyReactiveCollection(x => x.State);
 
 			FormattedString = _onContentsChanged.Select(_ => $"Count = {_elements.Count}")
 				.ToReadOnlyReactiveProperty("Count = 0");
 		}
 
-		public IReadOnlyReactiveProperty<IFieldState?> AddNewElement()
+		public void AddNewElement()
 		{
-			var state = Insert(0, _elements.Count);
-			return state.OnEdited
-				.Select(_ => Master.Value?.State.Elements[state.PrimitiveContent.Value])
-				.ToReadOnlyReactiveProperty(null);
+			Insert(0, _elements.Count);
 		}
 
-		public IntState Insert(int value, int index)
+		public void Insert(int value, int index)
 		{
 			var storage = _valueStorageFactory.FromListElement(typeof(int), _listInstance,
 				index.ToString(), value);
-			var state = new IntState(storage, _history);
+			var state = new IntIdChoiceState(storage, _masterName, _masterList);
 
-			_elements.Insert(index, ListState.Element.Create(state, _onContentsChanged));
+			_elements.Insert(index, Element.Create(state, _onContentsChanged));
 			_listInstance.Insert(index, value);
 			_onContentsChanged.OnNext(Unit.Default);
-
-			return state;
 		}
 
 		public void RemoveAt(int index)

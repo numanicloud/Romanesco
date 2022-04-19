@@ -97,6 +97,31 @@ namespace Romanesco.Sample
         public List<Fuga> Fugas { get; set; } = new List<Fuga>();
     }
 
+	public class SimpleType
+	{
+		[EditorMember]
+		public int Id { get; set; }
+        [EditorMember]
+		public int X { get; set; }
+		[EditorMember]
+        public int Y { get; set; }
+		public override string ToString()
+		{
+			return $"({X}, {Y})";
+		}
+	}
+
+    [EditorProject]
+	public class IdChoiceListTest
+	{
+        [EditorMaster(nameof(Hoges), nameof(SimpleType.Id))]
+        [EditorMember]
+		public List<SimpleType> Hoges { get; set; } = new();
+
+        [EditorChoiceOfMaster(nameof(Hoges))]
+		public List<int> References { get; set; } = new();
+	}
+
     public class SampleExporter : IProjectTypeExporter
     {
         public bool DoExportIntoSingleFile => false;
