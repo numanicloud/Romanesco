@@ -20,8 +20,8 @@ namespace Romanesco.ViewModel.Editor
 	{
 		private readonly Dictionary<EditorCommandType, EditorCommand> _commands;
 
+		public IEditorFacade Editor { get; }
 		public ReactiveProperty<IStateViewModel[]> Roots { get; }
-
 		public ICommand CreateCommand => _commands[Create];
 		public ICommand OpenCommand => _commands[Open];
 		public ICommand SaveCommand => _commands[Save];
@@ -34,6 +34,7 @@ namespace Romanesco.ViewModel.Editor
 
 		public EditorViewModel(IEditorFacade editor, IViewModelInterpreter interpreter)
 		{
+			Editor = editor;
 			Roots = editor.Roots
 				.Select(x => x.Select(interpreter.InterpretAsViewModel).ToArray())
 				.ToReactiveProperty(Array.Empty<IStateViewModel>());

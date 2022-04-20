@@ -30,11 +30,11 @@ namespace Romanesco.Model.Infrastructure
 		private ProjectSaveServiceFactory? _ResolveProjectSaveServiceFactoryCache;
 		private ProjectModelFactory? _ResolveProjectModelFactoryCache;
 		private CommandContext? _ResolveCommandContextCache;
-		private ProjectSwitcher? _ResolveProjectSwitcherCache;
 		private NewtonsoftStateSerializer? _ResolveStateSerializerCache;
 		private NewtonsoftStateDeserializer? _ResolveStateDeserializerCache;
 		private ObjectInterpreter? _ResolveObjectInterpreterCache;
 		private ObjectInterpreter? _ResolveIObjectInterpreterCache;
+		private ProjectSwitcher? _ResolveProjectSwitcherCache;
 
 		public ModelFactory(IModelRequirementFactory requirement, IPluginFactory plugin)
 		{
@@ -44,7 +44,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public Editor ResolveEditor()
 		{
-			return _ResolveEditorCache ??= new Editor(ResolveProjectSwitcher(), ResolveEditorState(), ResolveCommandContext());
+			return _ResolveEditorCache ??= new Editor(ResolveProjectSwitcher(), ResolveEditorStateChanger(), ResolveCommandContext());
 		}
 
 		public IEditorStateChanger ResolveEditorStateChanger()
@@ -87,11 +87,6 @@ namespace Romanesco.Model.Infrastructure
 			return _ResolveCommandContextCache ??= new CommandContext(ResolveProjectSwitcher(), ResolveEditorStateChanger(), this);
 		}
 
-		public IProjectSwitcher ResolveProjectSwitcher()
-		{
-			return _ResolveProjectSwitcherCache ??= new ProjectSwitcher();
-		}
-
 		public IEditorFacade ResolveEditorFacade()
 		{
 			return ResolveEditor();
@@ -120,6 +115,11 @@ namespace Romanesco.Model.Infrastructure
 		public IObjectInterpreter ResolveIObjectInterpreter()
 		{
 			return _ResolveIObjectInterpreterCache ??= new ObjectInterpreter(Plugin.ResolveStateFactories());
+		}
+
+		public IProjectSwitcher ResolveProjectSwitcher()
+		{
+			return _ResolveProjectSwitcherCache ??= new ProjectSwitcher();
 		}
 
 		public void Dispose()

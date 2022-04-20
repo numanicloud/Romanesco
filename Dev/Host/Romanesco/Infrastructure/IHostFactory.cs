@@ -1,6 +1,7 @@
 ﻿using Deptorygen.Annotations;
 using Deptorygen.GenericHost;
 using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
 using Romanesco.Extensibility;
 using Romanesco.Model;

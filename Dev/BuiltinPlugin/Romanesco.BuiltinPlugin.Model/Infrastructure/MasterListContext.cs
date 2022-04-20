@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Subjects;
+using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.Model.ProjectComponent;
 
 namespace Romanesco.BuiltinPlugin.Model.Infrastructure
 {
@@ -12,6 +14,11 @@ namespace Romanesco.BuiltinPlugin.Model.Infrastructure
         public IReadOnlyDictionary<string, MasterList> Masters => masterDictionary;
 
         public IObservable<string> OnKeyAdded => onKeyAdded;
+
+		public MasterListContext(IApiFactory api)
+		{
+			api.OnProjectChanged.Subscribe(x => ClearList());
+		}
 
         public void ClearList()
         {

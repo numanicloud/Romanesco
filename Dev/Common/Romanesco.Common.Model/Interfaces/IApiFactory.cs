@@ -1,5 +1,7 @@
-﻿using Deptorygen.Annotations;
+﻿using System;
+using Deptorygen.Annotations;
 using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
 
 namespace Romanesco.Common.Model.Interfaces
@@ -11,5 +13,7 @@ namespace Romanesco.Common.Model.Interfaces
 		CommandHistory ResolveCommandHistory();
 		IObjectInterpreter ResolveObjectInterpreter();
 		TService ResolveByPlugins<TService>() where TService : class;
+
+		IObservable<IProjectContext> OnProjectChanged { get; }
 	}
 }

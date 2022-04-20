@@ -1,6 +1,8 @@
-﻿using Imfact.Annotations;
+﻿using System;
+using Imfact.Annotations;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
 
 namespace Romanesco.BuiltinPlugin
@@ -34,5 +36,7 @@ namespace Romanesco.BuiltinPlugin
 		{
 			return _api.ResolveByPlugins<TService>();
 		}
+
+		public IObservable<IProjectContext> OnProjectChanged => _api.OnProjectChanged;
 	}
 }

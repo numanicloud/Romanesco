@@ -30,6 +30,8 @@ namespace Romanesco.Model.Infrastructure
 		ObjectInterpreter ResolveObjectInterpreter();
 		[Resolution(typeof(ObjectInterpreter))]
 		IObjectInterpreter ResolveIObjectInterpreter();
+		[Resolution(typeof(ProjectSwitcher))]
+		IProjectSwitcher ResolveProjectSwitcher();
 	}
 
 	[Factory]
@@ -71,8 +73,5 @@ namespace Romanesco.Model.Infrastructure
 		IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext);
 		
 		CommandContext ResolveCommandContext();
-
-		[Resolution(typeof(ProjectSwitcher))]
-		IProjectSwitcher ResolveProjectSwitcher();
 	}
 }

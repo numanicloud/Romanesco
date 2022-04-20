@@ -9,7 +9,7 @@ namespace Romanesco.BuiltinPlugin
 	{
 		public void ConfigureServices(IServiceCollection services, IApiFactory hostFactory)
 		{
-			var master = new MasterListContext();
+			var master = new MasterListContext(hostFactory);
 			var factory = new PluginFactory(hostFactory,
 				master,
 				hostFactory.ResolveCommandHistory(),

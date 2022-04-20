@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NacHelpers.Extensions;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Extensibility;
 using Romanesco.Infrastructure;
@@ -23,10 +24,21 @@ namespace Romanesco.Startup
 		public async Task StartAsync(CancellationToken cancellationToken)
 		{
 			var api = new ApiFactory(host);
-			var pluginServices = GetPluginServices(api);
+			var pluginLoader = new PluginLoader();
+			var extensions = pluginLoader.Load("Plugins");
+			
+			// これだとOnProjectChangedがNeverになってしまう。
+			// ModelFactoryが出来た後に回したいが、BuildServerProviderより前でないとUIが生成できなくなってしまう。
+			// IProjectSwitcherだけ先に挿し込むのがいいかもしれない。
+			var serviceCollection = new ServiceCollection();
+			extensions.ConfigureServices(serviceCollection, api);
+
+			var pluginServices = (ServiceProvider)serviceCollection.BuildServiceProvider();
 			var (model, view) = ResolveFactory(new PluginFactory(pluginServices));
 			api.ModelFactory = model;
 			api.Provider = pluginServices;
+
+			api.OnProjectChangedProperty.Value = model.ResolveProjectSwitcher().ProjectStream.FilterNullRef();
 
 			mainWindow = host.ResolveMainWindow();
 			mainWindow.DataContext = view.ResolveEditorViewContext();
@@ -55,17 +67,6 @@ namespace Romanesco.Startup
 			modelRequirement.ViewModel = viewModelFactory;
 
 			return (modelFactory, viewFactory);
-		}
-
-		public ServiceProvider GetPluginServices(IApiFactory api)
-		{
-			var pluginLoader = new PluginLoader();
-			var extensions = pluginLoader.Load("Plugins");
-
-			var serviceCollection = new ServiceCollection();
-			extensions.ConfigureServices(serviceCollection, api);
-
-			return serviceCollection.BuildServiceProvider();
 		}
 	}
 }

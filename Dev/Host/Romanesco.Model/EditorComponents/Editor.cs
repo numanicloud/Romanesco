@@ -1,7 +1,7 @@
 ﻿using Reactive.Bindings;
-using Romanesco.Model.EditorComponents.States;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
@@ -11,10 +11,8 @@ namespace Romanesco.Model.EditorComponents
 {
 	internal sealed class Editor : IEditorFacade, IDisposable
 	{
-		private readonly ReactiveProperty<IEditorState> _editorState = new();
-
 		public List<IDisposable> Disposables { get; } = new();
-		public ReactiveProperty<string> ApplicationTitle { get; } = new();
+		public ReactiveProperty<string> ApplicationTitle { get; }
 		public CommandContext CommandContext { get; }
 		public IProjectSwitcher ProjectSwitcher { get; }
 
@@ -22,18 +20,17 @@ namespace Romanesco.Model.EditorComponents
 
 		public Editor
 			(IProjectSwitcher switcher,
-			IEditorState initialState,
+			IEditorStateChanger stateChanger,
 			CommandContext commands)
 		{
 			ProjectSwitcher = switcher;
 			CommandContext = commands;
 			Roots = new ReactiveProperty<IFieldState[]>(ProjectSwitcher.GetProject()?.StateRoot.States ?? Array.Empty<IFieldState>());
-
-			// commandAvailability の初期化を保証しなければならないので、
-			// ChangeStateをインライン化した
-			_editorState.Value = initialState;
-			UpdateTitle();
 			
+			ApplicationTitle = stateChanger.OnChange
+				.Select(x => x.Title)
+				.ToReactiveProperty("");
+
 			SetUpCommand();
 		}
 
@@ -44,8 +41,6 @@ namespace Romanesco.Model.EditorComponents
 
 		private void SetProject(IProjectContext? projectContext)
 		{
-			UpdateTitle();
-
 			Roots.Value = ProjectSwitcher.GetProject()?.StateRoot.States ?? Array.Empty<IFieldState>();
 
 			ObserveEdit(projectContext);
@@ -64,8 +59,6 @@ namespace Romanesco.Model.EditorComponents
 				})
 				.AddTo(Disposables);
 		}
-
-		private void UpdateTitle() => ApplicationTitle.Value = _editorState.Value.Title;
 
 		public void Dispose()
 		{
