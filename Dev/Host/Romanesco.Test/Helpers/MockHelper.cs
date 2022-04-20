@@ -42,25 +42,7 @@ namespace Romanesco.Test.Helpers
 
 			return mock;
 		}
-
-		public static Mock<IEditorState> GetEditorStateMock(CommandAvailability? commandAvailability = null,
-			IProjectLoadService? loadService = null,
-			IProjectSaveService? saveService = null,
-			IProjectHistoryService? historyService = null)
-		{
-			var mock = new Mock<IEditorState>();
-
-			mock.Setup(x => x.GetLoadService())
-				.Returns(loadService ?? new NullLoadService());
-
-			mock.Setup(x => x.GetSaveService())
-				.Returns(saveService ?? new NullSaveService());
-
-			mock.Setup(x => x.GetHistoryService())
-				.Returns(historyService ?? new SimpleHistoryService(new CommandHistory()));
-
-			return mock;
-		}
+		
 
 		public static Mock<IProjectSaveService> GetSaveServiceMock(bool? canSave = null, bool? canExport = null)
 		{

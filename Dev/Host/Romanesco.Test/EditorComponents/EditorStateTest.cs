@@ -16,24 +16,6 @@ namespace Romanesco.Test.EditorComponents
 {
 	public class EditorStateTest
 	{
-		// ここはEditorState自身のテストなので、MockHelperからIEditorStateの実装を取ってはいけない
-
-		[Theory]
-		[InlineData(EditorCommandType.Undo)]
-		[InlineData(EditorCommandType.Redo)]
-		public void UndoとRedoの状態を更新できる(EditorCommandType type)
-		{
-			// これはもはや CommandAvailability のテスト
-			var editorState = GetDirtyEditorState(historyService: CreateHistoryMock());
-			var availability = new CommandAvailability(editorState, Mock.Of<IEditorStateRepository>());
-
-			using var once = availability.Observable
-				.Where(x => x.command == type)
-				.ExpectAtLeastOnce();
-
-			availability.UpdateCanExecute(editorState.GetHistoryService());
-		}
-
 		private static DirtyEditorState GetDirtyEditorState(Mock<IProjectLoadService>? loadService = null,
 			Mock<IProjectSaveService>? saveService = null,
 			Mock<IProjectHistoryService>? historyService = null)

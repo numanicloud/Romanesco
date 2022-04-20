@@ -20,4 +20,10 @@
     <ProjectReference Include="..\..\submodules\NacHelper\NacHelpers\NacHelpers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\History\" />
+    <Folder Include="Commands\Load\" />
+    <Folder Include="Commands\Save\" />
+  </ItemGroup>
+
 </Project>

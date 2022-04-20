@@ -20,41 +20,6 @@ namespace Romanesco.ViewModel.Test.Commands
 {
 	public class CommandViewModelTest
 	{
-		[Theory]
-		[InlineData(Create)]
-		[InlineData(Open)]
-		[InlineData(Save)]
-		[InlineData(SaveAs)]
-		[InlineData(Export)]
-		[InlineData(Undo)]
-		[InlineData(Redo)]
-		public void コマンドの実行可能性が反映される(EditorCommandType type)
-		{
-			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
-
-			var commands = new CommandAvailability(Mock.Of<IEditorState>(), Mock.Of<IEditorStateRepository>());
-			var roots = new ReactiveProperty<IStateViewModel[]>();
-			var interpreter = Mock.Of<IViewModelInterpreter>();
-			var commandExecution = new BooleanUsingScopeSource();
-
-			ICommand targetCommand = type switch
-			{
-				Create => new CreateCommandViewModel(commands, roots, interpreter, commandExecution),
-				Open => new OpenCommandViewModel(commands, commandExecution, roots, interpreter),
-				Save => new SaveCommandViewModel(commands, commandExecution),
-				SaveAs => new SaveAsCommandViewModel(commands, commandExecution),
-				Export => new ExportCommandViewModel(commands, commandExecution),
-				Undo => new UndoCommandViewModel(commands, commandExecution),
-				Redo => new RedoCommandViewModel(commands, commandExecution),
-				_ => throw new NotImplementedException(),
-			};
-
-			commands.UpdateCanExecute(type, false);
-			Assert.False(targetCommand.CanExecute(null));
-
-			commands.UpdateCanExecute(type, true);
-			Assert.True(targetCommand.CanExecute(null));
-		}
 
 		private void AssertCommandGoToModel<TCommandResult>(
 			Expression<Func<ICommandAvailabilityPublisher, IReadOnlyReactiveProperty<bool>>> canExecuteExpression,

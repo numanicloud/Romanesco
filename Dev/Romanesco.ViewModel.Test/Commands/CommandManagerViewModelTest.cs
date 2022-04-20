@@ -17,43 +17,6 @@ namespace Romanesco.ViewModel.Test.Commands
 {
 	public class CommandManagerViewModelTest
 	{
-		[Theory]
-		[InlineData(Create)]
-		[InlineData(Open)]
-		[InlineData(Save)]
-		[InlineData(SaveAs)]
-		[InlineData(Export)]
-		[InlineData(Undo)]
-		[InlineData(Redo)]
-		public void コマンドの実行可能性が反映される(EditorCommandType type)
-		{
-			SynchronizationContext.SetSynchronizationContext(new TestSynchronizationContext());
-
-			var commands = new CommandAvailability(Mock.Of<IEditorState>(), Mock.Of<IEditorStateRepository>());
-			var subject = new CommandManagerViewModel(
-				commands,
-				new RootViewModel(),
-				Mock.Of<IViewModelInterpreter>());
-
-			var targetCommand = type switch
-			{
-				Create => subject.Create,
-				Open => subject.Open,
-				Save => subject.Save,
-				SaveAs => subject.SaveAs,
-				Export => subject.Export,
-				Undo => subject.Undo,
-				Redo => subject.Redo,
-				_ => throw new NotImplementedException(),
-			};
-
-			commands.UpdateCanExecute(type, false);
-			Assert.False(targetCommand.CanExecute(null));
-
-			commands.UpdateCanExecute(type, true);
-			Assert.True(targetCommand.CanExecute(null));
-		}
-
 		[Fact]
 		public void Createコマンドがモデルに伝わる()
 		{
