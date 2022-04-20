@@ -10,7 +10,6 @@ using Romanesco.Common.Model.Helpers;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.ProjectComponents;
-using Romanesco.ViewModel.Commands;
 using Romanesco.ViewModel.Project;
 using Romanesco.ViewModel.States;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
