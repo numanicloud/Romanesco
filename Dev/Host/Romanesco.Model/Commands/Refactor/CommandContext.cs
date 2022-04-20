@@ -13,6 +13,8 @@ public class CommandContext
 	private readonly Dictionary<EditorCommandType, CommandModelRefactor> _commands = new();
 	private readonly BooleanUsingScopeSource _usingScope = new ();
 
+	public IReadOnlyDictionary<EditorCommandType, CommandModelRefactor> Commands => _commands;
+
 	internal CommandContext(IProjectSwitcher projectSwitcher,
 		IEditorStateChanger stateChanger,
 		IModelFactory factory)

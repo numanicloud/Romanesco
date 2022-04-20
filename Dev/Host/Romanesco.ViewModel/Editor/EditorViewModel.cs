@@ -52,6 +52,8 @@ namespace Romanesco.ViewModel.Editor
 
 			Disposables = editor.Disposables;
 			GcDebugCommand.SubscribeSafe(x => GC.Collect()).AddTo(editor.Disposables);
+
+			_commands.ForEach(t => Disposables.Add(t.Value));
 		}
 
 		public void ShowProjectSetting(ProjectSettingsEditor editor)
