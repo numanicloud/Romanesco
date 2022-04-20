@@ -40,7 +40,10 @@
                                   SelectedItem="{Binding SelectedItem.Value}"
                                   DisplayMemberPath="FormattedString.Value"
                                   Grid.Column="0"/>
-                        <Button Grid.Column="1" Content="×"/>
+                        <Button Grid.Column="1" 
+                                Content="×" 
+                                Command="{Binding Path=DataContext.RemoveCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

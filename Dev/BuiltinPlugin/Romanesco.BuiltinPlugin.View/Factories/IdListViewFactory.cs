@@ -39,7 +39,11 @@ namespace Romanesco.BuiltinPlugin.View.Factories
 				{
 					try
 					{
-						vm.RemoveAt(i);
+						var index = vm.Elements.IndexOf(i);
+						if (index != -1)
+						{
+							vm.RemoveAt(index);
+						}
 					}
 					catch (Exception ex)
 					{
