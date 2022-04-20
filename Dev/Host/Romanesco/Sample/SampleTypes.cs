@@ -107,7 +107,7 @@ namespace Romanesco.Sample
         public int Y { get; set; }
 		public override string ToString()
 		{
-			return $"({X}, {Y})";
+			return $"{Id}:({X}, {Y})";
 		}
 	}
 

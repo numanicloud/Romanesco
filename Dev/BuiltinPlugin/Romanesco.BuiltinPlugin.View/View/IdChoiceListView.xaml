@@ -33,17 +33,19 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" SharedSizeGroup="combobox"/>
-                            <ColumnDefinition Width="30" SharedSizeGroup="button"/>
+                            <ColumnDefinition Width="40" SharedSizeGroup="button"/>
                         </Grid.ColumnDefinitions>
 
                         <ComboBox ItemsSource="{Binding Path=DataContext.Choices, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                                   SelectedItem="{Binding SelectedItem.Value}"
                                   DisplayMemberPath="FormattedString.Value"
-                                  Grid.Column="0"/>
+                                  Grid.Column="0"
+                                  Margin="4"/>
                         <Button Grid.Column="1" 
                                 Content="×" 
                                 Command="{Binding Path=DataContext.RemoveCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
-                                CommandParameter="{Binding}"/>
+                                CommandParameter="{Binding}"
+                                Margin="4" Width="25" Height="25"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -52,10 +54,10 @@
         <Grid Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" SharedSizeGroup="combobox"/>
-                <ColumnDefinition Width="30" SharedSizeGroup="button"/>
+                <ColumnDefinition Width="40" SharedSizeGroup="button"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" Content="+" Command="{Binding AddCommand}"/>
+            <Button Grid.Column="1" Content="+" Command="{Binding AddCommand}" Margin="4" Width="25" Height="25"/>
         </Grid>
     </Grid>
 </UserControl>

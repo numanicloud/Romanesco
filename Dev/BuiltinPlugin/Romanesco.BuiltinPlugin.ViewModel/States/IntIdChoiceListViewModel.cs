@@ -14,9 +14,9 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 	{
 		public ObservableCollection<IFieldState>? Choices { get; private set; }
 		public ReadOnlyObservableCollection<IntIdChoiceState> Elements => State.ChoiceStates;
-		public ReactiveCommand AddCommand { get; } = new ReactiveCommand();
+		public ReactiveCommand AddCommand { get; } = new();
 		public ReactiveCommand<IntIdChoiceState> RemoveCommand { get; } = new ();
-		public ReactiveCommand EditCommand { get; } = new ReactiveCommand();
+		public ReactiveCommand EditCommand { get; } = new();
 		public List<IDisposable> Disposables => State.Disposables;
 
 		public IntIdChoiceListViewModel(IntIdChoiceListState state)
