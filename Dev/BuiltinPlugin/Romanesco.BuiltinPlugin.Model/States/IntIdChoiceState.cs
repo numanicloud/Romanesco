@@ -3,6 +3,7 @@ using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.Implementations;
@@ -12,8 +13,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 	public class IntIdChoiceState : SimpleStateBase
 	{
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
-		public ReactiveProperty<MasterList?> Master { get; } = new ReactiveProperty<MasterList?>();
-		public ReactiveProperty<IFieldState> SelectedItem { get; } = new ReactiveProperty<IFieldState>();
+		public ReactiveProperty<MasterList?> Master { get; } = new();
+		public ReactiveProperty<IFieldState?> SelectedItem { get; } = new ();
 
 		public IntIdChoiceState(ValueStorage storage, string masterName, MasterListContext context) : base(storage)
 		{
@@ -42,8 +43,14 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			if (context.Masters.TryGetValue(masterName, out var list) && list.IdType == typeof(int))
 			{
 				Master.Value = list;
-				// �����l����[�h
-				SelectedItem.Value = list.GetById(Storage.GetValue() ?? -1);
+				try
+				{
+					SelectedItem.Value = list.GetById(Storage.GetValue() ?? -1);
+				}
+				catch (KeyNotFoundException)
+				{
+					SelectedItem.Value = null;
+				}
 			}
 			else
 			{

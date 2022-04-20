@@ -14,16 +14,15 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ItemsControl Grid.ColumnSpan="2" Grid.Column="0" ItemsSource="{Binding Elements}">
+        <style:PaneTitleTip DataContext="{Binding Title.Value}" Grid.Row="0"/>
+
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Elements}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Vertical"/>
@@ -31,9 +30,29 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <ComboBox ItemsSource="{Binding Choices}" SelectedItem=""></ComboBox>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" SharedSizeGroup="combobox"/>
+                            <ColumnDefinition Width="30" SharedSizeGroup="button"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox ItemsSource="{Binding Path=DataContext.Choices, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                  SelectedItem="{Binding SelectedItem.Value}"
+                                  DisplayMemberPath="FormattedString.Value"
+                                  Grid.Column="0"/>
+                        <Button Grid.Column="1" Content="×"/>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+
+        <Grid Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" SharedSizeGroup="combobox"/>
+                <ColumnDefinition Width="30" SharedSizeGroup="button"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1" Content="+" Command="{Binding AddCommand}"/>
+        </Grid>
     </Grid>
 </UserControl>

@@ -35,6 +35,10 @@ namespace Romanesco.BuiltinPlugin
 		[Cache]
 		public partial PrimitiveStateFactory ResolvePrimitiveStateFactory();
 
+		[Resolution(typeof(PrimitiveStateFactory))]
+		[Cache]
+		public partial IStateFactory ResolvePrimitiveStateFactory2();
+
 		[Resolution(typeof(EnumStateFactory))]
 		[Cache]
 		public partial IStateFactory ResolveEnumStateFactory();

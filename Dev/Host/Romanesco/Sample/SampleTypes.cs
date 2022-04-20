@@ -119,7 +119,12 @@ namespace Romanesco.Sample
 		public List<SimpleType> Hoges { get; set; } = new();
 
         [EditorChoiceOfMaster(nameof(Hoges))]
+        [EditorMember]
 		public List<int> References { get; set; } = new();
+
+		[EditorChoiceOfMaster(nameof(Hoges))]
+		[EditorMember]
+        public int Single { get; set; }
 	}
 
     public class SampleExporter : IProjectTypeExporter

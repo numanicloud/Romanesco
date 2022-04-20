@@ -12,6 +12,10 @@ namespace Romanesco.BuiltinPlugin.ViewModel.Factories
             {
                 return new States.IntIdChoiceViewModel(intid);
             }
+            else if (state is IntIdChoiceListState list)
+			{
+				return new States.IntIdChoiceListViewModel(list);
+			}
             return null;
         }
     }
