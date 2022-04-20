@@ -20,7 +20,7 @@ namespace Romanesco.Model.EditorComponents.States
 			IProjectSaveService saveService,
 			IProjectModelFactory factory,
 			IEditorStateChanger editorStateChanger)
-	        : base(factory, editorStateChanger)
+	        : base()
         {
 			this.loadService = loadService;
             this.saveService = saveService;

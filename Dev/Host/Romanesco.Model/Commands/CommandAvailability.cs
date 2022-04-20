@@ -131,7 +131,6 @@ namespace Romanesco.Model.Commands
 
 		public void NotifyEdit()
 		{
-			_currentState.OnEdit();
 			UpdateCanExecute(_currentState.GetHistoryService());
 		}
 	}

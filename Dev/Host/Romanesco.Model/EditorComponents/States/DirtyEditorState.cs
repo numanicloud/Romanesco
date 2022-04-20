@@ -1,6 +1,5 @@
 ﻿using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
-using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
@@ -20,9 +19,8 @@ namespace Romanesco.Model.EditorComponents.States
 			IProjectHistoryService historyService,
 			IProjectSaveService saveService,
 			IProjectContext project,
-			IProjectModelFactory factory,
 			IEditorStateChanger editorStateChanger)
-			: base(factory, editorStateChanger)
+			: base()
 		{
 			this.projectContext = project;
 			this.saveService = saveService;
@@ -35,10 +33,5 @@ namespace Romanesco.Model.EditorComponents.States
 		public override IProjectLoadService GetLoadService() => loadService;
 
 		public override IProjectSaveService GetSaveService() => saveService;
-
-		public override void OnEdit()
-		{
-			// この状態自身へは遷移しない
-		}
 	}
 }

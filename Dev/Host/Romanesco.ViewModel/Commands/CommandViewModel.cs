@@ -17,13 +17,25 @@ namespace Romanesco.ViewModel.Commands
 		protected CommandViewModel(IReadOnlyReactiveProperty<bool> canExecuteObservable,
 			BooleanUsingScopeSource commandExecution)
 		{
-			subscription = canExecuteObservable.Merge(commandExecution.IsUsing.Select(x => !x))
+			var lastCanExecuteState = false;
+			var capture = this;
+
+			// IsUsingからfalseが流れてきたらfalseにしたい。
+			// コマンド実行中は他のコマンドを使えないようにするコードだが、これはModel側かも
+			subscription = canExecuteObservable.CombineLatest(commandExecution.IsUsing.Select(x => !x), (b, b1) =>
+				{
+					Console.WriteLine(capture);
+					return b && b1;
+				})
 				.Subscribe(x =>
 				{
 					IsCanExecute = x;
+					lastCanExecuteState = IsCanExecute;
 					CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 				});
+
 			IsCanExecute = canExecuteObservable.Value;
+			lastCanExecuteState = IsCanExecute;
 		}
 
 		public virtual bool CanExecute(object? parameter) => IsCanExecute;

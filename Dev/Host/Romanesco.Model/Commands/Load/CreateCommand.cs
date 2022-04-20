@@ -27,7 +27,6 @@ namespace Romanesco.Model.Commands
 			if (project is { })
 			{
 				_onExecutedSubject.OnNext(project);
-				_currentState.OnCreate(project);
 			}
 
 			return project;

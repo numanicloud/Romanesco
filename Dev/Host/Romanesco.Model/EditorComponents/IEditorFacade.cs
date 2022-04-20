@@ -1,12 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using Romanesco.Model.Interfaces;
+using Reactive.Bindings;
+using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Commands.Refactor;
 
 namespace Romanesco.Model.EditorComponents
 {
 	public interface IEditorFacade
     {
         List<IDisposable> Disposables { get; }
-        ICommandAvailabilityPublisher CommandAvailabilityPublisher { get; }
-    }
+        CommandContext CommandContext { get; }
+        IProjectSwitcher ProjectSwitcher { get; }
+		ReactiveProperty<IFieldState[]> Roots { get; }
+	}
+
+	internal class ProjectSwitcher : IProjectSwitcher
+	{
+		private readonly ReactiveProperty<IProjectContext?> _project = new();
+
+		public IReadOnlyReactiveProperty<IProjectContext?> ProjectStream => _project;
+
+		public IProjectContext? GetProject()
+		{
+			return _project.Value;
+		}
+
+		public void ResetProject(IProjectContext project)
+		{
+			_project.Value = project;
+		}
+	}
 }

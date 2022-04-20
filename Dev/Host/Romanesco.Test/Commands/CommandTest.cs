@@ -147,16 +147,6 @@ namespace Romanesco.Test.Commands
 			});
 		}
 		
-		[Fact]
-		public void プロジェクト作成時にステートのイベントを呼び出す()
-		{
-			AssertStateEvent(x => x.OnCreate(It.IsAny<IProjectContext>()),
-				(p, s) =>
-				{
-					var command = new CreateCommand(p.CanCreate, s);
-					_ = command.Execute().Result;
-				});
-		}
 
 		[Fact]
 		public void プロジェクトを開くときにイベントが発行される()
@@ -171,28 +161,6 @@ namespace Romanesco.Test.Commands
 		}
 		
 		[Fact]
-		public void プロジェクトを開くときにステートのイベントを呼び出す()
-		{
-			AssertStateEvent(x => x.OnOpen(It.IsAny<IProjectContext>()),
-				(p, s) =>
-				{
-					var command = new OpenCommand(p.CanOpen, s);
-					_ = command.Execute().Result;
-				});
-		}
-		
-		[Fact]
-		public void プロジェクトの保存時にステートのイベントを呼び出す()
-		{
-			AssertStateEvent(x => x.OnSave(),
-				(p, s) =>
-				{
-					var command = new SaveCommand(p.CanSave, s);
-					command.Execute().Wait();
-				});
-		}
-
-		[Fact]
 		public void プロジェクトの上書き保存時にイベントが発行される()
 		{
 			var suite = CommandTestSuite<IProjectSaveService>.CreateLoad();
@@ -204,17 +172,6 @@ namespace Romanesco.Test.Commands
 			});
 		}
 		
-		[Fact]
-		public void プロジェクトの上書き保存時にステートのイベントを呼び出す()
-		{
-			AssertStateEvent(x => x.OnSaveAs(),
-				(p, s) =>
-				{
-					var command = new SaveAsCommand(p.CanSaveAs, s);
-					command.Execute().Wait();
-				});
-		}
-
 		class CommandTestSuite<TService> where TService : class
 		{
 			public Mock<TService> Service { get; }

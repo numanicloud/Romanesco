@@ -7,8 +7,8 @@ using Romanesco.Model.Services.Save;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.History;
-using Romanesco.Model.Commands;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Commands.Refactor;
 using Romanesco.Model.Services.Serialize;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model;
@@ -25,7 +25,7 @@ namespace Romanesco.Model.Infrastructure
 		public IModelRequirementFactory Requirement { get; }
 		public IPluginFactory Plugin { get; }
 
-		private WindowsSaveService? _ResolveProjectSaveServiceCache;
+		private WindowsSaveService? _ResolveSaveServiceCache;
 
 		public ProjectModelFactory(IProjectContext iProjectContext, IModelFactory model, IModelRequirementFactory requirement, IPluginFactory plugin)
 		{
@@ -37,22 +37,22 @@ namespace Romanesco.Model.Infrastructure
 
 		public NewEditorState ResolveNewEditorStateAsTransient()
 		{
-			return new NewEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), this, Model.ResolveEditorStateChanger());
+			return new NewEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveSaveService(), this, Model.ResolveEditorStateChanger());
 		}
 
 		public CleanEditorState ResolveCleanEditorStateAsTransient()
 		{
-			return new CleanEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), _iProjectContext, this, Model.ResolveEditorStateChanger());
+			return new CleanEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveSaveService(), _iProjectContext);
 		}
 
 		public DirtyEditorState ResolveDirtyEditorStateAsTransient()
 		{
-			return new DirtyEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveProjectSaveService(), _iProjectContext, this, Model.ResolveEditorStateChanger());
+			return new DirtyEditorState(Model.ResolveProjectLoadService(), Model.ResolveProjectHistoryService(), ResolveSaveService(), _iProjectContext, Model.ResolveEditorStateChanger());
 		}
 
-		public IProjectSaveService ResolveProjectSaveService()
+		public IProjectSaveService ResolveSaveService()
 		{
-			return _ResolveProjectSaveServiceCache ??= new WindowsSaveService(Model.ResolveStateSerializer(), _iProjectContext);
+			return _ResolveSaveServiceCache ??= new WindowsSaveService(Model.ResolveStateSerializer(), _iProjectContext);
 		}
 
 		public Editor ResolveEditor()
@@ -68,11 +68,6 @@ namespace Romanesco.Model.Infrastructure
 		public IEditorState ResolveEditorState()
 		{
 			return Model.ResolveEditorState();
-		}
-
-		public IEditorStateRepository ResolveEditorStateRepository()
-		{
-			return ResolveEditor();
 		}
 
 		public EmptyEditorState ResolveEmptyEditorStateAsTransient()
@@ -95,19 +90,19 @@ namespace Romanesco.Model.Infrastructure
 			return Model.ResolveProjectSaveServiceFactory();
 		}
 
-		public CommandAvailability ResolveCommandAvailability()
-		{
-			return Model.ResolveCommandAvailability();
-		}
-
-		public EditorSession ResolveEditorSession()
-		{
-			return Model.ResolveEditorSession();
-		}
-
 		public IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext)
 		{
 			return Model.ResolveProjectModelFactory(projectContext);
+		}
+
+		public CommandContext ResolveCommandContext()
+		{
+			return Model.ResolveCommandContext();
+		}
+
+		public IProjectSwitcher ResolveProjectSwitcher()
+		{
+			return Model.ResolveProjectSwitcher();
 		}
 
 		public IEditorFacade ResolveEditorFacade()

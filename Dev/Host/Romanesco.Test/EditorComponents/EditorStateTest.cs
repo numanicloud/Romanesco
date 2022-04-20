@@ -6,7 +6,6 @@ using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
-using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
@@ -44,7 +43,6 @@ namespace Romanesco.Test.EditorComponents
 				historyService?.Object ?? Mock.Of<IProjectHistoryService>(),
 				saveService?.Object ?? Mock.Of<IProjectSaveService>(),
 				Mock.Of<IProjectContext>(),
-				Mock.Of<IProjectModelFactory>(),
 				Mock.Of<IEditorStateChanger>());
 		}
 

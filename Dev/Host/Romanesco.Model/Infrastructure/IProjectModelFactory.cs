@@ -12,7 +12,8 @@ namespace Romanesco.Model.Infrastructure
 		NewEditorState ResolveNewEditorStateAsTransient();
 		CleanEditorState ResolveCleanEditorStateAsTransient();
 		DirtyEditorState ResolveDirtyEditorStateAsTransient();
+
 		[Resolution(typeof(WindowsSaveService))]
-		IProjectSaveService ResolveProjectSaveService();
+		IProjectSaveService ResolveSaveService();
 	}
 }

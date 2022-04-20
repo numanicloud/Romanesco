@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using Romanesco.Model.EditorComponents.States;
 
 namespace Romanesco.Model.EditorComponents
@@ -10,6 +7,6 @@ namespace Romanesco.Model.EditorComponents
 	{
 		IObservable<IEditorState> OnChange { get; }
 		void ChangeState(IEditorState state);
-		IEditorState GetInitialState();
+		IEditorState GetCurrent();
 	}
 }

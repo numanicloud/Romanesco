@@ -1,5 +1,6 @@
 ﻿using Reactive.Bindings;
 using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Romanesco.Model.EditorComponents.States;
 
@@ -20,7 +21,6 @@ namespace Romanesco.Model.Commands
 		public async Task Execute()
 		{
 			await currentState.GetSaveService().SaveAsync();
-			currentState.OnSave();
 		}
 	}
 }

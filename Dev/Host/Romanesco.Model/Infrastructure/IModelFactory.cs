@@ -5,6 +5,7 @@ using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
 using Romanesco.Model.Commands;
+using Romanesco.Model.Commands.Refactor;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.ProjectComponents;
@@ -58,18 +59,20 @@ namespace Romanesco.Model.Infrastructure
 		IEditorStateChanger ResolveEditorStateChanger();
 		[Resolution(typeof(EmptyEditorState))]
 		IEditorState ResolveEditorState();
-		[Delegation(nameof(ResolveEditor))]
-		IEditorStateRepository ResolveEditorStateRepository();
+
 		EmptyEditorState ResolveEmptyEditorStateAsTransient();
 		[Resolution(typeof(WindowsLoadService))]
 		IProjectLoadService ResolveProjectLoadService();
 		[Resolution(typeof(SimpleHistoryService))]
 		IProjectHistoryService ResolveProjectHistoryService();
 		ProjectSaveServiceFactory ResolveProjectSaveServiceFactory();
-		CommandAvailability ResolveCommandAvailability();
-		EditorSession ResolveEditorSession();
 
 		[Resolution(typeof(ProjectModelFactory))]
 		IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext);
+		
+		CommandContext ResolveCommandContext();
+
+		[Resolution(typeof(ProjectSwitcher))]
+		IProjectSwitcher ResolveProjectSwitcher();
 	}
 }

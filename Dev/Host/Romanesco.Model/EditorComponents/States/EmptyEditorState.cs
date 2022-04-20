@@ -1,5 +1,4 @@
 ﻿using Romanesco.Model.Commands;
-using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
@@ -8,20 +7,16 @@ namespace Romanesco.Model.EditorComponents.States
 {
 	internal class EmptyEditorState : EditorState
 	{
-		private readonly IProjectLoadService loadService;
+		private readonly IProjectLoadService _loadService;
 
 		public override string Title => "Romanesco - プロジェクトなし";
 
-		public EmptyEditorState(
-			IProjectLoadService loadService,
-			IModelFactory factory,
-			IEditorStateChanger editorStateChanger)
-			: base(factory, editorStateChanger)
+		public EmptyEditorState(IProjectLoadService loadService)
 		{
-			this.loadService = loadService;
+			this._loadService = loadService;
 		}
 
-		public override IProjectLoadService GetLoadService() => loadService;
+		public override IProjectLoadService GetLoadService() => _loadService;
 
 		public override IProjectSaveService GetSaveService() => new NullSaveService();
 

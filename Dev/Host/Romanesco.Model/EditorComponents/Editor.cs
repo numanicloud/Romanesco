@@ -2,62 +2,66 @@
 using Romanesco.Model.EditorComponents.States;
 using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
 using Reactive.Bindings.Extensions;
+using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
-using Romanesco.Model.Commands;
-using Romanesco.Model.Interfaces;
+using Romanesco.Model.Commands.Refactor;
 
 namespace Romanesco.Model.EditorComponents
 {
-	internal sealed class Editor : IEditorFacade, IDisposable, IEditorStateRepository
+	internal sealed class Editor : IEditorFacade, IDisposable
 	{
-		private readonly ReactiveProperty<IEditorState> _editorState = new ReactiveProperty<IEditorState>();
-		private readonly CommandAvailability _commandAvailability;
-		private readonly CommandRouter _commandRouter;
+		private readonly ReactiveProperty<IEditorState> _editorState = new();
 
-		public List<IDisposable> Disposables { get; } = new List<IDisposable>();
-		public ReactiveProperty<string> ApplicationTitle { get; } = new ReactiveProperty<string>();
-		public ICommandAvailabilityPublisher CommandAvailabilityPublisher => _commandRouter;
-		public IReadOnlyReactiveProperty<IEditorState> EditorState => _editorState;
+		public List<IDisposable> Disposables { get; } = new();
+		public ReactiveProperty<string> ApplicationTitle { get; } = new();
+		public CommandContext CommandContext { get; }
+		public IProjectSwitcher ProjectSwitcher { get; }
 
-		public Editor(IEditorStateChanger stateChanger, IEditorState initialState)
+		public ReactiveProperty<IFieldState[]> Roots { get; }
+
+		public Editor
+			(IProjectSwitcher switcher,
+			IEditorState initialState,
+			CommandContext commands)
 		{
-			stateChanger.OnChange.Subscribe(ChangeState).AddTo(Disposables);
+			ProjectSwitcher = switcher;
+			CommandContext = commands;
+			Roots = new ReactiveProperty<IFieldState[]>(ProjectSwitcher.GetProject()?.StateRoot.States ?? Array.Empty<IFieldState>());
 
-			// commandAvailability の初期化を保証しなければならないので、ChangeStateをインライン化した
+			// commandAvailability の初期化を保証しなければならないので、
+			// ChangeStateをインライン化した
 			_editorState.Value = initialState;
 			UpdateTitle();
-
-			_commandRouter = new CommandRouter(initialState, this);
-			SetUpCommand(_commandRouter);
-
-			_commandAvailability = new CommandAvailability(initialState, this);
+			
+			SetUpCommand();
 		}
 
-		public void ChangeState(IEditorState state)
+		private void SetUpCommand()
 		{
-			_editorState.Value = state;
-			UpdateTitle();
-			_commandRouter.UpdateState(state);
+			ProjectSwitcher.ProjectStream.Subscribe(SetProject);
 		}
 
-		private void SetUpCommand(CommandRouter target)
-		{
-			target.OnCreate.Subscribe(SetProject);
-			target.OnOpen.Subscribe(SetProject);
-			target.OnSaveAs.Subscribe(x => UpdateTitle());
-		}
-
-		private void SetProject(IProjectContext projectContext)
+		private void SetProject(IProjectContext? projectContext)
 		{
 			UpdateTitle();
+
+			Roots.Value = ProjectSwitcher.GetProject()?.StateRoot.States ?? Array.Empty<IFieldState>();
+
 			ObserveEdit(projectContext);
 		}
 
-		private void ObserveEdit(IProjectContext projectContext)
+		private void ObserveEdit(IProjectContext? projectContext)
 		{
-			projectContext.ObserveEdit(() => _commandRouter.NotifyEdit())
+			if (projectContext is null)
+			{
+				return;
+			}
+
+			projectContext.ObserveEdit(() =>
+				{
+					CommandContext.UpdateCanExecute();
+				})
 				.AddTo(Disposables);
 		}
 

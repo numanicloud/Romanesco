@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using Livet.Messaging;
 using Reactive.Bindings;
@@ -11,32 +13,42 @@ using Romanesco.Model.ProjectComponents;
 using Romanesco.ViewModel.Commands;
 using Romanesco.ViewModel.Project;
 using Romanesco.ViewModel.States;
+using static Romanesco.Model.EditorComponents.EditorCommandType;
 
 namespace Romanesco.ViewModel.Editor
 {
 	internal class EditorViewModel : Livet.ViewModel, IEditorViewModel
 	{
-		private readonly RootViewModel root;
-		private readonly CommandManagerViewModel commandManager;
+		private readonly Dictionary<EditorCommandType, EditorCommand> _commands;
 
-		public ReactiveProperty<IStateViewModel[]> Roots => root.Fields;
+		public ReactiveProperty<IStateViewModel[]> Roots { get; }
 
-		public ICommand CreateCommand => commandManager.Create;
-		public ICommand OpenCommand => commandManager.Open;
-		public ICommand SaveCommand => commandManager.Save;
-		public ICommand SaveAsCommand => commandManager.SaveAs;
-		public ICommand ExportCommand => commandManager.Export;
-		public ICommand Undo => commandManager.Undo;
-		public ICommand Redo => commandManager.Redo;
+		public ICommand CreateCommand => _commands[Create];
+		public ICommand OpenCommand => _commands[Open];
+		public ICommand SaveCommand => _commands[Save];
+		public ICommand SaveAsCommand => _commands[SaveAs];
+		public ICommand ExportCommand => _commands[Export];
+		public ICommand UndoCommand => _commands[Undo];
+		public ICommand RedoCommand => _commands[Redo];
 		public ReactiveCommand GcDebugCommand { get; } = new ReactiveCommand();
 		public List<IDisposable> Disposables { get; }
 
 		public EditorViewModel(IEditorFacade editor, IViewModelInterpreter interpreter)
 		{
-			root = new RootViewModel();
+			Roots = editor.Roots
+				.Select(x => x.Select(interpreter.InterpretAsViewModel).ToArray())
+				.ToReactiveProperty(Array.Empty<IStateViewModel>());
 
-			// TODO: この実装だとCommandAvilityPublisherプロパティの中身が変わったときにバグる
-			commandManager = new CommandManagerViewModel(editor.CommandAvailabilityPublisher, root, interpreter);
+			_commands = new Dictionary<EditorCommandType, EditorCommand>()
+			{
+				[Create] = new(editor.CommandContext, Create),
+				[Save] = new(editor.CommandContext, Save),
+				[Open] = new(editor.CommandContext, Open),
+				[SaveAs] = new(editor.CommandContext, SaveAs),
+				[Export] = new(editor.CommandContext, Export),
+				[Undo] = new(editor.CommandContext, Undo),
+				[Redo] = new(editor.CommandContext, Redo),
+			};
 
 			Disposables = editor.Disposables;
 			GcDebugCommand.SubscribeSafe(x => GC.Collect()).AddTo(editor.Disposables);
