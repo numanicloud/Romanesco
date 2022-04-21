@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
+using System.Reactive.Linq;
 using NacHelpers.Extensions;
 using Reactive.Bindings;
 using Romanesco.BuiltinPlugin.Model.States;
@@ -13,7 +14,7 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 	public class IntIdChoiceListViewModel : ProxyViewModelBase<IntIdChoiceListState>
 	{
 		public ObservableCollection<IFieldState>? Choices { get; private set; }
-		public ReadOnlyObservableCollection<IntIdChoiceState> Elements => State.ChoiceStates;
+		public ReadOnlyObservableCollection<IntIdChoiceState> Elements => State.Elements;
 		public ReactiveCommand AddCommand { get; } = new();
 		public ReactiveCommand<IntIdChoiceState> RemoveCommand { get; } = new ();
 		public ReactiveCommand EditCommand { get; } = new();

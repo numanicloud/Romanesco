@@ -36,7 +36,6 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			public static Element Create(IFieldState state, IObserver<Unit> onContentsChanged)
 			{
 				var disposable = state.OnEdited
-					.Where(value => value != null)
 					.Subscribe(value => onContentsChanged.OnNext(Unit.Default));
 				return new Element(state, disposable);
 			}
@@ -66,6 +65,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 				.ToReadOnlyReactiveProperty("Count = 0");
 
 			LoadInitialValue(listInstance);
+
+			OnEdited = onContentsChanged;
 		}
 
 		private void LoadInitialValue(IList loadedListInstance)

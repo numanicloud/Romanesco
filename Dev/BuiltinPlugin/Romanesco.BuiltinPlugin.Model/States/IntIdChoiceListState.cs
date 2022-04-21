@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using NacHelpers.Extensions;
 using Reactive.Bindings;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Implementations;
-using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
@@ -39,9 +34,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 		public ReactiveProperty<MasterList?> Master { get; } = new();
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
-
-		public ReadOnlyReactiveCollection<IntIdChoiceState> ChoiceStates { get; }
-
+		public ReadOnlyReactiveCollection<IntIdChoiceState> Elements { get; } 
+		
 		public IntIdChoiceListState(ValueStorage storage, string masterName, MasterListContext masterList, CommandHistory history)
 			: base(storage)
 		{
@@ -51,16 +45,19 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 			_listInstance = storage.GetValue() is List<int> list ? list : new List<int>();
 
+			// マスターのデータは遅れて初期化される可能性があるので、初期化まで待ってから選択肢を更新する
 			masterList.OnKeyAdded.Where(key => masterName == key)
 				.Subscribe(key => UpdateChoices(masterName, masterList))
 				.AddTo(Disposables);
 
 			UpdateChoices(masterName, masterList);
 
-			ChoiceStates = _elements.ToReadOnlyReactiveCollection(x => x.State);
+			Elements = _elements.ToReadOnlyReactiveCollection(x => x.State);
 
 			FormattedString = _onContentsChanged.Select(_ => $"Count = {_elements.Count}")
 				.ToReadOnlyReactiveProperty("Count = 0");
+
+			OnEdited = _onContentsChanged;
 
 			foreach (var item in _listInstance)
 			{
@@ -118,6 +115,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 		public override void Dispose()
 		{
 			Master.Dispose();
+			Elements.Dispose();
 			base.Dispose();
 		}
 	}
