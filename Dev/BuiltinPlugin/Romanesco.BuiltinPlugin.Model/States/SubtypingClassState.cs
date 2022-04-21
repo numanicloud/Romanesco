@@ -23,7 +23,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 		public override IObservable<Unit> OnEdited { get; }
 
 		public SubtypingClassState(ValueStorage storage, SubtypingStateContext context)
-			: base(new NoneState())
+			: base(new ClassState(storage, Array.Empty<IFieldState>()))
 		{
 			void AddChoice(Type type)
 			{
@@ -32,8 +32,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 			Title = new ReactiveProperty<string>(storage.MemberName);
 
-			// 型の選択肢を設定。0番目の選択肢はNoneStateを生成する
-			Choices.Add(new NullSubtypeOption());
+			// 型の選択肢を設定
+			Choices.Add(new NullSubtypeOption(storage));
 			context.List.DerivedTypes.ForEach(AddChoice);
 			context.List.OnNewEntry.Subscribe(AddChoice).AddTo(Disposables);
 

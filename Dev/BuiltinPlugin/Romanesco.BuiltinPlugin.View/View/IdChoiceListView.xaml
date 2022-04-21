@@ -40,6 +40,7 @@
                                   SelectedItem="{Binding SelectedItem.Value}"
                                   DisplayMemberPath="FormattedString.Value"
                                   Grid.Column="0"
+                                  MinWidth="64"
                                   Margin="4"/>
                         <Button Grid.Column="1" 
                                 Content="×" 

@@ -48,14 +48,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			_masterName = masterName;
 			_masterList = masterList;
 			_history = history;
-			if (storage.GetValue() is List<int> list)
-			{
-				_listInstance = list;
-			}
-			else
-			{
-				throw new Exception();
-			}
+
+			_listInstance = storage.GetValue() is List<int> list ? list : new List<int>();
 
 			masterList.OnKeyAdded.Where(key => masterName == key)
 				.Subscribe(key => UpdateChoices(masterName, masterList))
@@ -67,6 +61,15 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 			FormattedString = _onContentsChanged.Select(_ => $"Count = {_elements.Count}")
 				.ToReadOnlyReactiveProperty("Count = 0");
+
+			foreach (var item in _listInstance)
+			{
+				var index = _elements.Count;
+				var settability = _valueStorageFactory.FromListElement(typeof(int), _listInstance, index.ToString(), item);
+				var state = new IntIdChoiceState(settability, masterName, masterList);
+
+				_elements.Add(Element.Create(state, _onContentsChanged));
+			}
 		}
 
 		public void AddNewElement()
@@ -79,6 +82,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			var storage = _valueStorageFactory.FromListElement(typeof(int), _listInstance,
 				index.ToString(), value);
 			var state = new IntIdChoiceState(storage, _masterName, _masterList);
+			state.Master.Value = Master.Value;
 
 			_elements.Insert(index, Element.Create(state, _onContentsChanged));
 			_listInstance.Insert(index, value);

@@ -127,6 +127,22 @@ namespace Romanesco.Sample
         public int Single { get; set; }
 	}
 
+	public class DoublingListTestLayer3
+	{
+		[EditorMember()] public List<int> Integers { get; set; } = new();
+	}
+
+    public class DoublingListTestLayer2
+	{
+		[EditorMember()] public List<int> Integers { get; set; } = new();
+    }
+
+    [EditorProject]
+	public class DoublingListTest
+	{
+		[EditorMember()] public DoublingListTestLayer2 Layer2 { get; set; } = new();
+	}
+
     public class SampleExporter : IProjectTypeExporter
     {
         public bool DoExportIntoSingleFile => false;

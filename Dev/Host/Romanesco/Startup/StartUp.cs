@@ -27,9 +27,6 @@ namespace Romanesco.Startup
 			var pluginLoader = new PluginLoader();
 			var extensions = pluginLoader.Load("Plugins");
 			
-			// これだとOnProjectChangedがNeverになってしまう。
-			// ModelFactoryが出来た後に回したいが、BuildServerProviderより前でないとUIが生成できなくなってしまう。
-			// IProjectSwitcherだけ先に挿し込むのがいいかもしれない。
 			var serviceCollection = new ServiceCollection();
 			extensions.ConfigureServices(serviceCollection, api);
 

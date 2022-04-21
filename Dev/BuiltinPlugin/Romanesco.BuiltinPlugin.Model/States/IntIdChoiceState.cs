@@ -14,7 +14,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 	{
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
 		public ReactiveProperty<MasterList?> Master { get; } = new();
-		public ReactiveProperty<IFieldState?> SelectedItem { get; } = new ();
+		public ReactiveProperty<IFieldState?> SelectedItem { get; } = new (mode:ReactivePropertyMode.None);
 
 		public IntIdChoiceState(ValueStorage storage, string masterName, MasterListContext context) : base(storage)
 		{

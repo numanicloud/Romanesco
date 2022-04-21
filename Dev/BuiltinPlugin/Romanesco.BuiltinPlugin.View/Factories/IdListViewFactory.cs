@@ -47,7 +47,7 @@ namespace Romanesco.BuiltinPlugin.View.Factories
 					}
 				});
 
-				var inline = new View.ListInlineView()
+				var inline = new View.IdChoiceListInlineView()
 				{
 					DataContext = vm
 				};

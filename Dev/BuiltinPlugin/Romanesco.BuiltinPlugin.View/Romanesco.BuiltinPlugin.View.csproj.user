@@ -5,6 +5,9 @@
     <Compile Update="View\EnumView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\IdChoiceListInlineView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\IdChoiceListView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -41,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\EnumView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\IdChoiceListInlineView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\IdChoiceListView.xaml">
