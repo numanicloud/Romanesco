@@ -93,6 +93,10 @@ namespace Romanesco.BuiltinPlugin
 		[Cache]
 		public partial IViewFactory ResolveClassViewFactory();
 
+		[Resolution(typeof(IdListViewFactory))]
+		[Cache]
+		public partial IViewFactory ResolveIntIdChoiceListViewFactory();
+
 		[Resolution(typeof(ArrayViewFactory))]
 		[Cache]
 		public partial IViewFactory ResolveArrayViewFactory();
@@ -100,10 +104,6 @@ namespace Romanesco.BuiltinPlugin
 		[Resolution(typeof(SubtypingViewFactory))]
 		[Cache]
 		public partial IViewFactory ResolveSubtypingViewFactory();
-
-		[Resolution(typeof(IdListViewFactory))]
-		[Cache]
-		public partial IViewFactory ResolveIntIdChoiceListViewFactory();
 
 		[Exporter]
 		public void ConfigureServices<TInterface>

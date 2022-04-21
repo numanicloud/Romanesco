@@ -21,7 +21,7 @@ namespace Romanesco.Common.Model.Implementations
 
 		protected DecorationStateBase(IFieldState initialBaseState)
 		{
-			BaseField = new ReactiveProperty<IFieldState>(initialBaseState);
+			BaseField = new ReactiveProperty<IFieldState>(initialBaseState, ReactivePropertyMode.DistinctUntilChanged);
 		}
 
 		public virtual void Dispose()

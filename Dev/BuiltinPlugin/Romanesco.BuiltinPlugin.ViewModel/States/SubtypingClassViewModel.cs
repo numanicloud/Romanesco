@@ -26,6 +26,7 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 		{
 			void UpdateInstance(IFieldState choice)
 			{
+				CurrentViewModel.Value?.Disposables.ForEach(x => x.Dispose());
 				CurrentViewModel.Value = interpreter(choice) as ClassViewModel;
 			}
 

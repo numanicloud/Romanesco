@@ -1,6 +1,7 @@
 ﻿using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Romanesco.Common.Model.Implementations;
@@ -26,16 +27,22 @@ namespace Romanesco.Model
 			return InterpretAsState(new ValueStorage(projectObject, field));
 		}
 
+		private int Depth { get; set; }
 		public IFieldState InterpretAsState(ValueStorage settability)
 		{
+			Depth++;
 			foreach (var factory in Factories)
 			{
 				var result = factory.InterpretAsState(settability, InterpretAsState);
 				if (result != null)
 				{
+					//Debug.WriteLine($"{Depth}, {settability.MemberName}, {settability.Type}", "Romanesco");
+					Depth--;
 					return result;
 				}
 			}
+
+			Depth--;
 			return new NoneState();
 		}
 

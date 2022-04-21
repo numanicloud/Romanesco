@@ -15,8 +15,7 @@ namespace Romanesco.BuiltinPlugin.View.DataContext
 		public SubtypingContext(SubtypingClassViewModel vm, ViewInterpretFunc interpreter)
 		{
 			ViewModel = vm;
-
-			SetCurrentContext(vm.CurrentViewModel.Value, interpreter);
+			
 			vm.CurrentViewModel.Subscribe(x => SetCurrentContext(x, interpreter))
 				.AddTo(vm.Disposables);
 
