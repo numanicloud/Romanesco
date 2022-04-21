@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive;
+using System.Reactive.Subjects;
 using Reactive.Bindings;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
@@ -20,6 +22,8 @@ namespace Romanesco.Model.EditorComponents
 		private readonly ReactiveProperty<IProjectContext?> _project = new();
 
 		public IReadOnlyReactiveProperty<IProjectContext?> ProjectStream => _project;
+
+		public Subject<Unit> BeforeResetProject { get; } = new();
 
 		public IProjectContext? GetProject()
 		{

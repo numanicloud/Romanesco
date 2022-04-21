@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reactive;
+using System.Threading.Tasks;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Infrastructure;
@@ -20,6 +21,7 @@ namespace Romanesco.Model.Commands.Refactor
 		
 		internal override async Task Execute(IEditorState state)
 		{
+			_switcher.BeforeResetProject.OnNext(Unit.Default);
 			var project = await state.GetLoadService().CreateAsync();
 			if (project is not null)
 			{

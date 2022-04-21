@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,12 +32,12 @@ namespace Romanesco.Startup
 			var serviceCollection = new ServiceCollection();
 			extensions.ConfigureServices(serviceCollection, api);
 
-			var pluginServices = (ServiceProvider)serviceCollection.BuildServiceProvider();
+			var pluginServices = serviceCollection.BuildServiceProvider();
 			var (model, view) = ResolveFactory(new PluginFactory(pluginServices));
 			api.ModelFactory = model;
 			api.Provider = pluginServices;
 
-			api.OnProjectChangedProperty.Value = model.ResolveProjectSwitcher().ProjectStream.FilterNullRef();
+			api.OnProjectChangedProperty.Value = model.ResolveProjectSwitcher().BeforeResetProject;
 
 			mainWindow = host.ResolveMainWindow();
 			mainWindow.DataContext = view.ResolveEditorViewContext();

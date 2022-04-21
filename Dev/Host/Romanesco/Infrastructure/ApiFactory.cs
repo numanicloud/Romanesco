@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,12 +19,12 @@ namespace Romanesco.Infrastructure
 
 		public ServiceProvider? Provider { get; set; }
 		public IOpenModelFactory? ModelFactory { get; set; }
-		public ReactiveProperty<IObservable<IProjectContext>> OnProjectChangedProperty { get; }
+		public ReactiveProperty<IObservable<Unit>> OnProjectChangedProperty { get; }
 
 		public ApiFactory(IOpenHostFactory factory)
 		{
 			this.factory = factory;
-			OnProjectChangedProperty = new(Observable.Never<IProjectContext>());
+			OnProjectChangedProperty = new(Observable.Never<Unit>());
 		}
 
 		public IDataAssemblyRepository ResolveDataAssemblyRepository() => factory.ResolveDataAssemblyRepository();
@@ -35,7 +36,7 @@ namespace Romanesco.Infrastructure
 			return Provider?.GetService<TService>() ?? throw new InvalidOperationException("Romanescoホストが初期化されていません。");
 		}
 
-		public IObservable<IProjectContext> OnProjectChanged =>
+		public IObservable<Unit> OnProjectChanged =>
 			OnProjectChangedProperty.SelectMany(x => x);
 	}
 }

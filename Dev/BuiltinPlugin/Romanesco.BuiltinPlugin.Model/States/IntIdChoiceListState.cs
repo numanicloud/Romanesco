@@ -32,7 +32,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 		private readonly List<int> _listInstance;
 		private readonly ValueStorageFactory _valueStorageFactory = new();
 
-		public ReactiveProperty<MasterList?> Master { get; } = new();
+		public ReactiveProperty<MasterList?> Master { get; } = new(mode:ReactivePropertyMode.RaiseLatestValueOnSubscribe);
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
 		public ReadOnlyReactiveCollection<IntIdChoiceState> Elements { get; } 
 		

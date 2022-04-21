@@ -26,6 +26,7 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 			EditCommand.Subscribe(_ => ShowDetailSubject.OnNext(Unit.Default))
 				.AddTo(Disposables);
 
+			// TODO: Masterの中身が0個の場合に更新してくれない
 			state.Master.FilterNullRef()
 				.Subscribe(list => Choices = list.State.Elements)
 				.AddTo(state.Disposables);
