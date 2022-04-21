@@ -64,7 +64,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public IProjectLoadService ResolveProjectLoadService()
 		{
-			return _ResolveProjectLoadServiceCache ??= new WindowsLoadService(Requirement.ResolveProjectSettingProvider(), ResolveStateDeserializer(), Requirement.ResolveDataAssemblyRepository(), this, ResolveObjectInterpreter());
+			return _ResolveProjectLoadServiceCache ??= new WindowsLoadService(Requirement.ResolveProjectSettingProvider(), ResolveStateDeserializer(), Requirement.ResolveDataAssemblyRepository(), this, ResolveProjectSwitcher(), ResolveObjectInterpreter());
 		}
 
 		public IProjectHistoryService ResolveProjectHistoryService()

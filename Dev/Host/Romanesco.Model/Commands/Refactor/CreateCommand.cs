@@ -21,7 +21,6 @@ namespace Romanesco.Model.Commands.Refactor
 		
 		internal override async Task Execute(IEditorState state)
 		{
-			_switcher.BeforeResetProject.OnNext(Unit.Default);
 			var project = await state.GetLoadService().CreateAsync();
 			if (project is not null)
 			{

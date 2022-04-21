@@ -6,11 +6,13 @@ using Romanesco.Model.Services.Serialize;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reactive;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
+using Romanesco.Model.Commands.Refactor;
 using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.Services.Load
@@ -21,18 +23,21 @@ namespace Romanesco.Model.Services.Load
 		private readonly IStateDeserializer deserializer;
 		private readonly IDataAssemblyRepository assemblyRepo;
 		private readonly IModelFactory factory;
+		private readonly IProjectSwitcher _projectSwitcher;
 		private readonly ObjectInterpreter interpreter;
 
 		public WindowsLoadService(IProjectSettingProvider projectSettingProvider,
 			IStateDeserializer deserializer,
 			IDataAssemblyRepository assemblyRepo,
 			IModelFactory factory,
+			IProjectSwitcher projectSwitcher,
 			ObjectInterpreter interpreter)
 		{
 			this.projectSettingProvider = projectSettingProvider;
 			this.deserializer = deserializer;
 			this.assemblyRepo = assemblyRepo;
 			this.factory = factory;
+			_projectSwitcher = projectSwitcher;
 			this.interpreter = interpreter;
 		}
 
@@ -71,24 +76,27 @@ namespace Romanesco.Model.Services.Load
 			using var editor = factory.ResolveProjectSettingsEditorAsTransient();
 			var settings = projectSettingProvider.InputCreateSettings(editor);
 
-			if (settings != null)
+			if (settings == null)
 			{
-				if (settings.ProjectType.Assembly.ReflectionOnly)
-				{
-					var mock = new DynamicMock(
-						settings.ProjectType.GetTypeInfo().DeclaredProperties.ToArray(),
-						settings.ProjectType.GetTypeInfo().DeclaredFields.ToArray());
-					return await ProjectConverter.FromDynamicMockAsync(settings, deserializer, interpreter, mock);
-				}
-
-				if (assemblyRepo.CreateInstance(settings.ProjectType) is { } instance)
-				{
-					return await ProjectConverter.FromInstanceAsync(settings, deserializer, interpreter, instance);
-				}
-
-				throw new InvalidOperationException($"プロジェクト型 {settings.ProjectType} のインスタンスを作成できませんでした。");
+				return null;
 			}
-			return null;
+
+			_projectSwitcher.BeforeResetProject.OnNext(Unit.Default);
+
+			if (settings.ProjectType.Assembly.ReflectionOnly)
+			{
+				var mock = new DynamicMock(
+					settings.ProjectType.GetTypeInfo().DeclaredProperties.ToArray(),
+					settings.ProjectType.GetTypeInfo().DeclaredFields.ToArray());
+				return await ProjectConverter.FromDynamicMockAsync(settings, deserializer, interpreter, mock);
+			}
+
+			if (assemblyRepo.CreateInstance(settings.ProjectType) is { } instance)
+			{
+				return await ProjectConverter.FromInstanceAsync(settings, deserializer, interpreter, instance);
+			}
+
+			throw new InvalidOperationException($"プロジェクト型 {settings.ProjectType} のインスタンスを作成できませんでした。");
 		}
 
 		private async Task<Project?> OpenInternalAsync()
@@ -100,24 +108,27 @@ namespace Romanesco.Model.Services.Load
 			};
 
 			var result = dialog.ShowDialog();
-			if (result == true)
+			if (result != true)
 			{
-				using var file = File.OpenRead(dialog.FileName);
-				using var reader = new StreamReader(file);
-
-				var json = await reader.ReadToEndAsync();
-				var data = JsonConvert.DeserializeObject<ProjectData>(json);
-				if (data is null)
-				{
-					throw new SerializationException();
-				}
-
-				var project = await ProjectConverter.FromDataAsync(data, deserializer, interpreter);
-				project.DefaultSavePath = dialog.FileName;
-				return project;
+				return null;
 			}
 
-			return null;
+			_projectSwitcher.BeforeResetProject.OnNext(Unit.Default);
+
+			using var file = File.OpenRead(dialog.FileName);
+			using var reader = new StreamReader(file);
+
+			var json = await reader.ReadToEndAsync();
+			var data = JsonConvert.DeserializeObject<ProjectData>(json);
+			if (data is null)
+			{
+				throw new SerializationException();
+			}
+
+			var project = await ProjectConverter.FromDataAsync(data, deserializer, interpreter);
+			project.DefaultSavePath = dialog.FileName;
+			return project;
+
 		}
 	}
 }
