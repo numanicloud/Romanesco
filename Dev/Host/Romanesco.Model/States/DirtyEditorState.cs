@@ -5,7 +5,7 @@ using Romanesco.Model.Services.Save;
 
 namespace Romanesco.Model.States
 {
-	internal class DirtyEditorState : ProjectSpecifiedEditorState
+	internal class DirtyEditorState : EditorState
 	{
 		private readonly IProjectLoadService loadService;
 		private readonly IProjectSaveService saveService;
@@ -17,9 +17,7 @@ namespace Romanesco.Model.States
 		public DirtyEditorState(IProjectLoadService loadService,
 			IProjectHistoryService historyService,
 			IProjectSaveService saveService,
-			IProjectContext project,
-			IEditorStateChanger editorStateChanger)
-			: base()
+			IProjectContext project)
 		{
 			this.projectContext = project;
 			this.saveService = saveService;
