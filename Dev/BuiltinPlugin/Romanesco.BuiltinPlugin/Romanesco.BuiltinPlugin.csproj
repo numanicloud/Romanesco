@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Imfact" Version="1.1.0-alpha.29" />
+    <PackageReference Include="Imfact" Version="1.1.0-alpha.31" />
   </ItemGroup>
 
   <ItemGroup>

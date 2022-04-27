@@ -8,11 +8,12 @@ using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Save;
 using Romanesco.Common.Model.ProjectComponent;
-using Romanesco.Model.Commands.Refactor;
+using Romanesco.Model.Commands;
 using Romanesco.Model.Services.Serialize;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model;
 using Romanesco.Common.Model.Interfaces;
+using Romanesco.Model.Commands.Refactor;
 
 namespace Romanesco.Model.Infrastructure
 {
@@ -28,7 +29,6 @@ namespace Romanesco.Model.Infrastructure
 		private WindowsLoadService? _ResolveProjectLoadServiceCache;
 		private SimpleHistoryService? _ResolveProjectHistoryServiceCache;
 		private ProjectSaveServiceFactory? _ResolveProjectSaveServiceFactoryCache;
-		private ProjectModelFactory? _ResolveProjectModelFactoryCache;
 		private CommandContext? _ResolveCommandContextCache;
 		private NewtonsoftStateSerializer? _ResolveStateSerializerCache;
 		private NewtonsoftStateDeserializer? _ResolveStateDeserializerCache;
@@ -77,9 +77,9 @@ namespace Romanesco.Model.Infrastructure
 			return _ResolveProjectSaveServiceFactoryCache ??= new ProjectSaveServiceFactory(ResolveStateSerializer());
 		}
 
-		public IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext)
+		public IProjectModelFactory ResolveProjectModelFactoryAsTransient(IProjectContext projectContext)
 		{
-			return _ResolveProjectModelFactoryCache ??= new ProjectModelFactory(projectContext, this, Requirement, Plugin);
+			return new ProjectModelFactory(projectContext, this, Requirement, Plugin);
 		}
 
 		public CommandContext ResolveCommandContext()
@@ -125,7 +125,6 @@ namespace Romanesco.Model.Infrastructure
 		public void Dispose()
 		{
 			_ResolveEditorCache?.Dispose();
-			_ResolveProjectModelFactoryCache?.Dispose();
 		}
 	}
 }

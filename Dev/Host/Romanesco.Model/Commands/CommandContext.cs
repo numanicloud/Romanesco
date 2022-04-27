@@ -1,34 +1,35 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.Helpers;
+using Romanesco.Model.Commands.Refactor;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.Infrastructure;
 using static Romanesco.Model.EditorComponents.EditorCommandType;
 
-namespace Romanesco.Model.Commands.Refactor;
+namespace Romanesco.Model.Commands;
 
 public class CommandContext
 {
 	private readonly IEditorStateChanger _stateChanger;
-	private readonly Dictionary<EditorCommandType, CommandModelRefactor> _commands = new();
+	private readonly Dictionary<EditorCommandType, RomanescoCommand> _commands = new();
 	private readonly BooleanUsingScopeSource _usingScope = new ();
 
-	public IReadOnlyDictionary<EditorCommandType, CommandModelRefactor> Commands => _commands;
+	public IReadOnlyDictionary<EditorCommandType, RomanescoCommand> Commands => _commands;
 
 	internal CommandContext(IProjectSwitcher projectSwitcher,
 		IEditorStateChanger stateChanger,
 		IModelFactory factory)
 	{
 		_stateChanger = stateChanger;
-		_commands = new Dictionary<EditorCommandType, CommandModelRefactor>()
+		_commands = new Dictionary<EditorCommandType, RomanescoCommand>()
 		{
-			[Create] = new CreateCommand(projectSwitcher, stateChanger, factory),
-			[Open] = new LoadCommand(projectSwitcher, stateChanger, factory),
-			[Save] = new SaveCommand(projectSwitcher, stateChanger, factory),
-			[SaveAs] = new SaveAsCommand(projectSwitcher, stateChanger, factory),
-			[Export] = new ExportCommand(),
-			[Undo] = new UndoCommand(),
-			[Redo] = new RedoCommand(),
+			[Create] = new CreateRomanescoCommand(projectSwitcher, stateChanger, factory),
+			[Open] = new LoadRomanescoCommand(projectSwitcher, stateChanger, factory),
+			[Save] = new SaveRomanescoCommand(projectSwitcher, stateChanger, factory),
+			[SaveAs] = new SaveAsRomanescoCommand(projectSwitcher, stateChanger, factory),
+			[Export] = new ExportRomanescoCommand(),
+			[Undo] = new UndoRomanescoCommand(),
+			[Redo] = new RedoRomanescoCommand(),
 		};
 
 		UpdateCanExecute();

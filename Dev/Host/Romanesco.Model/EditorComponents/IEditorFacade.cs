@@ -5,6 +5,7 @@ using System.Reactive.Subjects;
 using Reactive.Bindings;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Commands;
 using Romanesco.Model.Commands.Refactor;
 
 namespace Romanesco.Model.EditorComponents

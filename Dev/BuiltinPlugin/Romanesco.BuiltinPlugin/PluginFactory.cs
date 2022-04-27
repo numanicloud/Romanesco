@@ -104,13 +104,5 @@ namespace Romanesco.BuiltinPlugin
 		[Resolution(typeof(SubtypingViewFactory))]
 		[Cache]
 		public partial IViewFactory ResolveSubtypingViewFactory();
-
-		[Exporter]
-		public void ConfigureServices<TInterface>
-			(IServiceCollection services, Func<TInterface> func)
-			where TInterface : class
-		{
-			services.AddTransient(_ => func());
-		}
 	}
 }

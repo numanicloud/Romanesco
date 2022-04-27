@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Extensibility.Interfaces;
 using Romanesco.Common.Model.Interfaces;
@@ -14,8 +15,25 @@ namespace Romanesco.BuiltinPlugin
 				master,
 				hostFactory.ResolveCommandHistory(),
 				hostFactory.ResolveDataAssemblyRepository());
-			
-			factory.ConfigureServices(services);
+
+			var importer = new GenericHostImporter(services);
+			factory.Export(importer);
+		}
+	}
+
+	public class GenericHostImporter : Imfact.Annotations.IServiceImporter
+	{
+		private readonly IServiceCollection _services;
+
+		public GenericHostImporter(IServiceCollection services)
+		{
+			_services = services;
+		}
+
+		public void Import<TInterface>(Func<TInterface> resolver)
+			where TInterface : class
+		{
+			_services.AddTransient(_ => resolver());
 		}
 	}
 }

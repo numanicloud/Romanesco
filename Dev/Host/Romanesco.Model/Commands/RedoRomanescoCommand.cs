@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Romanesco.Model.EditorComponents.States;
 
-namespace Romanesco.Model.Commands.Refactor
+namespace Romanesco.Model.Commands
 {
-	internal class RedoCommand : CommandModelRefactor
+	internal class RedoRomanescoCommand : RomanescoCommand
 	{
 		internal override Task Execute(IEditorState state)
 		{

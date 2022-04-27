@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using Romanesco.Common.Model.Helpers;
+using Romanesco.Model.Commands;
 using Romanesco.Model.Commands.Refactor;
 using Romanesco.Model.EditorComponents;
 

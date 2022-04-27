@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Romanesco.Model.Commands.Refactor;
 using Romanesco.Model.EditorComponents;
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Infrastructure;
 
-namespace Romanesco.Model.Commands.Refactor
+namespace Romanesco.Model.Commands
 {
-	internal class SaveAsCommand : CommandModelRefactor
+	internal class SaveRomanescoCommand : RomanescoCommand
 	{
 		private readonly IProjectSwitcher _switcher;
 		private readonly IEditorStateChanger _stateChanger;
 		private readonly IModelFactory _factory;
 
-		public SaveAsCommand
-			(IProjectSwitcher switcher,
-			IEditorStateChanger stateChanger,
-			IModelFactory factory)
+		public SaveRomanescoCommand(IProjectSwitcher switcher, IEditorStateChanger stateChanger, IModelFactory factory)
 		{
 			_switcher = switcher;
 			_stateChanger = stateChanger;
@@ -27,7 +21,7 @@ namespace Romanesco.Model.Commands.Refactor
 
 		internal override async Task Execute(IEditorState state)
 		{
-			await state.GetSaveService().SaveAsAsync();
+			await state.GetSaveService().SaveAsync();
 		}
 
 		internal override void AfterExecute(IEditorState state)
@@ -35,9 +29,8 @@ namespace Romanesco.Model.Commands.Refactor
 			var project = _switcher.GetProject();
 			if (project is not null)
 			{
-				var projectFactory = _factory.ResolveProjectModelFactory(project);
-				var next = projectFactory.ResolveCleanEditorStateAsTransient();
-				_stateChanger.ChangeState(next);
+				var projectFactory = _factory.ResolveProjectModelFactoryAsTransient(project);
+				_stateChanger.ChangeState(projectFactory.ResolveCleanEditorStateAsTransient());
 			}
 		}
 	}

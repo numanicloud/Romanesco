@@ -61,12 +61,12 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 
 		private object GetOrCreateInstance(ValueStorage storage)
 		{
-			var type = storage.Type;
 			if (storage.GetValue() is { } subject)
 			{
 			}
 			else
 			{
+				var type = storage.Type;
 				if (type == typeof(string))
 				{
 					var str = "";

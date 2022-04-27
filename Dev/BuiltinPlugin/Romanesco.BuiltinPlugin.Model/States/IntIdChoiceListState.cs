@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading;
 using NacHelpers.Extensions;
 using Reactive.Bindings;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
@@ -43,7 +45,15 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			_masterList = masterList;
 			_history = history;
 
-			_listInstance = storage.GetValue() is List<int> list ? list : new List<int>();
+			if (storage.GetValue() is List<int> list)
+			{
+				_listInstance = list;
+			}
+			else
+			{
+				_listInstance = new List<int>();
+				storage.SetValue(_listInstance);
+			}
 
 			// マスターのデータは遅れて初期化される可能性があるので、初期化まで待ってから選択肢を更新する
 			masterList.OnKeyAdded.Where(key => masterName == key)

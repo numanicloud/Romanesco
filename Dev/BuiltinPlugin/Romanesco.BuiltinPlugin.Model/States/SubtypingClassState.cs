@@ -57,7 +57,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			}).AddTo(Disposables);
 
 			FormattedString = BaseField.SelectMany(x => x.FormattedString)
-				.ToReadOnlyReactiveProperty("");
+				.ToReadOnlyReactiveProperty(BaseField.Value.FormattedString.Value);
 
 			// 型の変更と、中身の変更は上に通知される
 			var typeEdited = SelectedType.Select(x => Unit.Default);

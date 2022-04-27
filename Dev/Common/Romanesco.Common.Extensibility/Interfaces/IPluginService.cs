@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Imfact.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Romanesco.Common.Model.Interfaces;
 
 namespace Romanesco.Common.Extensibility.Interfaces
@@ -6,5 +7,11 @@ namespace Romanesco.Common.Extensibility.Interfaces
 	public interface IPluginService
 	{
 		void ConfigureServices(IServiceCollection services, IApiFactory hostFactory);
+	}
+
+	[Factory]
+	internal partial class HogeFactory
+	{
+
 	}
 }

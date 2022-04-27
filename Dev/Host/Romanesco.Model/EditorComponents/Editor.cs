@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Commands;
 using Romanesco.Model.Commands.Refactor;
 
 namespace Romanesco.Model.EditorComponents
@@ -55,6 +56,7 @@ namespace Romanesco.Model.EditorComponents
 
 			projectContext.ObserveEdit(() =>
 				{
+					// Undo, Redoができるかの状態を更新するために
 					CommandContext.UpdateCanExecute();
 				})
 				.AddTo(Disposables);

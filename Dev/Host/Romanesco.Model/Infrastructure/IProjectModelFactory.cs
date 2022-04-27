@@ -2,18 +2,17 @@
 using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Services.Save;
 
-namespace Romanesco.Model.Infrastructure
+namespace Romanesco.Model.Infrastructure;
+
+[Factory]
+interface IProjectModelFactory : IModelFactory
 {
-	[Factory]
-	interface IProjectModelFactory : IModelFactory
-	{
-		IModelFactory Model { get; }
+	IModelFactory Model { get; }
 
-		NewEditorState ResolveNewEditorStateAsTransient();
-		CleanEditorState ResolveCleanEditorStateAsTransient();
-		DirtyEditorState ResolveDirtyEditorStateAsTransient();
+	NewEditorState ResolveNewEditorStateAsTransient();
+	CleanEditorState ResolveCleanEditorStateAsTransient();
+	DirtyEditorState ResolveDirtyEditorStateAsTransient();
 
-		[Resolution(typeof(WindowsSaveService))]
-		IProjectSaveService ResolveSaveService();
-	}
+	[Resolution(typeof(WindowsSaveService))]
+	IProjectSaveService ResolveSaveService();
 }

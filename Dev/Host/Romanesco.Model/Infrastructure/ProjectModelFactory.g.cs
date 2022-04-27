@@ -13,6 +13,7 @@ using Romanesco.Model.Services.Serialize;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model;
 using Romanesco.Common.Model.Interfaces;
+using Romanesco.Model.Commands;
 
 namespace Romanesco.Model.Infrastructure
 {
@@ -90,9 +91,9 @@ namespace Romanesco.Model.Infrastructure
 			return Model.ResolveProjectSaveServiceFactory();
 		}
 
-		public IProjectModelFactory ResolveProjectModelFactory(IProjectContext projectContext)
+		public IProjectModelFactory ResolveProjectModelFactoryAsTransient(IProjectContext projectContext)
 		{
-			return Model.ResolveProjectModelFactory(projectContext);
+			return Model.ResolveProjectModelFactoryAsTransient(projectContext);
 		}
 
 		public CommandContext ResolveCommandContext()
