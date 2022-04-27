@@ -5,8 +5,6 @@ using Moq;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
-using Romanesco.Model.EditorComponents;
-using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;

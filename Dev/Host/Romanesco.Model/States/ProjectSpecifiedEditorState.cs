@@ -1,6 +1,4 @@
-﻿using Romanesco.Model.Commands;
-
-namespace Romanesco.Model.EditorComponents.States
+﻿namespace Romanesco.Model.States
 {
 	abstract class ProjectSpecifiedEditorState : EditorState
 	{

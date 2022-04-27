@@ -1,7 +1,6 @@
 ﻿using System;
 using Reactive.Bindings;
-using Romanesco.Model.EditorComponents;
-using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.States;
 
 namespace Romanesco.Test.EditorComponents
 {

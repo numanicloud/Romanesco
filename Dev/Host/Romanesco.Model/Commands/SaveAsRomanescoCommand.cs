@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Romanesco.Model.Commands.Refactor;
-using Romanesco.Model.EditorComponents;
-using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Infrastructure;
+using Romanesco.Model.ProjectComponents;
+using Romanesco.Model.States;
 
 namespace Romanesco.Model.Commands
 {

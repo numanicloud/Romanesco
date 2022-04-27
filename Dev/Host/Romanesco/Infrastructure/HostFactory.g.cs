@@ -9,6 +9,7 @@ using Romanesco.Model;
 using Romanesco.Common.Model.Basics;
 using Deptorygen.GenericHost;
 using Microsoft.Extensions.DependencyInjection;
+using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Infrastructure
 {

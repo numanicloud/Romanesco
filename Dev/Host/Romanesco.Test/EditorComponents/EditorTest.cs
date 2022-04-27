@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Linq;
 using Moq;
-using Romanesco.Model.EditorComponents;
-using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.States;
 using Romanesco.Test.Helpers;
 using Xunit;
 

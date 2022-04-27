@@ -12,7 +12,6 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
-using Romanesco.Model.Commands.Refactor;
 using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.Services.Load

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Romanesco.Model;
+using Romanesco.Model.Infrastructure;
 using Xunit;
 
 namespace Romanesco.Test

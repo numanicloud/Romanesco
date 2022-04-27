@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Deptorygen.Annotations;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.EditorComponents;
+using Romanesco.Model;
 using Romanesco.Model.Services;
 using Romanesco.ViewModel.Editor;
 using Romanesco.ViewModel.Project;

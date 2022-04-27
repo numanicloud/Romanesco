@@ -2,8 +2,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using Romanesco.Model.EditorComponents;
-using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Save;
@@ -13,7 +11,7 @@ using Romanesco.Model.Services.Serialize;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.Model;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.Commands.Refactor;
+using Romanesco.Model.States;
 
 namespace Romanesco.Model.Infrastructure
 {

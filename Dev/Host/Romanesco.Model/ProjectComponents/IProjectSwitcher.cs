@@ -1,10 +1,9 @@
-﻿using System;
-using System.Reactive;
+﻿using System.Reactive;
 using System.Reactive.Subjects;
 using Reactive.Bindings;
 using Romanesco.Common.Model.ProjectComponent;
 
-namespace Romanesco.Model.Commands.Refactor;
+namespace Romanesco.Model.ProjectComponents;
 
 public interface IProjectSwitcher
 {

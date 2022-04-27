@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Romanesco.Common.Model.Helpers;
-using Romanesco.Model.Commands.Refactor;
-using Romanesco.Model.EditorComponents;
 using Romanesco.Model.Infrastructure;
-using static Romanesco.Model.EditorComponents.EditorCommandType;
+using Romanesco.Model.ProjectComponents;
+using Romanesco.Model.States;
+using static Romanesco.Model.Commands.EditorCommandType;
 
 namespace Romanesco.Model.Commands;
 

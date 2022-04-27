@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.States;
 
 namespace Romanesco.Model.Commands;
 

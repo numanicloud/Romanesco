@@ -1,7 +1,6 @@
 ﻿using System;
-using Romanesco.Model.EditorComponents.States;
 
-namespace Romanesco.Model.EditorComponents
+namespace Romanesco.Model.States
 {
 	internal interface IEditorStateChanger
 	{

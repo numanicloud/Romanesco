@@ -2,7 +2,7 @@
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 
-namespace Romanesco.Model.EditorComponents.States
+namespace Romanesco.Model.States
 {
 	internal abstract class EditorState : IEditorState
 	{

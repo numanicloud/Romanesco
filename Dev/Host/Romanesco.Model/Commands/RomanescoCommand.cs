@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Reactive.Bindings;
-using Romanesco.Model.EditorComponents.States;
+using Romanesco.Model.States;
 
 namespace Romanesco.Model.Commands
 {

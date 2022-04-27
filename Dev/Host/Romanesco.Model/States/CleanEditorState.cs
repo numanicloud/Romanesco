@@ -1,10 +1,9 @@
 ﻿using Romanesco.Common.Model.ProjectComponent;
-using Romanesco.Model.Commands;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
 
-namespace Romanesco.Model.EditorComponents.States
+namespace Romanesco.Model.States
 {
 	internal class CleanEditorState : ProjectSpecifiedEditorState
 	{

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Reactive.Bindings;
 using Romanesco.Common.Model.ProjectComponent;
-using Romanesco.Model.Commands.Refactor;
+using Romanesco.Model.ProjectComponents;
 
 namespace Romanesco.Test.EditorComponents
 {

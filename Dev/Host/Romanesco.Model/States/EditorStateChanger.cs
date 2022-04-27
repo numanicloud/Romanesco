@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Reactive.Subjects;
-using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Infrastructure;
 
-namespace Romanesco.Model.EditorComponents
+namespace Romanesco.Model.States
 {
 	internal class EditorStateChanger : IEditorStateChanger
 	{

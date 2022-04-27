@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using Romanesco.Model.Commands;
-using Romanesco.Model.EditorComponents;
-using Romanesco.Model.EditorComponents.States;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.Save;
+using Romanesco.Model.States;
 using Romanesco.Test.EditorComponents;
 using Xunit;
 

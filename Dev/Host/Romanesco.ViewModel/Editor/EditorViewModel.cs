@@ -8,11 +8,12 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.Helpers;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.EditorComponents;
+using Romanesco.Model;
+using Romanesco.Model.Commands;
 using Romanesco.Model.ProjectComponents;
 using Romanesco.ViewModel.Project;
 using Romanesco.ViewModel.States;
-using static Romanesco.Model.EditorComponents.EditorCommandType;
+using static Romanesco.Model.Commands.EditorCommandType;
 
 namespace Romanesco.ViewModel.Editor
 {

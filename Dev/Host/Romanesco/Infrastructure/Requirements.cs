@@ -1,7 +1,7 @@
 ﻿using System;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Reflections;
-using Romanesco.Model.EditorComponents;
+using Romanesco.Model;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services;
 using Romanesco.ViewModel.Editor;
