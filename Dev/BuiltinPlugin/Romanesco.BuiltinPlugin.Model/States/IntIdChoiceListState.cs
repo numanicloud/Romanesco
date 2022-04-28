@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -62,9 +63,6 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 			Elements = _elements.ToReadOnlyReactiveCollection(x => x.State);
 
-			FormattedString = _onContentsChanged.Select(_ => $"Count = {_elements.Count}")
-				.ToReadOnlyReactiveProperty("Count = 0");
-
 			OnEdited = _onContentsChanged;
 
 			foreach (var item in _listInstance)
@@ -75,6 +73,9 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 				_elements.Add(Element.Create(state, _onContentsChanged));
 			}
+
+			FormattedString = _onContentsChanged.Select(_ => $"Count = {_elements.Count}")
+				.ToReadOnlyReactiveProperty($"Count = {_elements.Count}");
 		}
 
 		public void AddNewElement()

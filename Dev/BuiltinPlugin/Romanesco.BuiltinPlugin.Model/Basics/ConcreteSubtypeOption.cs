@@ -39,12 +39,7 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 
 		public IFieldState MakeState(ValueStorage valueStorage)
 		{
-			if (!(context.AsmRepo.CreateInstance(derivedType) is { } instance))
-			{
-				throw MakeException($"型 {derivedType.FullName} のインスタンスを作成できません。");
-			}
-
-			valueStorage.SetValue(instance);
+			valueStorage.SetValue(subtypingStorage.GetValue());
 
 			// 最基底の型を生成しようとしてしまっている。再派生の型を生成すべき
 			// 新しいValueStorageを作らないようにしたせいかも

@@ -68,7 +68,7 @@ namespace Romanesco.Common.Model.Basics
         /// </param>
         public ValueStorage(Type type, string memberName, SetterFunction setter, object? initialValue)
         {
-            this.setter = setter;
+            this.setter = (value, oldValue) => setter(value, oldValue);
             Type = type;
             MemberName = memberName;
             Attributes = new Attribute[0];
