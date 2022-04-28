@@ -47,6 +47,9 @@ namespace Romanesco.BuiltinPlugin
 		[Cache]
 		public partial IStateFactory ResolveSubtypingStateFactory();
 
+		[Cache]
+		public partial ClassStateFactory ResolveClassStateFactory2();
+
 		[Resolution(typeof(ClassStateFactory))]
 		[Cache]
 		public partial IStateFactory ResolveClassStateFactory();

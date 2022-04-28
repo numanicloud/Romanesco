@@ -42,11 +42,12 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 			var api = new Mock<IApiFactory>();
 			api.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
 
+			var classFactory = new ClassStateFactory(new DataAssemblyRepository());
 			var interpreter = new ObjectInterpreter(new IStateFactory[]
 			{
 				new ListStateFactory(new MasterListContext(api.Object), new CommandHistory()),
-				new SubtypingStateFactory(api.Object),
-				new ClassStateFactory(new DataAssemblyRepository())
+				new SubtypingStateFactory(api.Object, classFactory),
+				classFactory
 			});
 
 			// インスタンスとStateを構築する
@@ -80,7 +81,8 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 							null),
 						new SubtypingStateContext(new SubtypingList(typeof(TestBase)),
 							new DataAssemblyRepository(),
-							interpreter));
+							interpreter),
+						classFactory);
 
 					// 値の型がTestDerivedに変更されていること
 					Assert.IsType<TestDerived>(scs.Storage.GetValue());

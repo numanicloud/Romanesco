@@ -76,6 +76,11 @@ namespace Romanesco.Common.Model.Basics
             currentValue = initialValue;
         }
 
+		public ValueStorage Clone(Type type)
+		{
+			return new ValueStorage(type, MemberName, setter, currentValue);
+		}
+
         /// <summary>
         /// この要素が表す格納先に値を代入します。
         /// </summary>

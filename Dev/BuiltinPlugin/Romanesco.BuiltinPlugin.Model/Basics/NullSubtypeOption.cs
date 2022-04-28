@@ -17,7 +17,11 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 
 		public string OptionName => "<null>";
 
-		public IFieldState MakeState() => new ClassState(_storage, Array.Empty<IFieldState>());
+		public IFieldState MakeState(ValueStorage valueStorage)
+		{
+			valueStorage.SetValue(null);
+			return new NoneState();
+		}
 
 		public bool IsTypeOf(Type type) => false;
 	}

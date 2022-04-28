@@ -13,11 +13,13 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 	public class SubtypingStateFactory : IStateFactory
 	{
 		private readonly IApiFactory api;
+		private readonly ClassStateFactory _factory;
 		private readonly SubtypingContext context = new SubtypingContext();
 
-		public SubtypingStateFactory(IApiFactory api)
+		public SubtypingStateFactory(IApiFactory api, ClassStateFactory factory)
 		{
 			this.api = api;
+			_factory = factory;
 		}
 
 		public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
@@ -46,7 +48,7 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 
 
 			var stateContext = new SubtypingStateContext(list, api.ResolveDataAssemblyRepository(), api.ResolveObjectInterpreter());
-			return new SubtypingClassState(settability, stateContext);
+			return new SubtypingClassState(settability, stateContext, _factory);
 		}
 	}
 }
