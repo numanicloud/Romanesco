@@ -58,6 +58,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Romanesco.ViewModel.Test", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{95C95A51-EEAE-41FC-935F-31787FABCA39}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZeroOpera.Romanesco", "..\..\..\..\Games\ZeroOpera\Dev\ZeroOpera.Romanesco\ZeroOpera.Romanesco.csproj", "{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -214,6 +216,14 @@ Global
 		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Release|x64.ActiveCfg = Release|Any CPU
 		{95C95A51-EEAE-41FC-935F-31787FABCA39}.Release|x64.Build.0 = Release|Any CPU
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}.Debug|x64.Build.0 = Debug|Any CPU
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}.Release|x64.ActiveCfg = Release|Any CPU
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -237,6 +247,7 @@ Global
 		{2D6F1831-7EE1-469A-8C58-6ED39926EA9D} = {01C5DEF4-E315-4138-9843-56169C7073D0}
 		{4AB38475-CEC5-4484-B480-559756E3BE95} = {01C5DEF4-E315-4138-9843-56169C7073D0}
 		{19FB8267-3621-4BA2-8715-3878BB1F3CC7} = {01C5DEF4-E315-4138-9843-56169C7073D0}
+		{816AE038-ED1B-4DD3-BE19-FD98E5FDA1E0} = {9B3D8DEE-1861-41DD-908E-D41236555B5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {87D5578B-44E4-4B3D-8D5F-9B5D1879A11D}
