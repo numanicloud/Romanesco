@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NacHelpers.Extensions;
+using Numani.TypedFilePath;
+using Numani.TypedFilePath.Interfaces;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Extensibility;
 using Romanesco.Infrastructure;
@@ -27,7 +29,8 @@ namespace Romanesco.Startup
 		{
 			var api = new ApiFactory(host);
 			var pluginLoader = new PluginLoader();
-			var extensions = pluginLoader.Load("Plugins");
+			var extensions = pluginLoader.Load(
+				("Plugins".AsDirectoryPath() as IRelativeDirectoryPath)!);
 			
 			var serviceCollection = new ServiceCollection();
 			extensions.ConfigureServices(serviceCollection, api);

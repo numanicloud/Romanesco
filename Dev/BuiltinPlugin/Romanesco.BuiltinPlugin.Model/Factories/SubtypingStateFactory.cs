@@ -4,6 +4,7 @@ using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -21,6 +22,8 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 
 		public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
 		{
+			Debug.WriteLine("Trying interpret as SubtypingClassState.");
+
 			Type type = settability.Type;
 			if (!type.IsClass
 				|| type.GetCustomAttribute<EditorSubtypingBaseAttribute>() is null)
