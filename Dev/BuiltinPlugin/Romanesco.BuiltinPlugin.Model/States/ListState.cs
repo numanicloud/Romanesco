@@ -5,6 +5,7 @@ using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -35,6 +36,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 			public static Element Create(IFieldState state, IObserver<Unit> onContentsChanged)
 			{
+				state.Storage.OnValueChanged
+					.Subscribe(_ => Debug.WriteLine("Element-Write", "Romanesco"));
 				var disposable = state.OnEdited
 					.Subscribe(value => onContentsChanged.OnNext(Unit.Default));
 				return new Element(state, disposable);

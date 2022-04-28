@@ -4,7 +4,9 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Reactive.Bindings.Extensions;
 using Romanesco.Common.Model.Implementations;
 
@@ -12,6 +14,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 {
 	public class IntIdChoiceState : SimpleStateBase
 	{
+		private readonly Subject<Unit> _onEditedSubject = new ();
+
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
 		public ReactiveProperty<MasterList?> Master { get; } = new();
 		public ReactiveProperty<IFieldState?> SelectedItem { get; } = new (mode:ReactivePropertyMode.None);
@@ -27,6 +31,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			FormattedString = SelectedItem.Select(SanitizeNewFormattedString)
 				.ToReactiveProperty(storage.GetValue()?.ToString() ?? "");
 
+			OnEdited = _onEditedSubject;
+
 			// �l�̕ω��𐶃f�[�^�֔��f
 			SelectedItem.Subscribe(x =>
 			{
@@ -34,6 +40,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 					: x?.Storage.GetValue() is { } value ? Master.Value.GetId(value)
 					: -1;
 				Storage.SetValue(id);
+				_onEditedSubject.OnNext(Unit.Default);
 			}).AddTo(Disposables);
 		}
 

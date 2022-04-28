@@ -6,7 +6,7 @@ namespace Romanesco.Common.Model.Basics
 	public interface ISubtypeOption
 	{
 		string OptionName { get; }
-		IFieldState MakeState();
+		IFieldState MakeState(ValueStorage valueStorage);
 		bool IsTypeOf(Type type);
 	}
 }
