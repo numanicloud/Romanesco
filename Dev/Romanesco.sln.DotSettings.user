@@ -8,6 +8,7 @@
     &lt;TestId&gt;xUnit::D71384DB-B0E8-4880-838C-8D08B1EA0B7E::net6.0-windows7.0::Romanesco.BuiltinPlugin.Test.Model.IntIdChoiceListTest.初期化時の要素数がValueStorageから読み込まれる&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::D71384DB-B0E8-4880-838C-8D08B1EA0B7E::net6.0-windows7.0::Romanesco.BuiltinPlugin.Test.Model.IntIdChoiceListTest.新しい要素を追加することができる&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::D71384DB-B0E8-4880-838C-8D08B1EA0B7E::net6.0-windows7.0::Romanesco.BuiltinPlugin.Test.Model.IntIdChoiceListTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::D71384DB-B0E8-4880-838C-8D08B1EA0B7E::net6.0-windows7.0::Romanesco.BuiltinPlugin.Test.Model.SubtypingTest.List以下のSubtypingの中身が更新されると元のインスタンスに反映される&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=80d5eea0_002D08b8_002D44a8_002D9080_002Daaf45a345338/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;

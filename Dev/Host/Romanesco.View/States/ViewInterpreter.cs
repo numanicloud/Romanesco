@@ -27,9 +27,9 @@ namespace Romanesco.View.States
 		{
 			using var scope = new HandlingDisposable(() =>
 			{
-				Debug.WriteLine($"Out: {string.Join("", Enumerable.Repeat("\t", Depth))}, {viewModel.Title.Value}, {viewModel.GetType()}", "Romanesco");
+				//Debug.WriteLine($"Out: {string.Join("", Enumerable.Repeat("\t", Depth))}, {viewModel.Title.Value}, {viewModel.GetType()}", "Romanesco");
             });
-			Debug.WriteLine($" In: {string.Join("", Enumerable.Repeat("\t", Depth))}, {viewModel.Title.Value}, {viewModel.GetType()}", "Romanesco");
+			//Debug.WriteLine($" In: {string.Join("", Enumerable.Repeat("\t", Depth))}, {viewModel.Title.Value}, {viewModel.GetType()}", "Romanesco");
 
             Depth++;
             foreach (var factory in factories)

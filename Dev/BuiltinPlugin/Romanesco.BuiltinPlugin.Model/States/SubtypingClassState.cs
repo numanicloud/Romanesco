@@ -5,6 +5,7 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -63,6 +64,11 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			var typeEdited = SelectedType.Select(x => Unit.Default);
 			var concreteEdited = BaseField.SelectMany(x => x.OnEdited);
 			OnEdited = typeEdited.Merge(concreteEdited);
+
+			Debug.WriteLine("SubtypingClassState", "Romanesco");
+
+			storage.OnValueChanged.Subscribe(_ =>
+				Debug.WriteLine("SubtypingClassState.OnValueChanged"));
 		}
 
 		public override void Dispose()

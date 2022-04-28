@@ -19,6 +19,8 @@
       <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
+    <ProjectReference Include="..\..\Host\Romanesco.Model\Romanesco.Model.csproj" />
+    <ProjectReference Include="..\..\submodules\NacHelper\NacHelpers\NacHelpers.csproj" />
   </ItemGroup>
 
 </Project>
