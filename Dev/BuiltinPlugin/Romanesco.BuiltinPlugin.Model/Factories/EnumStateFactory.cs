@@ -15,11 +15,12 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 
         public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
         {
-            if (settability.Type.IsEnum)
-            {
-                return new EnumState(settability, history);
-            }
-            return null;
-        }
+			if (!settability.Type.IsEnum)
+			{
+				return null;
+			}
+
+			return new EnumState(settability, history);
+		}
     }
 }

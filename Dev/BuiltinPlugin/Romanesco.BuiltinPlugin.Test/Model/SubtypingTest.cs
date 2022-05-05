@@ -42,7 +42,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 			var api = new Mock<IApiFactory>();
 			api.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
 
-			var classFactory = new ClassStateFactory(new DataAssemblyRepository());
+			var classFactory = new ClassStateFactory(new DataAssemblyRepository(), new Mock<ILoadingStateReader>().Object);
 			var interpreter = new ObjectInterpreter(new IStateFactory[]
 			{
 				new ListStateFactory(new MasterListContext(api.Object), new CommandHistory()),

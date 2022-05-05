@@ -8,16 +8,19 @@ using System.Linq;
 using System.Reflection;
 using NacHelpers.Extensions;
 using Romanesco.Common.Model.Reflections;
+using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.BuiltinPlugin.Model.Factories
 {
     public class ClassStateFactory : IStateFactory
     {
 		private readonly IDataAssemblyRepository asmRepo;
+		private readonly ILoadingStateReader _loadingState;
 
-		public ClassStateFactory(IDataAssemblyRepository asmRepo)
+		public ClassStateFactory(IDataAssemblyRepository asmRepo, ILoadingStateReader loadingState)
 		{
 			this.asmRepo = asmRepo;
+			_loadingState = loadingState;
 		}
 
         public IFieldState? InterpretAsState(ValueStorage storage, StateInterpretFunc interpret)
@@ -27,6 +30,8 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			{
 				return null;
 			}
+			
+			_loadingState.BreakIfNotLoading();
 
 			// 新規作成時は null である場合がある。逆にロード時は値が入ってるので上書き禁止
 			object subject = GetOrCreateInstance(storage);

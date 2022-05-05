@@ -2,6 +2,8 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using Romanesco.Model;
+using Romanesco.Model.States;
 using Romanesco.Model.Services.Load;
 using Romanesco.Model.Services.History;
 using Romanesco.Model.Services.Save;
@@ -9,15 +11,15 @@ using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Model.Commands;
 using Romanesco.Model.Services.Serialize;
 using Romanesco.Model.ProjectComponents;
-using Romanesco.Model;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Model.States;
 
 namespace Romanesco.Model.Infrastructure
 {
 	internal partial class ModelFactory : IModelFactory
 		, IDisposable
 	{
+		private readonly ILoadingStateProvider _iLoadingStateProvider;
+
 		public IModelRequirementFactory Requirement { get; }
 		public IPluginFactory Plugin { get; }
 
@@ -34,8 +36,9 @@ namespace Romanesco.Model.Infrastructure
 		private ObjectInterpreter? _ResolveIObjectInterpreterCache;
 		private ProjectSwitcher? _ResolveProjectSwitcherCache;
 
-		public ModelFactory(IModelRequirementFactory requirement, IPluginFactory plugin)
+		public ModelFactory(ILoadingStateProvider iLoadingStateProvider, IModelRequirementFactory requirement, IPluginFactory plugin)
 		{
+			_iLoadingStateProvider = iLoadingStateProvider;
 			Requirement = requirement;
 			Plugin = plugin;
 		}
@@ -62,7 +65,7 @@ namespace Romanesco.Model.Infrastructure
 
 		public IProjectLoadService ResolveProjectLoadService()
 		{
-			return _ResolveProjectLoadServiceCache ??= new WindowsLoadService(Requirement.ResolveProjectSettingProvider(), ResolveStateDeserializer(), Requirement.ResolveDataAssemblyRepository(), this, ResolveProjectSwitcher(), ResolveObjectInterpreter());
+			return _ResolveProjectLoadServiceCache ??= new WindowsLoadService(Requirement.ResolveProjectSettingProvider(), ResolveStateDeserializer(), Requirement.ResolveDataAssemblyRepository(), this, ResolveProjectSwitcher(), ResolveObjectInterpreter(), _iLoadingStateProvider);
 		}
 
 		public IProjectHistoryService ResolveProjectHistoryService()

@@ -15,7 +15,8 @@ namespace Romanesco.BuiltinPlugin
 			var factory = new PluginFactory(hostFactory,
 				master,
 				hostFactory.ResolveCommandHistory(),
-				hostFactory.ResolveDataAssemblyRepository());
+				hostFactory.ResolveDataAssemblyRepository(),
+				hostFactory);
 
 			var importer = new GenericHostImporter(services);
 			factory.Export(importer);

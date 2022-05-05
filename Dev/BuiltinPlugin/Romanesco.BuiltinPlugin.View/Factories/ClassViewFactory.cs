@@ -13,27 +13,28 @@ namespace Romanesco.BuiltinPlugin.View.Factories
 	{
 		public StateViewContext? InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively)
 		{
-			if (viewModel is ClassViewModel @class)
+			if (viewModel is not ClassViewModel @class)
 			{
-				var children = @class.Fields.Select(x => interpretRecursively(x)).ToArray();
-				var context = new ClassContext(@class, children);
-				foreach (var field in children)
-				{
-					field.ViewModel.ShowDetail.Subscribe(_ => context.ClosedUpView.Value = field.BlockControl)
-						.AddTo(@class.Disposables);
-				}
-
-				var blockControl = new View.ClassBlockView()
-				{
-					DataContext = context,
-				};
-				var inlineControl = new View.ClassInlineView()
-				{
-					DataContext = context,
-				};
-				return new StateViewContext(inlineControl, blockControl, @class);
+				return null;
 			}
-			return null;
+
+			var children = @class.Fields.Select(x => interpretRecursively(x)).ToArray();
+			var context = new ClassContext(@class, children);
+			foreach (var field in children)
+			{
+				field.ViewModel.ShowDetail.Subscribe(_ => context.ClosedUpView.Value = field.BlockControl)
+					.AddTo(@class.Disposables);
+			}
+
+			var blockControl = new View.ClassBlockView()
+			{
+				DataContext = context,
+			};
+			var inlineControl = new View.ClassInlineView()
+			{
+				DataContext = context,
+			};
+			return new StateViewContext(inlineControl, blockControl, @class);
 		}
 	}
 }

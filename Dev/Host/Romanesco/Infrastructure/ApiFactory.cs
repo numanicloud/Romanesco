@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using Microsoft.Extensions.DependencyInjection;
-using NacHelpers.Extensions;
 using Reactive.Bindings;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
-using Romanesco.Common.Model.ProjectComponent;
 using Romanesco.Common.Model.Reflections;
 using Romanesco.Model.Infrastructure;
 
@@ -15,7 +12,10 @@ namespace Romanesco.Infrastructure
 {
 	class ApiFactory : IApiFactory
 	{
+		private static int NextId = 0;
+
 		private readonly IOpenHostFactory factory;
+		private readonly int Id;
 
 		public ServiceProvider? Provider { get; set; }
 		public IOpenModelFactory? ModelFactory { get; set; }
@@ -25,6 +25,7 @@ namespace Romanesco.Infrastructure
 		{
 			this.factory = factory;
 			OnProjectChangedProperty = new(Observable.Never<Unit>());
+			Id = NextId++;
 		}
 
 		public IDataAssemblyRepository ResolveDataAssemblyRepository() => factory.ResolveDataAssemblyRepository();
@@ -38,5 +39,12 @@ namespace Romanesco.Infrastructure
 
 		public IObservable<Unit> OnProjectChanged =>
 			OnProjectChangedProperty.SelectMany(x => x);
+
+		public bool IsLoading { get; set; }
+
+		public override int GetHashCode()
+		{
+			return Id;
+		}
 	}
 }

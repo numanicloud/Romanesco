@@ -51,6 +51,9 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			{
 				Console.WriteLine(storage == BaseField.Value.Storage);
 				Debug.WriteLine("SelectedType Changed", "Romanesco");
+
+				// ここでNullSubtypeOptionの特質によりNoneStateが生成されることによって、
+				// Storageの値がおかしくなる
 				BaseField.Value = x.MakeState(storage);
 
 				// 以下の行がツリー構造からデータを外しているっぽい

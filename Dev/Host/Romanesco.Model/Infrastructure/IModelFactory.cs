@@ -44,6 +44,7 @@ namespace Romanesco.Model.Infrastructure
 	public interface IPluginFactory
 	{
 		IEnumerable<IStateFactory> ResolveStateFactories();
+		ILoadingStateProvider ResolveLoadingStateProvider();
 	}
 
 	// TODO: IEditorFacade と IEditorStateRepository で同じインスタンスを返したい

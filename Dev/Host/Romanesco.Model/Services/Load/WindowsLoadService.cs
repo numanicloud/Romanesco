@@ -24,13 +24,15 @@ namespace Romanesco.Model.Services.Load
 		private readonly IModelFactory factory;
 		private readonly IProjectSwitcher _projectSwitcher;
 		private readonly ObjectInterpreter interpreter;
+		private readonly ILoadingStateProvider _loadingState;
 
 		public WindowsLoadService(IProjectSettingProvider projectSettingProvider,
 			IStateDeserializer deserializer,
 			IDataAssemblyRepository assemblyRepo,
 			IModelFactory factory,
 			IProjectSwitcher projectSwitcher,
-			ObjectInterpreter interpreter)
+			ObjectInterpreter interpreter,
+			ILoadingStateProvider loadingState)
 		{
 			this.projectSettingProvider = projectSettingProvider;
 			this.deserializer = deserializer;
@@ -38,6 +40,7 @@ namespace Romanesco.Model.Services.Load
 			this.factory = factory;
 			_projectSwitcher = projectSwitcher;
 			this.interpreter = interpreter;
+			_loadingState = loadingState;
 		}
 
 		public bool CanCreate => true;
@@ -51,7 +54,15 @@ namespace Romanesco.Model.Services.Load
 
 		public async Task<IProjectContext?> OpenAsync()
 		{
-			return await ResetProject(OpenInternalAsync);
+			try
+			{
+				_loadingState.IsLoading = true;
+				return await ResetProject(OpenInternalAsync);
+			}
+			finally
+			{
+				_loadingState.IsLoading = false;
+			}
 		}
 
 		private async Task<ProjectContext?> ResetProject(Func<Task<Project?>> generator)
@@ -127,7 +138,6 @@ namespace Romanesco.Model.Services.Load
 			var project = await ProjectConverter.FromDataAsync(data, deserializer, interpreter);
 			project.DefaultSavePath = dialog.FileName;
 			return project;
-
 		}
 	}
 }
