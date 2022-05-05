@@ -7,7 +7,7 @@ using Romanesco.Common.Model.Reflections;
 namespace Romanesco.Common.Model.Interfaces
 {
 	[Factory]
-	public interface IApiFactory
+	public interface IApiFactory : ILoadingStateProvider
 	{
 		IDataAssemblyRepository ResolveDataAssemblyRepository();
 		CommandHistory ResolveCommandHistory();

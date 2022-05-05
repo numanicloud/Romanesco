@@ -24,14 +24,14 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 
 		public IFieldState? InterpretAsState(ValueStorage settability, StateInterpretFunc interpret)
 		{
-			Debug.WriteLine("Trying interpret as SubtypingClassState.");
-
 			Type type = settability.Type;
 			if (!type.IsClass
 				|| type.GetCustomAttribute<EditorSubtypingBaseAttribute>() is null)
 			{
 				return null;
 			}
+
+			api.BreakIfNotLoading();
 
 			SubtypingList? list = context.Get(type);
 			if (list is null)

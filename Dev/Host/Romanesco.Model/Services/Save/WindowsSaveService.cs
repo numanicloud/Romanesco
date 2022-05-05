@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Romanesco.Common.Model.ProjectComponent;
+using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Model.Services.Save
 {
@@ -14,7 +15,7 @@ namespace Romanesco.Model.Services.Save
         private readonly IStateSerializer saveSerializer;
 		private readonly IProjectContext context;
 
-        public bool CanSave => true;
+		public bool CanSave => true;
 
         public bool CanExport => true;
 
@@ -23,7 +24,7 @@ namespace Romanesco.Model.Services.Save
         {
             this.saveSerializer = saveSerializer;
 			this.context = context;
-        }
+		}
 
         public async Task ExportAsync()
         {
@@ -80,7 +81,7 @@ namespace Romanesco.Model.Services.Save
         private async Task SaveToPathAsync(string path)
         {
             var data = ProjectConverter.ToData(context.Project, saveSerializer);
-            var json = JsonConvert.SerializeObject(data);
+            var json = JsonConvert.SerializeObject(data, new JsonSerializerSettings());
 
             await using var file = File.Create(path);
             await using var writer = new StreamWriter(file);

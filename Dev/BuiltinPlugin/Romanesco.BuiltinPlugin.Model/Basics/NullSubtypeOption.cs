@@ -20,7 +20,7 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 		public IFieldState MakeState(ValueStorage valueStorage)
 		{
 			valueStorage.SetValue(null);
-			return new NoneState();
+			return new ClassState(valueStorage, Array.Empty<IFieldState>());
 		}
 
 		public bool IsTypeOf(Type type) => false;

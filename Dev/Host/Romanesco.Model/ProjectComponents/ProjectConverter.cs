@@ -65,7 +65,7 @@ namespace Romanesco.Model.ProjectComponents
 
 			if (type == null)
 			{
-				throw new Exception($"ƒAƒZƒ“ƒuƒŠ‚©‚çƒvƒƒWƒFƒNƒgŒ^ {data.ProjectTypeQualifier} ‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B");
+				throw new Exception($"ï¿½Aï¿½Zï¿½ï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½gï¿½^ {data.ProjectTypeQualifier} ï¿½ï¿½æ“¾ï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½B");
 			}
 
 			var settings = new ProjectSettings(assembly, type, exporter, data.DependencyProjects);
@@ -73,7 +73,7 @@ namespace Romanesco.Model.ProjectComponents
 
 			if (instance == null)
 			{
-				throw new Exception($"ƒAƒZƒ“ƒuƒŠ‚©‚çƒvƒƒWƒFƒNƒgŒ^ {data.ProjectTypeQualifier} ‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B");
+				throw new Exception($"ï¿½Aï¿½Zï¿½ï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½gï¿½^ {data.ProjectTypeQualifier} ï¿½ï¿½æ“¾ï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½B");
 			}
 
 			return await FromInstanceAsync(settings, deserializer, interpreter, instance);
@@ -86,7 +86,7 @@ namespace Romanesco.Model.ProjectComponents
 			ObjectInterpreter interpreter,
 			object instance)
 		{
-			// ˆË‘¶ŠÖŒW‚ğ“Ç‚İ‚Ş
+			// ï¿½Ë‘ï¿½ï¿½ÖŒWï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
 			var list = new List<ProjectDependency>();
 			foreach (var item in settings.DependencyProjects)
 			{

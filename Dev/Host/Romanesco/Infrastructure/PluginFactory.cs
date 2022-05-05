@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
+using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Infrastructure
 {
@@ -11,15 +12,22 @@ namespace Romanesco.Infrastructure
 		View.Infrastructure.IPluginFactory
 	{
 		private readonly ServiceProvider provider;
+		private readonly ApiFactory _api;
 
-		public PluginFactory(ServiceProvider provider)
+		public PluginFactory(ServiceProvider provider, ApiFactory api)
 		{
 			this.provider = provider;
+			_api = api;
 		}
 
 		public IEnumerable<IStateFactory> ResolveStateFactories()
 		{
 			return provider.GetRequiredService<IEnumerable<IStateFactory>>();
+		}
+
+		public ILoadingStateProvider ResolveLoadingStateProvider()
+		{
+			return _api;
 		}
 
 		public IEnumerable<IStateViewModelFactory> ResolveStateViewModelFactories()

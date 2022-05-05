@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Reactive;
-using Imfact.Annotations;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.Reflections;
 
 namespace Romanesco.BuiltinPlugin
 {
-	[Factory]
 	internal class ApiFactory : IApiFactory
 	{
 		private readonly IApiFactory _api;
@@ -38,5 +36,11 @@ namespace Romanesco.BuiltinPlugin
 		}
 
 		public IObservable<Unit> OnProjectChanged => _api.OnProjectChanged;
+
+		public bool IsLoading
+		{
+			get => _api.IsLoading;
+			set => _api.IsLoading = value;
+		}
 	}
 }

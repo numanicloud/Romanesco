@@ -11,7 +11,11 @@ namespace Romanesco.Model.Services.Export
 
         public async Task ExportAsync(object rootInstance, string exportPath)
         {
-            var json = JsonConvert.SerializeObject(rootInstance, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(rootInstance, new JsonSerializerSettings()
+			{
+                Formatting = Formatting.Indented,
+                TypeNameHandling = TypeNameHandling.Objects
+			});
             using (var file = File.Create(exportPath))
             {
                 using (var writer = new StreamWriter(file))

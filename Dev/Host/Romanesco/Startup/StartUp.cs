@@ -36,7 +36,7 @@ namespace Romanesco.Startup
 			extensions.ConfigureServices(serviceCollection, api);
 
 			var pluginServices = serviceCollection.BuildServiceProvider();
-			var (model, view) = ResolveFactory(new PluginFactory(pluginServices));
+			var (model, view) = ResolveFactory(new PluginFactory(pluginServices, api));
 			api.ModelFactory = model;
 			api.Provider = pluginServices;
 
