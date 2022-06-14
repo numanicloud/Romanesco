@@ -49,16 +49,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			// 型が変更されたら更新
 			SelectedType.Subscribe(x =>
 			{
-				Console.WriteLine(storage == BaseField.Value.Storage);
-				Debug.WriteLine("SelectedType Changed", "Romanesco");
-
-				// ここでNullSubtypeOptionの特質によりNoneStateが生成されることによって、
-				// Storageの値がおかしくなる
 				BaseField.Value = x.MakeState(storage);
-
-				// 以下の行がツリー構造からデータを外しているっぽい
-				// この行を境に、storage == BaseField.Value.Storage が false になる
-				
 			}).AddTo(Disposables);
 
 			FormattedString = BaseField.SelectMany(x => x.FormattedString)
@@ -68,14 +59,6 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			var typeEdited = SelectedType.Select(x => Unit.Default);
 			var concreteEdited = BaseField.SelectMany(x => x.OnEdited);
 			OnEdited = typeEdited.Merge(concreteEdited);
-
-			Debug.WriteLine("SubtypingClassState", "Romanesco");
-
-			storage.OnValueChanged.Subscribe(_ =>
-				Debug.WriteLine("SubtypingClassState.OnValueChanged", "Romanesco"));
-
-			concreteEdited.Subscribe(_ =>
-				Debug.WriteLine("SubtypingClassState.concreteEdited", "Romanesco"));
 		}
 
 		public override void Dispose()

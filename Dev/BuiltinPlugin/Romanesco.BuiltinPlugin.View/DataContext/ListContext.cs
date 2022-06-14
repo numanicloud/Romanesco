@@ -10,14 +10,14 @@ namespace Romanesco.BuiltinPlugin.View.DataContext
     {
         public ListViewModel ViewModel { get; }
         public ReadOnlyReactiveCollection<StateViewContext> Elements { get; }
-        public ReactiveProperty<int> SelectedIndex { get; } = new ReactiveProperty<int>();
-        public ReactiveProperty<UserControl?> SelectedControl { get; } = new ReactiveProperty<UserControl?>();
+        public IReactiveProperty<int> SelectedIndex { get; }
+        public ReactiveProperty<UserControl?> SelectedControl { get; } = new();
         public IReadOnlyReactiveProperty<string> Title => ViewModel.Title;
 
-        public ListContext(ListViewModel viewModel, ViewInterpretFunc interpreter)
+        public ListContext(ListViewModel viewModel, ViewInterpretFunc interpreter, IReactiveProperty<int> selectedIndex)
         {
             ViewModel = viewModel;
-            SelectedIndex.Value = -1;
+            SelectedIndex = selectedIndex;
             Elements = viewModel.Elements.ToReadOnlyReactiveCollection(vm => interpreter(vm));
         }
     }

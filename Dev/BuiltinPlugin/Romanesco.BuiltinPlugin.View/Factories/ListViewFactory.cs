@@ -7,6 +7,7 @@ using Romanesco.Common.ViewModel.Interfaces;
 using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading;
 using System.Windows.Controls;
 using Reactive.Bindings.Extensions;
 using Romanesco.BuiltinPlugin.ViewModel.States;
@@ -19,39 +20,15 @@ namespace Romanesco.BuiltinPlugin.View.Factories
         {
             if (viewModel is ListViewModel array)
             {
-                var context = new ListContext(array, interpretRecursively);
+                var context = new ListContext(array, interpretRecursively, array.SelectedIndex);
                 var onError = new Subject<Exception>();
-
-                array.AddCommand.Subscribe(_ =>
-                {
-                    try
-                    {
-                        array.AddNewElement();
-                    }
-                    catch (Exception ex)
-                    {
-                        onError.OnNext(ContentAccessException.GetListError(ex));
-                    }
-                }).AddTo(array.Disposables);
-
-                array.RemoveCommand.Where(i => i < array.Elements.Count)
-                    .Subscribe(index =>
-                {
-                    try
-                    {
-                        array.RemoveAt(index);
-                    }
-                    catch (Exception ex)
-                    {
-                        onError.OnNext(ContentAccessException.GetListError(ex));
-                    }
-                }).AddTo(array.Disposables);
 
                 context.SelectedIndex.Where(i => i < context.Elements.Count)
                     .Subscribe(index =>
                 {
                     try
                     {
+						Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
                         if (index >= 0)
                         {
                             context.SelectedControl.Value = context.Elements[index].BlockControl;

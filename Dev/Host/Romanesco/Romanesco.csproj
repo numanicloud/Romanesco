@@ -22,7 +22,7 @@
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Numani.TypedFilePath" Version="1.1.0" />
-    <PackageReference Include="ReactiveProperty" Version="7.1.0" />
+    <PackageReference Include="ReactiveProperty" Version="8.1.2" />
   </ItemGroup>
 
   <ItemGroup>

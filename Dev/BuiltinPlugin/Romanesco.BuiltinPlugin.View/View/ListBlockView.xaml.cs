@@ -11,5 +11,9 @@ namespace Romanesco.BuiltinPlugin.View.View
         {
             InitializeComponent();
         }
-    }
+
+		private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+		}
+	}
 }
