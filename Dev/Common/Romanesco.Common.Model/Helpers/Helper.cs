@@ -85,13 +85,7 @@ namespace Romanesco.Common.Model.Helpers
                 .AddTo(disposable);
 
             source.CollectionChangedAsObservable().Where(x => x.Action == Move)
-                .Select(x => new { OldIndex = x.OldStartingIndex, NewIndex = x.NewStartingIndex })
-                .Subscribe(x =>
-                {
-                    var item = proxy[x.OldIndex];
-                    proxy.RemoveAt(x.OldIndex);
-                    proxy.Insert(x.NewIndex, item);
-                })
+                .Subscribe(x => proxy.Move(x.OldStartingIndex, x.NewStartingIndex))
                 .AddTo(disposable);
 
             source.CollectionChangedAsObservable().Where(x => x.Action == Remove)

@@ -12,6 +12,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Romanesco.Common.Model.Helpers;
 using Romanesco.Common.Model.Implementations;
+using Helper = NacHelpers.Helpers.Helper;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
@@ -147,6 +148,35 @@ namespace Romanesco.BuiltinPlugin.Model.States
 				var memento = new RemoveElementToListCommandMemento(this, state, index);
 				history.PushMemento(memento);
 			}
+		}
+
+		public int MoveUp(int index)
+		{
+			var nextIndex = Math.Max(index - 1, 0);
+			elementsMutable.Move(index, nextIndex);
+
+			var obj = listInstance[index];
+			listInstance.RemoveAt(index);
+			listInstance.Insert(nextIndex, obj);
+
+			onContentsChanged.OnNext(Unit.Default);
+
+			return nextIndex;
+		}
+
+		public int MoveDown(int index)
+		{
+			var nextIndex = Math.Min(index + 1, elementsMutable.Count);
+			elementsMutable.Move(index, nextIndex);
+
+			var nextIndex2 = Math.Min(index + 1, elementsMutable.Count - 1);
+			var obj = listInstance[index];
+			listInstance.RemoveAt(index);
+			listInstance.Insert(nextIndex2, obj);
+
+			onContentsChanged.OnNext(Unit.Default);
+
+			return nextIndex;
 		}
 
 		public override void Dispose()

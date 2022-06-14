@@ -13,7 +13,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="180" Width="auto"/>
+            <ColumnDefinition MinWidth="190" Width="auto"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
@@ -26,26 +26,34 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="30"/>
             </Grid.ColumnDefinitions>
 
-            <style:PaneTitleTip DataContext="{Binding Title.Value}" Grid.ColumnSpan="2"/>
+            <style:PaneTitleTip DataContext="{Binding Title.Value}" Grid.ColumnSpan="4"/>
 
             <ListBox ItemsSource="{Binding Elements}"
                       SelectedIndex="{Binding SelectedIndex.Value}"
                       IsSynchronizedWithCurrentItem="True"
-                      Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
+                      Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1"
                      VerticalAlignment="Stretch"
-                     Margin="8,0,8,0">
+                     Margin="4,0,4,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding ViewModel.FormattedString.Value}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Content="追加" Grid.Column="0" Grid.Row="2" Margin="8,2,2,2"
+            <Button Content="追加" Grid.Column="0" Grid.Row="2" Margin="2"
                     Command="{Binding ViewModel.AddCommand}"/>
-            <Button Content="削除" Grid.Column="1" Grid.Row="2" Margin="2,2,8,2"
+            <Button Content="削除" Grid.Column="1" Grid.Row="2" Margin="2"
                     Command="{Binding ViewModel.RemoveCommand}"
+                    CommandParameter="{Binding SelectedIndex.Value}"/>
+            <Button Content="↑" Grid.Column="2" Grid.Row="2" Margin="2"
+                    Command="{Binding ViewModel.MoveUpCommand}"
+                    CommandParameter="{Binding SelectedIndex.Value}"/>
+            <Button Content="↓" Grid.Column="3" Grid.Row="2" Margin="2"
+                    Command="{Binding ViewModel.MoveDownCommand}"
                     CommandParameter="{Binding SelectedIndex.Value}"/>
         </Grid>
 
