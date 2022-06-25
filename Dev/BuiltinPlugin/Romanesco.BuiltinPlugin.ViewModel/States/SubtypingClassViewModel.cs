@@ -13,12 +13,13 @@ using Romanesco.Common.ViewModel.Implementations;
 
 namespace Romanesco.BuiltinPlugin.ViewModel.States
 {
-	public class SubtypingClassViewModel : ProxyViewModelBase<SubtypingClassState>
+	public class SubtypingClassViewModel : ProxyViewModelBase<SubtypingClassState>, IOpenCommandConsumer
 	{
 		public ObservableCollection<ISubtypeOption> Choices => State.Choices;
 		public ReactiveProperty<ISubtypeOption> SelectedType => State.SelectedType;
 		public ReactiveProperty<ClassViewModel?> CurrentViewModel { get; } = new ReactiveProperty<ClassViewModel?>();
 		public ReactiveCommand EditCommand { get; }
+		public ReactiveCommand OnOpenCommand { get; } = new();
 		public List<IDisposable> Disposables => State.Disposables;
 
 		public SubtypingClassViewModel(SubtypingClassState state, ViewModelInterpretFunc interpreter)
@@ -43,6 +44,8 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 			EditCommand.Where(_ => CurrentViewModel.Value is { })
 				.Subscribe(_ => ShowDetailSubject.OnNext(Unit.Default))
 				.AddTo(state.Disposables);
+
+			OnOpenCommand.AddTo(state.Disposables);
 		}
 	}
 }

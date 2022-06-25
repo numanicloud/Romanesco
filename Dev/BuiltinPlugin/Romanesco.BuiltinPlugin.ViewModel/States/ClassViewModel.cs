@@ -9,20 +9,22 @@ using Romanesco.Common.ViewModel.Interfaces;
 
 namespace Romanesco.BuiltinPlugin.ViewModel.States
 {
-	public class ClassViewModel : ProxyViewModelBase<ClassState>
+	public class ClassViewModel : ProxyViewModelBase<ClassState>, IOpenCommandConsumer
 	{
 		public IStateViewModel[] Fields { get; }
-		public ReactiveCommand EditCommand { get; }
+		public ReactiveCommand EditCommand { get; } = new();
+		public ReactiveCommand OnOpenCommand { get; } = new();
 		public List<IDisposable> Disposables => State.Disposables;
 
         public ClassViewModel(ClassState state, IStateViewModel[] fields)
 			: base(state)
 		{
 			Fields = fields;
-			EditCommand = new ReactiveCommand();
 			EditCommand.Subscribe(_ => ShowDetailSubject.OnNext(Unit.Default))
 				.AddTo(Disposables);
+
 			EditCommand.AddTo(Disposables);
+			OnOpenCommand.AddTo(Disposables);
 		}
 	}
 }

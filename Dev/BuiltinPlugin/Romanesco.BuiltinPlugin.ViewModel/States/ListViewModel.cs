@@ -90,7 +90,8 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 
             state.Disposables.AddRange(new IDisposable[]
             {
-                AddCommand, RemoveCommand, EditCommand, Elements, MoveUpCommand, MoveDownCommand
+                AddCommand, RemoveCommand, EditCommand,
+				Elements, MoveUpCommand, MoveDownCommand
             });
         }
     }
