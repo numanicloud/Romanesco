@@ -1,9 +1,10 @@
 ﻿using System;
+using Newtonsoft.Json.Linq;
 
 namespace Romanesco.Model.Services.Serialize
 {
     public interface IStateDeserializer
     {
-        object? Deserialize(string encoded, Type type);
+        object? Deserialize(JObject encoded, Type type);
     }
 }

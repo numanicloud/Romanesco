@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Romanesco.Model.Services.Serialize
 {
@@ -6,12 +7,12 @@ namespace Romanesco.Model.Services.Serialize
     {
         // ここで単にNewtonSoft.Jsonに渡してしまうと、objectにはReactivePropertyの状態で渡ってくるのでエラーになる
         // ValueStorage.currentValueをシリアライズしなければならない
-        public string Serialize(object state)
+        public JObject Serialize(object state)
         {
-            return JsonConvert.SerializeObject(state, new JsonSerializerSettings()
-            {
+            return JObject.FromObject(state, new JsonSerializer()
+			{
                 TypeNameHandling = TypeNameHandling.All
-            });
+			});
         }
     }
 }

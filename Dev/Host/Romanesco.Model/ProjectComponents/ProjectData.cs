@@ -1,4 +1,6 @@
-﻿namespace Romanesco.Model.ProjectComponents
+﻿using Newtonsoft.Json.Linq;
+
+namespace Romanesco.Model.ProjectComponents
 {
 	internal sealed class ProjectData
 	{
@@ -7,7 +9,7 @@
 		public string AssemblyPath { get; set; }
 		public string ProjectTypeQualifier { get; set; }
 		public string ProjectTypeExporterQualifier { get; set; }
-		public string EncodedMaster { get; set; }
+		public JObject EncodedMaster { get; set; }
 		public string[] DependencyProjects { get; set; }
 #nullable restore
 	}

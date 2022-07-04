@@ -1,7 +1,9 @@
-﻿namespace Romanesco.Model.Services.Serialize
+﻿using Newtonsoft.Json.Linq;
+
+namespace Romanesco.Model.Services.Serialize
 {
     public interface IStateSerializer
     {
-        string Serialize(object state);
+        JObject Serialize(object state);
     }
 }
