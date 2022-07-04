@@ -7,6 +7,7 @@ namespace Romanesco.Common.Model.Basics
 	{
 		string OptionName { get; }
 		IFieldState MakeState(ValueStorage valueStorage);
+		IFieldState MakeFromStorage(ValueStorage valueStorage);
 		bool IsTypeOf(Type type);
 	}
 }

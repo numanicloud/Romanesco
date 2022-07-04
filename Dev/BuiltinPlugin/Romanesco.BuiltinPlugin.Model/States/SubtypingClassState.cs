@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Reactive.Bindings.Extensions;
 using Romanesco.BuiltinPlugin.Model.Factories;
@@ -17,18 +18,29 @@ namespace Romanesco.BuiltinPlugin.Model.States
 {
 	public class SubtypingClassState : DecorationStateBase
 	{
+		private readonly ValueClipBoard _valueClipBoard;
+		private BooleanDisposable? _valueChanging;
+
 		public ObservableCollection<ISubtypeOption> Choices { get; } = new ObservableCollection<ISubtypeOption>();
 		public ReactiveProperty<ISubtypeOption> SelectedType { get; } = new ReactiveProperty<ISubtypeOption>();
 		public IReactiveProperty<IFieldState> CurrentStateReadOnly => BaseField;
 		public override ReactiveProperty<string> Title { get; }
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
 		public override IObservable<Unit> OnEdited { get; }
+		public IReadOnlyReactiveProperty<bool> CanPaste { get; }
 
 		public SubtypingClassState(ValueStorage storage,
 			SubtypingStateContext context,
-			ClassStateFactory classStateFactory)
+			ClassStateFactory classStateFactory,
+			ValueClipBoard valueClipBoard)
 			: base(new ClassState(storage, Array.Empty<IFieldState>()))
 		{
+			_valueClipBoard = valueClipBoard;
+			CanPaste = _valueClipBoard.CopiedValue
+				.Where(x => x is not null)
+				.Select(x => context.List.DerivedTypes.Contains(x!.Type))
+				.ToReadOnlyReactiveProperty();
+
 			void AddChoice(Type type)
 			{
 				Choices.Add(new ConcreteSubtypeOption(type, storage, context, classStateFactory));
@@ -47,11 +59,13 @@ namespace Romanesco.BuiltinPlugin.Model.States
 				: Choices[0];
 
 			// 型が変更されたら更新
-			SelectedType.Subscribe(x =>
+			SelectedType.Where(_ => _valueChanging?.IsDisposed != false)
+				.Subscribe(x =>
 			{
 				BaseField.Value = x.MakeState(storage);
 			}).AddTo(Disposables);
 
+			// 値が変更されたら更新
 			FormattedString = BaseField.SelectMany(x => x.FormattedString)
 				.ToReadOnlyReactiveProperty(BaseField.Value.FormattedString.Value);
 
@@ -59,6 +73,28 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			var typeEdited = SelectedType.Select(x => Unit.Default);
 			var concreteEdited = BaseField.SelectMany(x => x.OnEdited);
 			OnEdited = typeEdited.Merge(concreteEdited);
+		}
+
+		public void Copy()
+		{
+			_valueClipBoard.Copy(BaseField.Value.Storage);
+		}
+
+		public void Paste()
+		{
+			_valueChanging = new BooleanDisposable();
+
+			var value = _valueClipBoard.CopiedValue.Value;
+			if (value is null) return;
+
+			var option = Choices.FirstOrDefault(x => x.IsTypeOf(value.Type));
+			if (option is null) return;
+			
+			BaseField.Value.Dispose();
+			BaseField.Value = option.MakeFromStorage(value);
+			SelectedType.Value = option;
+
+			_valueChanging.Dispose();
 		}
 
 		public override void Dispose()

@@ -11,6 +11,7 @@ namespace Romanesco.Common.Model.Interfaces
 	{
 		IDataAssemblyRepository ResolveDataAssemblyRepository();
 		CommandHistory ResolveCommandHistory();
+		ValueClipBoard ResolveValueClipBoard();
 		IObjectInterpreter ResolveObjectInterpreter();
 		TService ResolveByPlugins<TService>() where TService : class;
 

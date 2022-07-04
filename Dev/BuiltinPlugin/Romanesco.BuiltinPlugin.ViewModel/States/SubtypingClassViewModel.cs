@@ -21,6 +21,8 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 		public ReactiveCommand EditCommand { get; }
 		public ReactiveCommand OnOpenCommand { get; } = new();
 		public List<IDisposable> Disposables => State.Disposables;
+		public ReactiveCommand CopyCommand { get; } = new();
+		public ReactiveCommand PasteCommand { get; }
 
 		public SubtypingClassViewModel(SubtypingClassState state, ViewModelInterpretFunc interpreter)
 			: base(state)
@@ -43,6 +45,15 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States
 				.AddTo(state.Disposables);
 			EditCommand.Where(_ => CurrentViewModel.Value is { })
 				.Subscribe(_ => ShowDetailSubject.OnNext(Unit.Default))
+				.AddTo(state.Disposables);
+
+			CopyCommand.Subscribe(state.Copy)
+				.AddTo(state.Disposables);
+
+			PasteCommand = state.CanPaste
+				.ToReactiveCommand()
+				.AddTo(state.Disposables);
+			PasteCommand.Subscribe(state.Paste)
 				.AddTo(state.Disposables);
 
 			OnOpenCommand.AddTo(state.Disposables);

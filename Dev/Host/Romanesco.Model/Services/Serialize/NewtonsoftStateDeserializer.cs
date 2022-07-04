@@ -8,7 +8,10 @@ namespace Romanesco.Model.Services.Serialize
     {
         public object? Deserialize(JObject encoded, Type type)
 		{
-			return JsonConvert.DeserializeObject(encoded.ToString(), type);
+			return JsonConvert.DeserializeObject(encoded.ToString(), type, new JsonSerializerSettings()
+			{
+				TypeNameHandling = TypeNameHandling.All
+			});
 		}
     }
 }

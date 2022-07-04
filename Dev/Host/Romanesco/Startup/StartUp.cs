@@ -17,10 +17,10 @@ namespace Romanesco.Startup
 {
 	internal class StartUp : IHostedService
 	{
-		private readonly HostFactory host;
+		private readonly IHostFactory host;
 		private MainWindow? mainWindow;
 
-		public StartUp(HostFactory host)
+		public StartUp(IHostFactory host)
 		{
 			this.host = host;
 		}

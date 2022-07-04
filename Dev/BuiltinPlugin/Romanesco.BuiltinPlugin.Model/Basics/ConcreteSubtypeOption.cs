@@ -41,17 +41,27 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 		{
 			valueStorage.SetValue(subtypingStorage.GetValue());
 
-			// 最基底の型を生成しようとしてしまっている。再派生の型を生成すべき
+				// 最基底の型を生成しようとしてしまっている。再派生の型を生成すべき
 			// 新しいValueStorageを作らないようにしたせいかも
 			var returnValue = _factory.InterpretAsState(
-					valueStorage.Clone(derivedType),
-					context.Interpreter.InterpretAsState) is {} result
-				? result
-				: throw new InvalidOperationException();
+				valueStorage.Clone(derivedType),
+				context.Interpreter.InterpretAsState) ?? throw new InvalidOperationException();
 
 			return returnValue;
 		}
-		
+
+		public IFieldState MakeFromStorage(ValueStorage valueStorage)
+		{
+			if (valueStorage.Type != derivedType)
+			{
+				throw new InvalidOperationException();
+			}
+
+			return _factory.InterpretAsState(
+				valueStorage,
+				context.Interpreter.InterpretAsState) ?? throw new InvalidOperationException();
+		}
+
 		private Exception MakeException(string message) => new InvalidOperationException(message
 			+ $"Subtyping: MemberName={subtypingStorage.MemberName}, Type={subtypingStorage.Type.FullName}");
 	}

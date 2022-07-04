@@ -5,11 +5,10 @@ using System.Collections.Generic;
 using Romanesco.Extensibility;
 using Romanesco.Startup;
 using Romanesco.Common.Model.Reflections;
-using Romanesco.Model;
+using Romanesco.Model.Infrastructure;
 using Romanesco.Common.Model.Basics;
 using Deptorygen.GenericHost;
 using Microsoft.Extensions.DependencyInjection;
-using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Infrastructure
 {
@@ -20,6 +19,7 @@ namespace Romanesco.Infrastructure
 		private MainWindow? _ResolveMainWindowCache;
 		private DataAssemblyRepository? _ResolveDataAssemblyRepositoryCache;
 		private CommandHistory? _ResolveCommandHistoryCache;
+		private ValueClipBoard? _ResolveValueClipBoardCache;
 
 		public HostFactory()
 		{
@@ -45,13 +45,19 @@ namespace Romanesco.Infrastructure
 			return _ResolveCommandHistoryCache ??= new CommandHistory();
 		}
 
+		public ValueClipBoard ResolveValueClipBoard()
+		{
+			return _ResolveValueClipBoardCache ??= new ValueClipBoard();
+		}
+
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddTransient<HostFactory>(provider => this);
+			services.AddTransient<IHostFactory>(provider => this);
 			services.AddTransient<PluginLoader>(provider => ResolvePluginLoaderAsTransient());
 			services.AddTransient<MainWindow>(provider => ResolveMainWindow());
 			services.AddTransient<IDataAssemblyRepository>(provider => ResolveDataAssemblyRepository());
 			services.AddTransient<CommandHistory>(provider => ResolveCommandHistory());
+			services.AddTransient<ValueClipBoard>(provider => ResolveValueClipBoard());
 		}
 
 		public void Dispose()

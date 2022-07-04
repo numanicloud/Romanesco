@@ -30,6 +30,7 @@ namespace Romanesco.Infrastructure
 
 		public IDataAssemblyRepository ResolveDataAssemblyRepository() => factory.ResolveDataAssemblyRepository();
 
+		public ValueClipBoard ResolveValueClipBoard() => factory.ResolveValueClipBoard();
 		public CommandHistory ResolveCommandHistory() => factory.ResolveCommandHistory();
 		public IObjectInterpreter ResolveObjectInterpreter() => ModelFactory?.ResolveObjectInterpreter() ?? throw new InvalidOperationException("Romanescoホストが初期化されていません。");
 		public TService ResolveByPlugins<TService>() where TService : class

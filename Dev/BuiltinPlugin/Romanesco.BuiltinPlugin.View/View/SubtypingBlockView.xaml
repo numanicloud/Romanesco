@@ -18,8 +18,19 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <ComboBox ItemsSource="{Binding ViewModel.Choices}" SelectedItem="{Binding ViewModel.SelectedType.Value}"
-                  DisplayMemberPath="OptionName" Margin="5" Grid.Row="0"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox ItemsSource="{Binding ViewModel.Choices}" SelectedItem="{Binding ViewModel.SelectedType.Value}"
+                      DisplayMemberPath="OptionName" Margin="5" Grid.Column="0"/>
+            <Button Content="P" Margin="5" Grid.Column="1" Command="{Binding ViewModel.PasteCommand}"/>
+            <Button Content="C" Margin="5" Grid.Column="2" Command="{Binding ViewModel.CopyCommand}"/>
+        </Grid>
+
         <style:ClassBlockView DataContext="{Binding CurrentContext.Value}" Grid.Row="1"/>
     </Grid>
     

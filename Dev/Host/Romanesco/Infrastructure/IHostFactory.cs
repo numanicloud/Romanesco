@@ -24,5 +24,6 @@ namespace Romanesco.Infrastructure
 		[Resolution(typeof(DataAssemblyRepository))]
 		IDataAssemblyRepository ResolveDataAssemblyRepository();
 		CommandHistory ResolveCommandHistory();
+		ValueClipBoard ResolveValueClipBoard();
 	}
 }

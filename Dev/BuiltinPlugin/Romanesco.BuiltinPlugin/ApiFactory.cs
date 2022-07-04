@@ -25,6 +25,11 @@ namespace Romanesco.BuiltinPlugin
 			return _api.ResolveCommandHistory();
 		}
 
+		public ValueClipBoard ResolveValueClipBoard()
+		{
+			return _api.ResolveValueClipBoard();
+		}
+
 		public IObjectInterpreter ResolveObjectInterpreter()
 		{
 			return _api.ResolveObjectInterpreter();
