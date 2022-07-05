@@ -23,7 +23,7 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 			return new ClassState(valueStorage, Array.Empty<IFieldState>());
 		}
 
-		public IFieldState MakeFromStorage(ValueStorage valueStorage)
+		public IFieldState MakeFromStorage(ValueStorage valueStorage, ValueStorage pasteFrom)
 		{
 			return new NoneState();
 		}

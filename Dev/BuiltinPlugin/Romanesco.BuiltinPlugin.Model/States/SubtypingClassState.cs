@@ -77,7 +77,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 		public void Copy()
 		{
-			_valueClipBoard.Copy(BaseField.Value.Storage);
+			_valueClipBoard.Copy(Storage);
 		}
 
 		public void Paste()
@@ -91,7 +91,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			if (option is null) return;
 			
 			BaseField.Value.Dispose();
-			BaseField.Value = option.MakeFromStorage(value);
+			BaseField.Value = option.MakeFromStorage(Storage, value);
 			SelectedType.Value = option;
 
 			_valueChanging.Dispose();

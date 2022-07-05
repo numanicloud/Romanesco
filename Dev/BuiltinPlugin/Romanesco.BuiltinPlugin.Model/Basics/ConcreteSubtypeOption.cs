@@ -39,6 +39,7 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 
 		public IFieldState MakeState(ValueStorage valueStorage)
 		{
+			// この型の初期値で上書きする
 			valueStorage.SetValue(subtypingStorage.GetValue());
 
 				// 最基底の型を生成しようとしてしまっている。再派生の型を生成すべき
@@ -50,15 +51,18 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 			return returnValue;
 		}
 
-		public IFieldState MakeFromStorage(ValueStorage valueStorage)
+		public IFieldState MakeFromStorage(ValueStorage valueStorage, ValueStorage pasteFrom)
 		{
-			if (valueStorage.Type != derivedType)
+			if (pasteFrom.Type != derivedType)
 			{
 				throw new InvalidOperationException();
 			}
 
+			// 与えられた値で上書きする
+			valueStorage.SetValue(pasteFrom.GetValue());
+
 			return _factory.InterpretAsState(
-				valueStorage,
+				valueStorage.Clone(derivedType),
 				context.Interpreter.InterpretAsState) ?? throw new InvalidOperationException();
 		}
 
