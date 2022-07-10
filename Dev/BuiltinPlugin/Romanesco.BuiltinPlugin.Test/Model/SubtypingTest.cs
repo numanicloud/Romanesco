@@ -40,6 +40,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 		{
 			var api = new Mock<IApiFactory>();
 			api.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
+			api.Setup(m => m.ResolveValueClipBoard()).Returns(() => new ValueClipBoard());
 
 			var classFactory = new ClassStateFactory(new DataAssemblyRepository(), new Mock<ILoadingStateReader>().Object);
 			var interpreter = new ObjectInterpreter(new IStateFactory[]
@@ -74,10 +75,6 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 					Assert.IsType<NullSubtypeOption>(scs.SelectedType.Value);
 
 					scs.SelectedType.Value = new ConcreteSubtypeOption(typeof(TestDerived),
-						new ValueStorage(typeof(TestDerived),
-							"0",
-							(value, oldValue) => instance.TestBase![0] = (TestDerived)value!,
-							null),
 						new SubtypingStateContext(new SubtypingList(typeof(TestBase)),
 							new DataAssemblyRepository(),
 							interpreter),

@@ -1,18 +1,17 @@
 ﻿using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using Romanesco.BuiltinPlugin.Model.Basics;
+using Romanesco.BuiltinPlugin.Model.Factories;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Implementations;
 using Romanesco.Common.Model.Interfaces;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Reactive.Bindings.Extensions;
-using Romanesco.BuiltinPlugin.Model.Factories;
-using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {
@@ -43,7 +42,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 			void AddChoice(Type type)
 			{
-				Choices.Add(new ConcreteSubtypeOption(type, storage, context, classStateFactory));
+				Choices.Add(new ConcreteSubtypeOption(type, context, classStateFactory));
 			}
 
 			Title = new ReactiveProperty<string>(storage.MemberName);

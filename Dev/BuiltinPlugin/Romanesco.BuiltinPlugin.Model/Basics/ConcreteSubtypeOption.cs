@@ -1,5 +1,4 @@
 ﻿using Romanesco.Annotations;
-using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using System;
@@ -11,19 +10,18 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 {
 	public class ConcreteSubtypeOption : ISubtypeOption
 	{
-		private readonly Type derivedType;
-		private readonly ValueStorage subtypingStorage;
-		private readonly SubtypingStateContext context;
+		private readonly Type _derivedType;
+		private readonly SubtypingStateContext _context;
 		private readonly ClassStateFactory _factory;
+		private readonly object? _initialValue;
 
 		public string OptionName { get; }
 
-		public ConcreteSubtypeOption(Type derivedType, ValueStorage subtypingStorage,
+		public ConcreteSubtypeOption(Type derivedType,
 			SubtypingStateContext context, ClassStateFactory factory)
 		{
-			this.derivedType = derivedType;
-			this.subtypingStorage = subtypingStorage;
-			this.context = context;
+			_derivedType = derivedType;
+			_context = context;
 			_factory = factory;
 			if (derivedType.GetCustomAttribute<EditorSubtypeNameAttribute>() is { } attr)
 			{
@@ -33,27 +31,33 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 			{
 				OptionName = derivedType.FullName ?? throw new InvalidOperationException("型名を取得できませんでした。");
 			}
+
+			_initialValue = context.AsmRepo.CreateInstance(derivedType);
 		}
 
-		public bool IsTypeOf(Type type) => type == derivedType;
+		public bool IsTypeOf(Type type) => type == _derivedType;
 
 		public IFieldState MakeState(ValueStorage valueStorage)
 		{
-			// この型の初期値で上書きする
-			valueStorage.SetValue(subtypingStorage.GetValue());
+			// 型が同じ場合は初期値である場合があるので上書きしない
+			if (valueStorage.GetValue()?.GetType() is not {} current || current != _derivedType)
+			{
+				// この型の初期値で上書きする
+				valueStorage.SetValue(_initialValue);
+			}
 
 				// 最基底の型を生成しようとしてしまっている。再派生の型を生成すべき
 			// 新しいValueStorageを作らないようにしたせいかも
 			var returnValue = _factory.InterpretAsState(
-				valueStorage.Clone(derivedType),
-				context.Interpreter.InterpretAsState) ?? throw new InvalidOperationException();
+				valueStorage.Clone(_derivedType),
+				_context.Interpreter.InterpretAsState) ?? throw new InvalidOperationException();
 
 			return returnValue;
 		}
 
 		public IFieldState MakeFromStorage(ValueStorage valueStorage, ValueStorage pasteFrom)
 		{
-			if (pasteFrom.Type != derivedType)
+			if (pasteFrom.Type != _derivedType)
 			{
 				throw new InvalidOperationException();
 			}
@@ -62,11 +66,8 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 			valueStorage.SetValue(pasteFrom.GetValue());
 
 			return _factory.InterpretAsState(
-				valueStorage.Clone(derivedType),
-				context.Interpreter.InterpretAsState) ?? throw new InvalidOperationException();
+				valueStorage.Clone(_derivedType),
+				_context.Interpreter.InterpretAsState) ?? throw new InvalidOperationException();
 		}
-
-		private Exception MakeException(string message) => new InvalidOperationException(message
-			+ $"Subtyping: MemberName={subtypingStorage.MemberName}, Type={subtypingStorage.Type.FullName}");
 	}
 }
