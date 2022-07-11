@@ -14,6 +14,8 @@ using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Model.Infrastructure;
+using Romanesco.Model.Services;
+using Romanesco.Model.Services.Serialize;
 using Xunit;
 
 namespace Romanesco.BuiltinPlugin.Test.Model
@@ -25,14 +27,31 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 			[EditorMember] public List<TestBase>? TestBase { get; set; }
 		}
 
+		private class TestClass2
+		{
+			[EditorMember] public TestBase? Subtyping { get; set; }
+		}
+
+		private class TestClass3
+		{
+			[EditorMember] public TestClass2 Item { get; set; } = new TestClass2();
+		}
+
 		[EditorSubtypingBase]
-		private abstract class TestBase
+		public abstract class TestBase
 		{
 		}
 
 		[EditorSubtypeName(nameof(TestDerived))]
-		private class TestDerived : TestBase
+		public class TestDerived : TestBase
 		{
+		}
+
+		[EditorSubtypeName(nameof(TestDerived2))]
+		public class TestDerived2 : TestBase
+		{
+			[EditorMember]
+			public int Hoge { get; set; }
 		}
 
 		[Fact]
@@ -78,7 +97,8 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 						new SubtypingStateContext(new SubtypingList(typeof(TestBase)),
 							new DataAssemblyRepository(),
 							interpreter),
-						classFactory);
+						classFactory,
+						api.Object.ResolveStorageCloneService());
 
 					// 値の型がTestDerivedに変更されていること
 					Assert.IsType<TestDerived>(scs.Storage.GetValue());
@@ -89,6 +109,65 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 			{
 				Assert.True(false);
 			}
+		}
+
+		[Fact]
+		public void PasteしたあとにValueStorageの親がクローンされていること()
+		{
+			var api = new Mock<IApiFactory>();
+			var clipboard = new ValueClipBoard();
+			var asmRepo = new DataAssemblyRepository();
+			var classFactory = new ClassStateFactory(asmRepo, new Mock<ILoadingStateReader>().Object);
+			var interpreter = new ObjectInterpreter(new IStateFactory[]
+			{
+				new SubtypingStateFactory(api.Object, classFactory),
+				classFactory,
+				new PrimitiveStateFactory(new CommandHistory()),
+			});
+
+			api.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
+			api.Setup(m => m.ResolveValueClipBoard()).Returns(() => clipboard);
+			api.Setup(m => m.ResolveDataAssemblyRepository()).Returns(() => asmRepo);
+			api.Setup(m => m.ResolveObjectInterpreter()).Returns(() => interpreter);
+			api.Setup(m => m.ResolveStorageCloneService())
+				.Returns(() => new StorageCloneService(new NewtonsoftStateSerializer(),
+					new NewtonsoftStateDeserializer()));
+;
+			var parent1 = new TestClass3();
+			var parent2 = new TestClass3();
+			var storage = new ValueStorage(parent1, typeof(TestClass3).GetProperty("Item")!);
+			var storage2 = new ValueStorage(parent2, typeof(TestClass3).GetProperty("Item")!);
+			var state = interpreter.InterpretAsState(storage);
+			var state2 = interpreter.InterpretAsState(storage2);
+
+			AssertTypeOf<ClassState>(state, out var parentState1);
+			AssertTypeOf<ClassState>(state2, out var parentState2);
+			AssertTypeOf<SubtypingClassState>(parentState1.Fields[0], out var subtyping);
+			AssertTypeOf<SubtypingClassState>(parentState2.Fields[0], out var subtyping2);
+
+			subtyping.SelectedType.Value = subtyping.Choices.First(x => x.IsTypeOf(typeof(TestDerived2)));
+
+			subtyping.Copy();
+			subtyping2.Paste();
+
+			AssertTypeOf<ClassState>(subtyping.CurrentStateReadOnly.Value, out var class1);
+			AssertTypeOf<ClassState>(subtyping2.CurrentStateReadOnly.Value, out var class2);
+
+			var s1 = class1.Fields[0].Storage;
+			var s2= class2.Fields[0].Storage;
+
+			class1.Fields[0].Storage.SetValue(1);
+			class2.Fields[0].Storage.SetValue(2);
+
+			var prop = typeof(TestDerived2).GetProperty("Hoge");
+			Assert.Equal(1, prop!.GetValue(class1.Storage.GetValue()));
+			Assert.Equal(2, prop!.GetValue(class2.Storage.GetValue()));
+		}
+
+		private void AssertTypeOf<T>(object instance, out T result)
+		{
+			Assert.True(instance.GetType().IsAssignableTo(typeof(T)));
+			result = (T)instance;
 		}
 	}
 }

@@ -50,7 +50,11 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			var stateContext = new SubtypingStateContext(list,
 				api.ResolveDataAssemblyRepository(),
 				api.ResolveObjectInterpreter());
-			return new SubtypingClassState(settability, stateContext, _factory, api.ResolveValueClipBoard());
+			return new SubtypingClassState(settability,
+				stateContext,
+				_factory,
+				api.ResolveValueClipBoard(),
+				api.ResolveStorageCloneService());
 		}
 	}
 }

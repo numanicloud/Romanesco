@@ -31,7 +31,8 @@ namespace Romanesco.BuiltinPlugin.Model.States
 		public SubtypingClassState(ValueStorage storage,
 			SubtypingStateContext context,
 			ClassStateFactory classStateFactory,
-			ValueClipBoard valueClipBoard)
+			ValueClipBoard valueClipBoard,
+			IStorageCloneService storageCloneService)
 			: base(new ClassState(storage, Array.Empty<IFieldState>()))
 		{
 			_valueClipBoard = valueClipBoard;
@@ -42,7 +43,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 			void AddChoice(Type type)
 			{
-				Choices.Add(new ConcreteSubtypeOption(type, context, classStateFactory));
+				Choices.Add(new ConcreteSubtypeOption(type, context, classStateFactory, storageCloneService));
 			}
 
 			Title = new ReactiveProperty<string>(storage.MemberName);

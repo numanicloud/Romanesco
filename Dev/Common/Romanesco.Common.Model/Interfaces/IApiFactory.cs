@@ -3,6 +3,7 @@ using System.Reactive;
 using Deptorygen.Annotations;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Reflections;
+using Romanesco.Common.Model.ValueStorages;
 
 namespace Romanesco.Common.Model.Interfaces
 {
@@ -14,6 +15,7 @@ namespace Romanesco.Common.Model.Interfaces
 		ValueClipBoard ResolveValueClipBoard();
 		IObjectInterpreter ResolveObjectInterpreter();
 		TService ResolveByPlugins<TService>() where TService : class;
+		IStorageCloneService ResolveStorageCloneService();
 
 		IObservable<Unit> OnProjectChanged { get; }
 	}

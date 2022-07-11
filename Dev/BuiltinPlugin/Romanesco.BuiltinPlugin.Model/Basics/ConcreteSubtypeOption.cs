@@ -13,16 +13,19 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 		private readonly Type _derivedType;
 		private readonly SubtypingStateContext _context;
 		private readonly ClassStateFactory _factory;
+		private readonly IStorageCloneService _storageCloneService;
 		private readonly object? _initialValue;
 
 		public string OptionName { get; }
 
 		public ConcreteSubtypeOption(Type derivedType,
-			SubtypingStateContext context, ClassStateFactory factory)
+			SubtypingStateContext context, ClassStateFactory factory,
+			IStorageCloneService storageCloneService)
 		{
 			_derivedType = derivedType;
 			_context = context;
 			_factory = factory;
+			_storageCloneService = storageCloneService;
 			if (derivedType.GetCustomAttribute<EditorSubtypeNameAttribute>() is { } attr)
 			{
 				OptionName = attr.OptionName;
@@ -63,10 +66,11 @@ namespace Romanesco.BuiltinPlugin.Model.Basics
 			}
 
 			// 与えられた値で上書きする
-			valueStorage.SetValue(pasteFrom.GetValue());
+			valueStorage.SetValue(_storageCloneService.Clone(pasteFrom).GetValue());
 
+			ValueStorage clone = valueStorage.Clone(_derivedType);
 			return _factory.InterpretAsState(
-				valueStorage.Clone(_derivedType),
+				clone,
 				_context.Interpreter.InterpretAsState) ?? throw new InvalidOperationException();
 		}
 	}

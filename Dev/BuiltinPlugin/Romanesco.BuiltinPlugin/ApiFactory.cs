@@ -40,6 +40,11 @@ namespace Romanesco.BuiltinPlugin
 			return _api.ResolveByPlugins<TService>();
 		}
 
+		public IStorageCloneService ResolveStorageCloneService()
+		{
+			return _api.ResolveStorageCloneService();
+		}
+
 		public IObservable<Unit> OnProjectChanged => _api.OnProjectChanged;
 
 		public bool IsLoading

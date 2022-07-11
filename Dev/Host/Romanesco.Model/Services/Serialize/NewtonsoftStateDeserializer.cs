@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Romanesco.Model.Services.Serialize
 {
-	internal class NewtonsoftStateDeserializer : IStateDeserializer
+	public class NewtonsoftStateDeserializer : IStateDeserializer
     {
         public object? Deserialize(JObject encoded, Type type)
 		{

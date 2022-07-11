@@ -104,6 +104,11 @@ namespace Romanesco.Model.Infrastructure
 			return Model.ResolveProjectSwitcher();
 		}
 
+		public IStorageCloneService ResolveStorageCloneService()
+		{
+			return Model.ResolveStorageCloneService();
+		}
+
 		public IEditorFacade ResolveEditorFacade()
 		{
 			return ResolveEditor();

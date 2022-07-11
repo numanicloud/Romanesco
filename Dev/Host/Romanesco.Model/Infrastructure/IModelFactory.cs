@@ -30,6 +30,8 @@ namespace Romanesco.Model.Infrastructure
 		IObjectInterpreter ResolveIObjectInterpreter();
 		[Resolution(typeof(ProjectSwitcher))]
 		IProjectSwitcher ResolveProjectSwitcher();
+		[Resolution(typeof(StorageCloneService))]
+		IStorageCloneService ResolveStorageCloneService();
 	}
 
 	[Factory]

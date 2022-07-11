@@ -38,6 +38,9 @@ namespace Romanesco.Infrastructure
 			return Provider?.GetService<TService>() ?? throw new InvalidOperationException("Romanescoホストが初期化されていません。");
 		}
 
+		public IStorageCloneService ResolveStorageCloneService() =>
+			ModelFactory?.ResolveStorageCloneService() ?? throw new InvalidOperationException();
+
 		public IObservable<Unit> OnProjectChanged =>
 			OnProjectChangedProperty.SelectMany(x => x);
 

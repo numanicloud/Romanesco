@@ -81,6 +81,11 @@ namespace Romanesco.Common.Model.Basics
 			return new ValueStorage(type, MemberName, setter, currentValue);
 		}
 
+		public ValueStorage Clone(object? newValue)
+		{
+			return new ValueStorage(Type, MemberName, setter, newValue);
+		}
+
         /// <summary>
         /// この要素が表す格納先に値を代入します。
         /// </summary>
