@@ -1,11 +1,11 @@
-﻿using Deptorygen.Annotations;
+﻿using Imfact.Annotations;
 using Romanesco.Model.Services.Save;
 using Romanesco.Model.States;
 
 namespace Romanesco.Model.Infrastructure;
 
 [Factory]
-interface IProjectModelFactory : IModelFactory
+internal interface IProjectModelFactory : IModelFactory
 {
 	IModelFactory Model { get; }
 

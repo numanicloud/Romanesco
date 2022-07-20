@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Deptorygen.Annotations;
+using Imfact.Annotations;
 using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.ProjectComponent;
@@ -15,22 +15,17 @@ using Romanesco.Model.States;
 
 namespace Romanesco.Model.Infrastructure
 {
+	[Factory]
 	public interface IOpenModelFactory
 	{
-		[Delegation("ResolveEditor")]
-		IEditorFacade ResolveEditorFacade();
-
-		[Resolution(typeof(NewtonsoftStateSerializer))]
-		IStateSerializer ResolveStateSerializer();
-		[Resolution(typeof(NewtonsoftStateDeserializer))]
-		IStateDeserializer ResolveStateDeserializer();
 		ProjectSettingsEditor ResolveProjectSettingsEditorAsTransient();
 		ObjectInterpreter ResolveObjectInterpreter();
-		[Resolution(typeof(ObjectInterpreter))]
+
+		IEditorFacade ResolveEditorFacade();
+		IStateSerializer ResolveStateSerializer();
+		IStateDeserializer ResolveStateDeserializer();
 		IObjectInterpreter ResolveIObjectInterpreter();
-		[Resolution(typeof(ProjectSwitcher))]
 		IProjectSwitcher ResolveProjectSwitcher();
-		[Resolution(typeof(StorageCloneService))]
 		IStorageCloneService ResolveStorageCloneService();
 	}
 
@@ -53,26 +48,18 @@ namespace Romanesco.Model.Infrastructure
 	[Factory]
 	internal interface IModelFactory : IOpenModelFactory
 	{
-		Editor ResolveEditor();
-
 		IModelRequirementFactory Requirement { get; }
 		IPluginFactory Plugin { get; }
 
-		[Resolution(typeof(EditorStateChanger))]
-		IEditorStateChanger ResolveEditorStateChanger();
-		[Resolution(typeof(EmptyEditorState))]
-		IEditorState ResolveEditorState();
-
+		Editor ResolveEditor();
 		EmptyEditorState ResolveEmptyEditorStateAsTransient();
-		[Resolution(typeof(WindowsLoadService))]
-		IProjectLoadService ResolveProjectLoadService();
-		[Resolution(typeof(SimpleHistoryService))]
-		IProjectHistoryService ResolveProjectHistoryService();
 		ProjectSaveServiceFactory ResolveProjectSaveServiceFactory();
-
-		[Resolution(typeof(ProjectModelFactory))]
-		IProjectModelFactory ResolveProjectModelFactoryAsTransient(IProjectContext projectContext);
-		
 		CommandContext ResolveCommandContext();
+
+		IEditorStateChanger ResolveEditorStateChanger();
+		IEditorState ResolveEditorState();
+		IProjectLoadService ResolveProjectLoadService();
+		IProjectHistoryService ResolveProjectHistoryService();
+		IProjectModelFactory ResolveProjectModelFactoryAsTransient(IProjectContext context);
 	}
 }

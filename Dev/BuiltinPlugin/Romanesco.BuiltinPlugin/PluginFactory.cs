@@ -14,9 +14,7 @@ namespace Romanesco.BuiltinPlugin
 	[Factory]
 	internal partial class PluginFactory
 	{
-		[Resolution(typeof(ApiFactory))]
-		[Cache]
-		public partial IApiFactory ResolveApiFactory();
+		public IApiFactory ApiFactory { get; }
 
 		// Models
 		[Resolution(typeof(DynamicStateFactory))]

@@ -13,10 +13,8 @@ namespace Romanesco.BuiltinPlugin
 		{
 			var master = new MasterListContext(hostFactory);
 			var factory = new PluginFactory(hostFactory,
-				master,
-				hostFactory.ResolveCommandHistory(),
-				hostFactory.ResolveDataAssemblyRepository(),
-				hostFactory);
+				hostFactory,
+				master);
 
 			var importer = new GenericHostImporter(services);
 			factory.Export(importer);

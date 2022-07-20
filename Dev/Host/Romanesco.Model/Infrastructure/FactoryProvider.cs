@@ -6,7 +6,7 @@
 
 		public static IOpenModelFactory GetOpenModelFactory(IModelRequirementFactory requirement, IPluginFactory plugin)
 		{
-			return _openModelFactoryCache ??= new ModelFactory(requirement, plugin);
+			return _openModelFactoryCache ??= new ImfactModelFactory(plugin, requirement);
 		}
 	}
 }
