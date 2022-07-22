@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
 using Romanesco.Annotations;
 using Romanesco.BuiltinPlugin.Model.Basics;
@@ -12,7 +10,9 @@ using Romanesco.BuiltinPlugin.Model.Factories;
 using Romanesco.BuiltinPlugin.Model.Infrastructure;
 using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Basics;
+using Romanesco.Common.Model.Implementations;
 using Romanesco.Common.Model.Interfaces;
+using Romanesco.Common.Model.Reflections;
 using Romanesco.Model.Infrastructure;
 using Romanesco.Model.Services;
 using Romanesco.Model.Services.Serialize;
@@ -54,20 +54,62 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 			public int Hoge { get; set; }
 		}
 
+		private class MockStore
+		{
+			public Mock<IApiFactory> ApiFactory { get; } = new();
+			public Mock<IDataAssemblyRepository> DataAssemblyRepository { get; } = new();
+			public MockObjectInterpreter ObjectInterpreter { get; }
+
+			public MockStore()
+			{
+				ApiFactory.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
+				ApiFactory.Setup(m => m.ResolveValueClipBoard()).Returns(() => new ValueClipBoard());
+				ApiFactory.Setup(m => m.ResolveDataAssemblyRepository())
+					.Returns(() => DataAssemblyRepository.Object);
+
+				DataAssemblyRepository.Setup(m => m.CreateInstance(It.IsAny<Type>(), It.IsAny<object[]>()))
+					.Returns<Type, object[]>((type, objects) => Activator.CreateInstance(type, objects));
+
+				ObjectInterpreter = new MockObjectInterpreter(this);
+			}
+		}
+
+		private class MockObjectInterpreter : IObjectInterpreter
+		{
+			public ClassStateFactory ClassStateFactory { get; }
+			private readonly ListStateFactory _listStateFactory;
+			private readonly SubtypingStateFactory _subtypingStateFactory;
+			private readonly PrimitiveStateFactory _primitiveStateFactory;
+
+			public MockObjectInterpreter(MockStore mockStore)
+			{
+				var api = mockStore.ApiFactory.Object;
+				var commandHistory = new CommandHistory();
+
+				ClassStateFactory =
+					new ClassStateFactory(api.ResolveDataAssemblyRepository(), api);
+				_listStateFactory =
+					new ListStateFactory(new MasterListContext(api), commandHistory);
+				_subtypingStateFactory = new SubtypingStateFactory(api, ClassStateFactory);
+				_primitiveStateFactory = new PrimitiveStateFactory(commandHistory);
+			}
+
+			public IFieldState InterpretAsState(ValueStorage storage)
+			{
+				return _listStateFactory.InterpretAsState(storage, InterpretAsState)
+					?? _subtypingStateFactory.InterpretAsState(storage, InterpretAsState)
+					?? ClassStateFactory.InterpretAsState(storage, InterpretAsState)
+					?? _primitiveStateFactory.InterpretAsState(storage, InterpretAsState)
+					?? new NoneState();
+			}
+		}
+
 		[Fact]
 		public void List以下のSubtypingの中身が更新されると元のインスタンスに反映される()
 		{
-			var api = new Mock<IApiFactory>();
-			api.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
-			api.Setup(m => m.ResolveValueClipBoard()).Returns(() => new ValueClipBoard());
-
-			var classFactory = new ClassStateFactory(new DataAssemblyRepository(), new Mock<ILoadingStateReader>().Object);
-			var interpreter = new ObjectInterpreter(new IStateFactory[]
-			{
-				new ListStateFactory(new MasterListContext(api.Object), new CommandHistory()),
-				new SubtypingStateFactory(api.Object, classFactory),
-				classFactory
-			});
+			var mocks = new MockStore();
+			var api = mocks.ApiFactory.Object;
+			var interpreter = mocks.ObjectInterpreter;
 
 			// インスタンスとStateを構築する
 			var instance = new TestClass1();
@@ -80,35 +122,26 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 			
 			// インスタンスのTestBaseと、testBaseStateのStorageの参照が等しい
 			Assert.Equal(instance.TestBase, listInstance);
+			AssertTypeOf<ListState>(testBaseState, out var list);
+			
+			list.AddNewElement();
+			// SubtypingClassStateの要素がひとつ追加されていること
+			Assert.True(list.Elements[0] is SubtypingClassState);
+			AssertTypeOf<SubtypingClassState>(list.Elements[0], out var scs);
+			
+			// その要素はサブタイプコンテキストとしてNullSubtypeOptionが選択されていること
+			Assert.IsType<NullSubtypeOption>(scs.SelectedType.Value);
 
-			var element = new TestDerived();
-			if (testBaseState is ListState list)
-			{
-				list.AddNewElement();
-				// SubtypingClassStateの要素がひとつ追加されていること
-				Assert.True(list.Elements[0] is SubtypingClassState);
+			scs.SelectedType.Value = new ConcreteSubtypeOption(typeof(TestDerived),
+				new SubtypingStateContext(new SubtypingList(typeof(TestBase)),
+					api.ResolveDataAssemblyRepository(),
+					interpreter),
+				interpreter.ClassStateFactory,
+				api.ResolveStorageCloneService());
 
-				if (list.Elements[0] is SubtypingClassState scs)
-				{
-					// その要素はサブタイプコンテキストとしてNullSubtypeOptionが選択されていること
-					Assert.IsType<NullSubtypeOption>(scs.SelectedType.Value);
-
-					scs.SelectedType.Value = new ConcreteSubtypeOption(typeof(TestDerived),
-						new SubtypingStateContext(new SubtypingList(typeof(TestBase)),
-							new DataAssemblyRepository(),
-							interpreter),
-						classFactory,
-						api.Object.ResolveStorageCloneService());
-
-					// 値の型がTestDerivedに変更されていること
-					Assert.IsType<TestDerived>(scs.Storage.GetValue());
-					Assert.IsType<TestDerived>(instance.TestBase![0]);
-				}
-			}
-			else
-			{
-				Assert.True(false);
-			}
+			// 値の型がTestDerivedに変更されていること
+			Assert.IsType<TestDerived>(scs.Storage.GetValue());
+			Assert.IsType<TestDerived>(instance.TestBase![0]);
 		}
 
 		[Fact]
