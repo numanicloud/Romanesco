@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Imfact" Version="1.3.0-alpha.11" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
@@ -16,6 +15,7 @@
     <ProjectReference Include="..\..\Common\Romanesco.Annotations\Romanesco.Annotations.csproj" />
     <ProjectReference Include="..\..\Common\Romanesco.Common.Model\Romanesco.Common.Model.csproj" />
     <ProjectReference Include="..\..\submodules\NacHelper\NacHelpers\NacHelpers.csproj" />
+    <Analyzer Include="..\..\Imfact.dll" />
   </ItemGroup>
 
 </Project>

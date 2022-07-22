@@ -1,8 +1,5 @@
-﻿using System;
-using Imfact.Annotations;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Imfact.Annotations;
 using Romanesco.BuiltinPlugin.Model.Factories;
-using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.BuiltinPlugin.View.Factories;
 using Romanesco.BuiltinPlugin.ViewModel.Factories;
 using Romanesco.Common.Model.Interfaces;
@@ -29,13 +26,8 @@ namespace Romanesco.BuiltinPlugin
 		[Cache]
 		public partial IStateFactory ResolveListStateFactory();
 
-		[Resolution(typeof(PrimitiveStateFactory))]
 		[Cache]
 		public partial PrimitiveStateFactory ResolvePrimitiveStateFactory();
-
-		[Resolution(typeof(PrimitiveStateFactory))]
-		[Cache]
-		public partial IStateFactory ResolvePrimitiveStateFactory2();
 
 		[Resolution(typeof(EnumStateFactory))]
 		[Cache]
@@ -46,11 +38,7 @@ namespace Romanesco.BuiltinPlugin
 		public partial IStateFactory ResolveSubtypingStateFactory();
 
 		[Cache]
-		public partial ClassStateFactory ResolveClassStateFactory2();
-
-		[Resolution(typeof(ClassStateFactory))]
-		[Cache]
-		public partial IStateFactory ResolveClassStateFactory();
+		public partial ClassStateFactory ResolveClassStateFactory();
 
 		// ViewModels
 		[Resolution(typeof(IdViewModelFactory))]
@@ -105,5 +93,11 @@ namespace Romanesco.BuiltinPlugin
 		[Resolution(typeof(SubtypingViewFactory))]
 		[Cache]
 		public partial IViewFactory ResolveSubtypingViewFactory();
+
+		partial void ManuallyExport(IServiceImporter importer)
+		{
+			importer.Import<IStateFactory>(() => ResolvePrimitiveStateFactory());
+			importer.Import<IStateFactory>(() => ResolveClassStateFactory());
+		}
 	}
 }

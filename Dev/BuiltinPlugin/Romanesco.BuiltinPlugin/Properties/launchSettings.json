@@ -2,8 +2,8 @@
   "profiles": {
     "Romanesco.BuiltinPlugin": {
       "commandName": "Executable",
-      "executablePath": "D:\\Naohiro\\Documents\\Repos\\#Tools\\Romanesco\\Dev\\bin\\Debug\\Romanesco.exe",
-      "workingDirectory": "D:\\Naohiro\\Documents\\Repos\\#Tools\\Romanesco\\Dev\\bin\\Debug"
+      "executablePath": "D:\\Home\\MyDocuments\\Projects\\Repos\\CSharp\\Tools\\Solo\\Romanesco\\Dev\\bin\\Debug\\Romanesco.exe",
+      "workingDirectory": "D:\\Home\\MyDocuments\\Projects\\Repos\\CSharp\\Tools\\Solo\\Romanesco\\Dev\\bin\\Debug"
     }
   }
 }

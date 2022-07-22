@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Romanesco.Common.View\Romanesco.Common.View.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+      <Analyzer Include="..\..\Imfact.dll" />
+  </ItemGroup>
+
 </Project>
