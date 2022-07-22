@@ -1,9 +1,8 @@
 ﻿using Reactive.Bindings;
 
-namespace Romanesco.BuiltinPlugin.ViewModel.States
+namespace Romanesco.BuiltinPlugin.ViewModel.States;
+
+public interface IOpenCommandConsumer
 {
-	public interface IOpenCommandConsumer
-	{
-		ReactiveCommand OnOpenCommand { get; }
-	}
+	ReactiveCommand OnOpenCommand { get; }
 }
