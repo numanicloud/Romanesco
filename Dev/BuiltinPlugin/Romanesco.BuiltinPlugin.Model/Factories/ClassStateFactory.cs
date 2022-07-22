@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using NacHelpers.Extensions;
 using Romanesco.Common.Model.Reflections;
-using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.BuiltinPlugin.Model.Factories
 {
