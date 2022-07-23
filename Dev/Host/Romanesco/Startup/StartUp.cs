@@ -62,13 +62,6 @@ namespace Romanesco.Startup
 			var resources = pluginFactory.ResolveResourceDictionaryFactories()
 				.SelectMany(x => x.Get());
 
-			foreach (var r in resources)
-			{
-				_application.Resources.MergedDictionaries.Add(r);
-			}
-
-			return;
-
 			var dic = new Dictionary<object, ResourceDictionary>();
 			foreach (var resource in resources)
 			{

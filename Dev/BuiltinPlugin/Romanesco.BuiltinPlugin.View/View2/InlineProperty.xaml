@@ -4,7 +4,7 @@
                     xmlns:v2="clr-namespace:Romanesco.BuiltinPlugin.View.View2">
 
     <ResourceDictionary x:Key="Inline">
-        <DataTemplate DataType="{x:Type vm:IntViewModel}" x:Key="IntInline">
+        <DataTemplate DataType="{x:Type vm:IntViewModel}">
             <v2:TextView DataContext="{Binding}" />
         </DataTemplate>
 
