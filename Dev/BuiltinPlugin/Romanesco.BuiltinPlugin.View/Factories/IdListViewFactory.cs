@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using NacHelpers.Extensions;
+using Reactive.Bindings.Extensions;
 using Romanesco.BuiltinPlugin.ViewModel.States;
 using Romanesco.Common.Model.Exceptions;
 using Romanesco.Common.View.Basics;

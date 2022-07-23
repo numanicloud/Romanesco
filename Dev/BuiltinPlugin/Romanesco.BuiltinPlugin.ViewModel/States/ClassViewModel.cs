@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -11,38 +12,25 @@ namespace Romanesco.BuiltinPlugin.ViewModel.States;
 
 public class ClassViewModel : ProxyViewModelBase<ClassState>, IOpenCommandConsumer
 {
-	public IStateViewModel[] Fields { get; }
+	public record Property(string Name, IStateViewModel ViewModel);
+
+	public IStateViewModel[] Children { get; }
+	public Property[] Properties { get; }
 	public ReactiveCommand EditCommand { get; } = new();
 	public ReactiveCommand OnOpenCommand { get; } = new();
 	public List<IDisposable> Disposables => State.Disposables;
 	public ReactiveProperty<IStateViewModel?> CloseUpViewModel { get; } = new();
 
-	public ClassViewModel(ClassState state, IStateViewModel[] fields)
+	public ClassViewModel(ClassState state, Property[] properties)
 		: base(state)
 	{
-		Fields = fields;
+		Children = properties.Select(x => x.ViewModel).ToArray();
+		Properties = properties;
+
 		EditCommand.Subscribe(_ => ShowDetailSubject.OnNext(Unit.Default))
 			.AddTo(Disposables);
 
 		EditCommand.AddTo(Disposables);
 		OnOpenCommand.AddTo(Disposables);
-	}
-}
-
-public class ClassInlineViewModel : ClassViewModel
-{
-	public ClassInlineViewModel(ClassState state, IStateViewModel[] fields)
-		: base(state, fields)
-	{
-	}
-}
-
-public class ClassBlockViewModel : ClassViewModel
-{
-	public ReactiveProperty<IStateViewModel?> CloseUpViewModel { get; } = new();
-
-	public ClassBlockViewModel(ClassState state, IStateViewModel[] fields)
-		: base(state, fields)
-	{
 	}
 }

@@ -27,7 +27,7 @@
             <style:PaneTitleTip DataContext="{Binding Title.Value}"/>
 
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="8,0,0,2">
-                <ItemsControl ItemsSource="{Binding Fields}" Grid.IsSharedSizeScope="True" Margin="0,0,8,0">
+                <ItemsControl ItemsSource="{Binding Children}" Grid.IsSharedSizeScope="True" Margin="0,0,8,0">
                     <ItemsControl.Resources>
                         <ResourceDictionary Source="InlineProperty.xaml"/>
                     </ItemsControl.Resources>

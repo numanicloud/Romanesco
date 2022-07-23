@@ -17,10 +17,12 @@ public class ClassViewModelFactory : IStateViewModelFactory
 	{
 		if (state is not ClassState @class) return null;
 
-		var fields = @class.Children.Select(x => interpretRecursively(x)).ToArray();
+		var fields = @class.Properties
+			.Select(x => new ClassViewModel.Property(x.Name, interpretRecursively(x.State)))
+			.ToArray();
 		var vm = new ClassViewModel(@class, fields);
 
-		foreach (var field in fields)
+		foreach (var field in vm.Children)
 		{
 			field.ShowDetail.Subscribe(_ =>
 			{
@@ -33,7 +35,7 @@ public class ClassViewModelFactory : IStateViewModelFactory
 		{
 			if (!_typeToFocusedTitle.TryGetValue(@class.Type, out var title)) return;
 
-			var child = fields.First(x => x.Title.Value == title);
+			var child = vm.Children.First(x => x.Title.Value == title);
 			vm.CloseUpViewModel.Value = child;
 			if (child is IOpenCommandConsumer classViewModel)
 			{

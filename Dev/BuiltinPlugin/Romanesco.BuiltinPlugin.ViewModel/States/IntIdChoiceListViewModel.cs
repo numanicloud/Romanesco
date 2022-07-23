@@ -4,12 +4,13 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using NacHelpers.Extensions;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Exceptions;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Implementations;
+using Romanesco.BuiltinPlugin.Model;
 
 namespace Romanesco.BuiltinPlugin.ViewModel.States;
 

@@ -21,7 +21,7 @@ namespace Romanesco.BuiltinPlugin.View.Factories
 				return null;
 			}
 
-			var children = @class.Fields.Select(x => interpretRecursively(x)).ToArray();
+			var children = @class.Children.Select(x => interpretRecursively(x)).ToArray();
 			var context = new ClassContext(@class, children);
 			foreach (var field in children)
 			{

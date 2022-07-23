@@ -12,7 +12,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Romanesco.Common.Model.Helpers;
 using Romanesco.Common.Model.Implementations;
-using Helper = NacHelpers.Helpers.Helper;
 
 namespace Romanesco.BuiltinPlugin.Model.States
 {

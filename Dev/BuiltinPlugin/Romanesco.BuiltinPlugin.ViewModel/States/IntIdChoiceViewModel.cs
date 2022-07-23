@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using NacHelpers.Extensions;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
+using Romanesco.BuiltinPlugin.Model;
 using Romanesco.BuiltinPlugin.Model.States;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.ViewModel.Implementations;
