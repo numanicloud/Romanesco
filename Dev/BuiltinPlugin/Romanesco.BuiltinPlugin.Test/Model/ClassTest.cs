@@ -29,7 +29,7 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 			var dummyStorage = new ValueStorage(typeof(Hoge), "Root", (value, oldValue) => { }, hoge);
 			var storage = new ValueStorage(hoge, GetPropertyInfo(nameof(Hoge.X)));
 			var intField = new IntState(storage, new CommandHistory());
-			return (new ClassState(dummyStorage, new[] { intField }), intField);
+			return (new ClassState(dummyStorage, new[] { new ClassState.Property(storage.MemberName, intField) }), intField);
 		}
 
 		[Fact]

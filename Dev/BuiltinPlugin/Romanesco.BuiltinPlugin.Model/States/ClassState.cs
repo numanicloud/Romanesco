@@ -9,13 +9,17 @@ namespace Romanesco.BuiltinPlugin.Model.States
 {
 	public class ClassState : SimpleStateBase
 	{
-		public IFieldState[] Fields { get; }
+		public record Property(string Name, IFieldState State);
+
+		public IFieldState[] Children { get; }
+		public Property[] Properties { get; }
 		public override IReadOnlyReactiveProperty<string> FormattedString { get; }
 
-		public ClassState(ValueStorage storage, IFieldState[] fields) : base(storage)
+		public ClassState(ValueStorage storage, Property[] properties) : base(storage)
 		{
-			Fields = fields;
-			OnEdited = fields.Select(x => x.OnEdited).Merge();
+			Properties = properties;
+			Children = properties.Select(x => x.State).ToArray();
+			OnEdited = properties.Select(x => x.State.OnEdited).Merge();
 			FormattedString = OnEdited
 				.Select(_ => SanitizeNewFormattedString(Storage.GetValue()))
 				.ToReadOnlyReactiveProperty(storage.GetValue()?.ToString() ?? "");
@@ -23,7 +27,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 
 		public override void Dispose()
 		{
-			foreach (var state in Fields)
+			foreach (var state in Children)
 			{
 				state.Dispose();
 			}

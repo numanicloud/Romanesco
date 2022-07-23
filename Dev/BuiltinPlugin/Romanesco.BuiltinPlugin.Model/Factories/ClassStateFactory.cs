@@ -35,17 +35,17 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			// 新規作成時は null である場合がある。逆にロード時は値が入ってるので上書き禁止
 			object subject = GetOrCreateInstance(storage);
 
-			IFieldState[] MakeClassMembers()
+			ClassState.Property[] MakeClassMembers()
 			{
 				// インデクサーは取り除く
 				var properties = from p in type.GetProperties()
 					where p.GetIndexParameters().IsEmpty()
 					let order = GetMemberAttributesOrder(p)
-					select (state: interpret(new ValueStorage(subject, p)), order);
+					select (state: interpret(new ValueStorage(subject, p)), order, name: p.Name);
 
 				var fields = from f in type.GetFields()
 					let order = GetMemberAttributesOrder(f)
-					select (state: interpret(new ValueStorage(subject, f)), order);
+					select (state: interpret(new ValueStorage(subject, f)), order, name: f.Name);
 
 				var members = from m in properties.Concat(fields)
 					orderby m.order switch
@@ -55,7 +55,7 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 						_ => throw new Exception()
 					}
 					where !(m.order is Nothing)
-					select m.state;
+					select new ClassState.Property(m.name, m.state);
 
 				return members.FilterNullRef().ToArray();
 			}

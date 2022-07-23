@@ -60,7 +60,7 @@
         <GridSplitter Focusable="False" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"
                       Background="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type style:EditorStyles}, ResourceId=SplitterBrush}}"/>
 
-        <ContentControl Grid.Column="1" Content="{Binding SelectedControl.Value}" Margin="3,0,0,0">
+        <ContentControl Grid.Column="1" Content="{Binding ClosedUpViewModel.Value}" Margin="3,0,0,0">
             <ContentControl.Resources>
                 <ResourceDictionary Source="BlockProperty.xaml"/>
             </ContentControl.Resources>

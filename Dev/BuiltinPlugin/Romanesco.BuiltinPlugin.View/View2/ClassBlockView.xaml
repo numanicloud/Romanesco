@@ -38,6 +38,10 @@
         <Border Grid.Column="1" BorderThickness="3,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Left"
                 BorderBrush="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type style:EditorStyles}, ResourceId=SplitterBrush}}"/>
 
-        <ContentControl Content="{Binding ClosedUpViewModel.Value}" Grid.Column="1" Margin="3,0,0,0"/>
+        <ContentControl Content="{Binding CloseUpViewModel.Value}" Grid.Column="1" Margin="3,0,0,0">
+            <ContentControl.Resources>
+                <ResourceDictionary Source="BlockProperty.xaml" />
+            </ContentControl.Resources>
+        </ContentControl>
     </Grid>
 </UserControl>

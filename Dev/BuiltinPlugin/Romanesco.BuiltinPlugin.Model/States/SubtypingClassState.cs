@@ -33,7 +33,7 @@ namespace Romanesco.BuiltinPlugin.Model.States
 			ClassStateFactory classStateFactory,
 			ValueClipBoard valueClipBoard,
 			IStorageCloneService storageCloneService)
-			: base(new ClassState(storage, Array.Empty<IFieldState>()))
+			: base(new ClassState(storage, Array.Empty<ClassState.Property>()))
 		{
 			_valueClipBoard = valueClipBoard;
 			CanPaste = _valueClipBoard.CopiedValue

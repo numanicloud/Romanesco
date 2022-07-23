@@ -38,7 +38,7 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 				return null;
 			}
 
-			if (TryGetPrimitiveStorage(type, settability) is {} primitive)
+			if (TryGetPrimitiveStorage(type, settability) is { } primitive)
 			{
 				return primitiveStateFactory.InterpretAsState(primitive, interpret);
 			}
@@ -49,7 +49,8 @@ namespace Romanesco.BuiltinPlugin.Model.Factories
 			var storages = from key in mock.Keys
 						   where mock.GetAttributeData<EditorMemberAttribute>(key) != null
 						   select storageFactory.FromDynamicMocksMember(mock, key) into storage
-						   select interpret(storage);
+						   let state = interpret(storage)
+						   select new ClassState.Property(storage.MemberName, state);
 			return new ClassState(settability, storages.FilterNullRef().ToArray());
 		}
 

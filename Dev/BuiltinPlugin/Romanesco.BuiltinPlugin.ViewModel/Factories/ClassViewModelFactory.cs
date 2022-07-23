@@ -17,7 +17,7 @@ public class ClassViewModelFactory : IStateViewModelFactory
 	{
 		if (state is not ClassState @class) return null;
 
-		var fields = @class.Fields.Select(x => interpretRecursively(x)).ToArray();
+		var fields = @class.Children.Select(x => interpretRecursively(x)).ToArray();
 		var vm = new ClassViewModel(@class, fields);
 
 		foreach (var field in fields)

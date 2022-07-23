@@ -1,2 +1,2 @@
 
-cp bin/nupkgs/*.nupkg D:/Naohiro/MyFiles/MyNugetFeed/Romanesco/
+cp bin/nupkgs/*.nupkg D:\Home\MyDocuments\Projects\MyNugetFeed\Romanesco\

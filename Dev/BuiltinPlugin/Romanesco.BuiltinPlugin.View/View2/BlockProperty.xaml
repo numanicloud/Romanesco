@@ -20,4 +20,8 @@
         <v2:IdChoiceListView DataContext="{Binding}" />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:SubtypingClassViewModel}">
+        <v2:SubtypingBlockView DataContext="{Binding}" />
+    </DataTemplate>
+
 </ResourceDictionary>

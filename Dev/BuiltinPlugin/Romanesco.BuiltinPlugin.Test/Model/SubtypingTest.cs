@@ -13,9 +13,6 @@ using Romanesco.Common.Model.Basics;
 using Romanesco.Common.Model.Implementations;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.Model.Reflections;
-using Romanesco.Model.Infrastructure;
-using Romanesco.Model.Services;
-using Romanesco.Model.Services.Serialize;
 using Xunit;
 
 namespace Romanesco.BuiltinPlugin.Test.Model
@@ -56,21 +53,27 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 
 		private class MockStore
 		{
+			private readonly ValueClipBoard _clipBoard = new();
+
 			public Mock<IApiFactory> ApiFactory { get; } = new();
 			public Mock<IDataAssemblyRepository> DataAssemblyRepository { get; } = new();
+			public Mock<IStorageCloneService> CloneService { get; } = new();
 			public MockObjectInterpreter ObjectInterpreter { get; }
 
 			public MockStore()
 			{
 				ApiFactory.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
-				ApiFactory.Setup(m => m.ResolveValueClipBoard()).Returns(() => new ValueClipBoard());
+				ApiFactory.Setup(m => m.ResolveValueClipBoard()).Returns(_clipBoard);
 				ApiFactory.Setup(m => m.ResolveDataAssemblyRepository())
 					.Returns(() => DataAssemblyRepository.Object);
+				ApiFactory.Setup(m => m.ResolveStorageCloneService())
+					.Returns(() => CloneService.Object);
 
 				DataAssemblyRepository.Setup(m => m.CreateInstance(It.IsAny<Type>(), It.IsAny<object[]>()))
 					.Returns<Type, object[]>((type, objects) => Activator.CreateInstance(type, objects));
 
 				ObjectInterpreter = new MockObjectInterpreter(this);
+				ApiFactory.Setup(m => m.ResolveObjectInterpreter()).Returns(() => ObjectInterpreter);
 			}
 		}
 
@@ -147,36 +150,31 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 		[Fact]
 		public void PasteしたあとにValueStorageの親がクローンされていること()
 		{
-			var api = new Mock<IApiFactory>();
-			var clipboard = new ValueClipBoard();
-			var asmRepo = new DataAssemblyRepository();
-			var classFactory = new ClassStateFactory(asmRepo, new Mock<ILoadingStateReader>().Object);
-			var interpreter = new ObjectInterpreter(new IStateFactory[]
-			{
-				new SubtypingStateFactory(api.Object, classFactory),
-				classFactory,
-				new PrimitiveStateFactory(new CommandHistory()),
-			});
-
-			api.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
-			api.Setup(m => m.ResolveValueClipBoard()).Returns(() => clipboard);
-			api.Setup(m => m.ResolveDataAssemblyRepository()).Returns(() => asmRepo);
-			api.Setup(m => m.ResolveObjectInterpreter()).Returns(() => interpreter);
-			api.Setup(m => m.ResolveStorageCloneService())
-				.Returns(() => new StorageCloneService(new NewtonsoftStateSerializer(),
-					new NewtonsoftStateDeserializer()));
-;
 			var parent1 = new TestClass3();
 			var parent2 = new TestClass3();
 			var storage = new ValueStorage(parent1, typeof(TestClass3).GetProperty("Item")!);
 			var storage2 = new ValueStorage(parent2, typeof(TestClass3).GetProperty("Item")!);
+
+			var mocks = new MockStore();
+			mocks.CloneService.Setup(m => m.Clone(It.IsAny<ValueStorage>()))
+				.Returns<ValueStorage>(v =>
+				{
+					var result = new ValueStorage(parent1.Item, typeof(TestClass2).GetProperty("Subtyping")!);
+					result.SetValue(new TestDerived2()
+					{
+						Hoge = 0
+					});
+					return result;
+				});
+
+			var interpreter = mocks.ObjectInterpreter;
 			var state = interpreter.InterpretAsState(storage);
 			var state2 = interpreter.InterpretAsState(storage2);
 
 			AssertTypeOf<ClassState>(state, out var parentState1);
 			AssertTypeOf<ClassState>(state2, out var parentState2);
-			AssertTypeOf<SubtypingClassState>(parentState1.Fields[0], out var subtyping);
-			AssertTypeOf<SubtypingClassState>(parentState2.Fields[0], out var subtyping2);
+			AssertTypeOf<SubtypingClassState>(parentState1.Children[0], out var subtyping);
+			AssertTypeOf<SubtypingClassState>(parentState2.Children[0], out var subtyping2);
 
 			subtyping.SelectedType.Value = subtyping.Choices.First(x => x.IsTypeOf(typeof(TestDerived2)));
 
@@ -186,11 +184,11 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 			AssertTypeOf<ClassState>(subtyping.CurrentStateReadOnly.Value, out var class1);
 			AssertTypeOf<ClassState>(subtyping2.CurrentStateReadOnly.Value, out var class2);
 
-			var s1 = class1.Fields[0].Storage;
-			var s2= class2.Fields[0].Storage;
+			var s1 = class1.Children[0].Storage;
+			var s2= class2.Children[0].Storage;
 
-			class1.Fields[0].Storage.SetValue(1);
-			class2.Fields[0].Storage.SetValue(2);
+			class1.Children[0].Storage.SetValue(1);
+			class2.Children[0].Storage.SetValue(2);
 
 			var prop = typeof(TestDerived2).GetProperty("Hoge");
 			Assert.Equal(1, prop!.GetValue(class1.Storage.GetValue()));
