@@ -1,0 +1,56 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Romanesco.BuiltinPlugin.ViewModel.States;assembly=Romanesco.BuiltinPlugin.ViewModel"
+                    xmlns:v2="clr-namespace:Romanesco.BuiltinPlugin.View.View2">
+
+    <ResourceDictionary x:Key="Styles" Source="pack://application:,,,/Romanesco.Styles;component/View/EditorStyles.xaml"/>
+
+    <DataTemplate DataType="{x:Type vm:IntViewModel}">
+        <v2:TextView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ShortViewModel}">
+        <v2:TextView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ByteViewModel}">
+        <v2:TextView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:LongViewModel}">
+        <v2:TextView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:StringViewModel}">
+        <v2:TextView DataContext="{Binding}" />
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type vm:FloatViewModel}">
+        <v2:TextView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:DoubleViewModel}">
+        <v2:TextView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:BoolViewModel}">
+        <v2:CheckboxView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:EnumViewModel}">
+        <v2:EnumView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ClassViewModel}">
+        <v2:ClassInlineView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:SubtypingClassViewModel}">
+        <v2:SubtypingInlineView DataContext="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ListViewModel}">
+        <v2:ListInlineView DataContext="{Binding}" />
+    </DataTemplate>
+
+</ResourceDictionary>

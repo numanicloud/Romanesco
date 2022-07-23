@@ -38,7 +38,7 @@
             <MenuItem Header="GC" Command="{Binding GcDebugCommand}"/>
         </Menu>
 
-        <view:StateRootView Grid.Row="1" DataContext="{Binding Root.Value}"/>
+        <view:StateRootView2 Grid.Row="1" DataContext="{Binding Root.Value}"/>
         
     </Grid>
 </Window>

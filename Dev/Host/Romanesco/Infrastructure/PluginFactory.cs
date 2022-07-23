@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Romanesco.Common.Model.Interfaces;
 using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
-using Romanesco.Model.Infrastructure;
 
 namespace Romanesco.Infrastructure
 {
@@ -38,6 +37,16 @@ namespace Romanesco.Infrastructure
 		public IEnumerable<IViewFactory> ResolveViewFactories()
 		{
 			return provider.GetRequiredService<IEnumerable<IViewFactory>>();
+		}
+
+		public IEnumerable<IResourceDictionaryFactory> ResolveResourceDictionaryFactories()
+		{
+			return provider.GetRequiredService<IEnumerable<IResourceDictionaryFactory>>();
+		}
+
+		public IEnumerable<IRootViewFactory> ResolveRootViewFactories()
+		{
+			return provider.GetRequiredService<IEnumerable<IRootViewFactory>>();
 		}
 	}
 }

@@ -2,12 +2,18 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="Controls\StateRootView2.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Windows\ProjectSettingsEditorWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\StateRootView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\StateRootView2.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="States\NoneView.xaml">

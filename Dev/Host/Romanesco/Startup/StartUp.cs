@@ -1,7 +1,10 @@
-﻿using System.Reactive;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NacHelpers.Extensions;
@@ -18,11 +21,13 @@ namespace Romanesco.Startup
 	internal class StartUp : IHostedService
 	{
 		private readonly IHostFactory host;
+		private readonly Application _application;
 		private MainWindow? mainWindow;
 
-		public StartUp(IHostFactory host)
+		public StartUp(IHostFactory host, Application application)
 		{
 			this.host = host;
+			_application = application;
 		}
 
 		public async Task StartAsync(CancellationToken cancellationToken)
@@ -42,8 +47,9 @@ namespace Romanesco.Startup
 
 			api.OnProjectChangedProperty.Value = model.ResolveProjectSwitcher().BeforeResetProject;
 
+			var viewContext = view.ResolveEditorViewContext();
 			mainWindow = host.ResolveMainWindow();
-			mainWindow.DataContext = view.ResolveEditorViewContext();
+			mainWindow.DataContext = viewContext;
 			mainWindow.Show();
 		}
 

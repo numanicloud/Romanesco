@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Deptorygen.Annotations;
+using Imfact.Annotations;
 using Romanesco.View.Entry;
 using Romanesco.View.States;
 using Romanesco.ViewModel.Editor;
@@ -9,7 +9,6 @@ namespace Romanesco.View.Infrastructure
 	// 依存先として。静的に解決できる
 	public interface IOpenViewFactory
 	{
-		[Resolution(typeof(MainDataContext))]
 		IEditorViewContext ResolveEditorViewContext();
 	}
 
@@ -25,6 +24,10 @@ namespace Romanesco.View.Infrastructure
 	public interface IPluginFactory
 	{
 		IEnumerable<Common.View.Interfaces.IViewFactory> ResolveViewFactories();
+
+		IEnumerable<Common.View.Interfaces.IResourceDictionaryFactory> ResolveResourceDictionaryFactories();
+
+		IEnumerable<Common.View.Interfaces.IRootViewFactory> ResolveRootViewFactories();
 	}
 
 	// 本体。publicでないものを含めて解決する

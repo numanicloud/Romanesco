@@ -3,47 +3,49 @@ using Romanesco.Common.View.Interfaces;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.ViewModel.States;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Romanesco.Common.Model.Helpers;
+using System.Windows.Controls;
 using Romanesco.Common.Model.Implementations;
 
 namespace Romanesco.View.States
 {
 	internal class ViewInterpreter
     {
-        private readonly IViewFactory[] factories;
+		private readonly IEnumerable<IRootViewFactory> _rootViewFactories;
+		private readonly IViewFactory[] _factories;
 
-        public ViewInterpreter(IEnumerable<IViewFactory> factories)
-        {
-            this.factories = factories.ToArray();
-        }
-
-		private static int Depth = 0;
-
-        public StateViewContext InterpretAsView(IStateViewModel viewModel)
+        public ViewInterpreter(IEnumerable<IViewFactory> factories, IEnumerable<IRootViewFactory> rootViewFactories)
 		{
-			using var scope = new HandlingDisposable(() =>
-			{
-				//Debug.WriteLine($"Out: {string.Join("", Enumerable.Repeat("\t", Depth))}, {viewModel.Title.Value}, {viewModel.GetType()}", "Romanesco");
-            });
-			//Debug.WriteLine($" In: {string.Join("", Enumerable.Repeat("\t", Depth))}, {viewModel.Title.Value}, {viewModel.GetType()}", "Romanesco");
+			_rootViewFactories = rootViewFactories;
+			this._factories = factories.ToArray();
+		}
 
-            Depth++;
-            foreach (var factory in factories)
+		public StateViewContext InterpretAsView(IStateViewModel viewModel)
+		{
+			foreach (var factory in _factories)
             {
                 var result = factory.InterpretAsView(viewModel, InterpretAsView);
                 if (result != null)
                 {
-					Depth--;
-                    return result;
+					return result;
                 }
             }
 
-			Depth--;
-            return new StateViewContext(new NoneView(), new NoneView(), new NoneViewModel(new NoneState()));
+			return new StateViewContext(new NoneView(), new NoneView(), new NoneViewModel(new NoneState()));
         }
+
+		public UserControl InterpretAsControl(IStateViewModel viewModel)
+		{
+			foreach (var factory in _rootViewFactories)
+			{
+				var result = factory.Interpret(viewModel);
+				if (result is not null)
+				{
+					return result;
+				}
+			}
+
+			return new NoneView();
+		}
     }
 }

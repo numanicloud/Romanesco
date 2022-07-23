@@ -7,7 +7,7 @@
 		public static IOpenViewModelFactory GetOpenViewModelFactory(IViewModelRequirement requirement,
 			IPluginFactory plugin)
 		{
-			return _openViewModelFactory ??= new ViewModelFactory(requirement, plugin);
+			return _openViewModelFactory ??= new ViewModelFactory(plugin, requirement);
 		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Deptorygen.Annotations;
+using Imfact.Annotations;
 using Romanesco.Common.ViewModel.Interfaces;
 using Romanesco.Model;
 using Romanesco.Model.Services;
@@ -35,6 +35,6 @@ namespace Romanesco.ViewModel.Infrastructure
 		IViewModelRequirement Requirement { get; }
 		IPluginFactory Plugin { get; }
 
-		ViewModelInterpreter ResolveViewModelInterpreter();
+		IViewModelInterpreter ResolveViewModelInterpreter();
 	}
 }

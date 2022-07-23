@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="Romanesco.BuiltinPlugin.View.View2.SubtypingInlineView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Romanesco.BuiltinPlugin.View.View"
+             xmlns:style="clr-namespace:Romanesco.Styles.View;assembly=Romanesco.Styles">
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Romanesco.Styles;component/View/EditorStyles.xaml"/>
+    </UserControl.Resources>
+
+    <ContentControl Template="{DynamicResource {ComponentResourceKey ResourceId=TitledField, TypeInTargetAssembly={x:Type style:EditorStyles}}}">
+        <StackPanel Orientation="Vertical" Margin="3,5,3,3">
+            <ComboBox ItemsSource="{Binding ViewModel.Choices}" SelectedItem="{Binding ViewModel.SelectedType.Value}"
+                      DisplayMemberPath="OptionName" />
+            <TextBlock Text="{Binding ViewModel.FormattedString.Value}" Margin="0,0,0,4"/>
+            <Button Content="編集" Command="{Binding ViewModel.EditCommand}" HorizontalAlignment="Left"/>
+        </StackPanel>
+    </ContentControl>
+</UserControl>

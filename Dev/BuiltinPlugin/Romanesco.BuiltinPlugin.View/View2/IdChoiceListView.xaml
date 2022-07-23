@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="Romanesco.BuiltinPlugin.View.View2.IdChoiceListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Romanesco.BuiltinPlugin.View.View"
+             xmlns:style="clr-namespace:Romanesco.Styles.View;assembly=Romanesco.Styles"
+             xmlns:vm="clr-namespace:Romanesco.BuiltinPlugin.ViewModel.States;assembly=Romanesco.BuiltinPlugin.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Romanesco.Styles;component/View/EditorStyles.xaml"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <style:PaneTitleTip DataContext="{Binding Title.Value}" Grid.Row="0"/>
+
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Elements}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" SharedSizeGroup="combobox"/>
+                            <ColumnDefinition Width="40" SharedSizeGroup="button"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox ItemsSource="{Binding Path=DataContext.Choices, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                  SelectedItem="{Binding SelectedItem.Value}"
+                                  DisplayMemberPath="FormattedString.Value"
+                                  Grid.Column="0"
+                                  MinWidth="64"
+                                  Margin="4"/>
+                        <Button Grid.Column="1" 
+                                Content="×" 
+                                Command="{Binding Path=DataContext.RemoveCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                Margin="4" Width="25" Height="25"/>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Grid Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" SharedSizeGroup="combobox"/>
+                <ColumnDefinition Width="40" SharedSizeGroup="button"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1" Content="+" Command="{Binding AddCommand}" Margin="4" Width="25" Height="25"/>
+        </Grid>
+    </Grid>
+</UserControl>

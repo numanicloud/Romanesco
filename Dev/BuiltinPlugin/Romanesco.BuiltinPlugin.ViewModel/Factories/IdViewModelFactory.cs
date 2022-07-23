@@ -14,7 +14,7 @@ public class IdViewModelFactory : IStateViewModelFactory
 		}
 		else if (state is IntIdChoiceListState list)
 		{
-			return new States.IntIdChoiceListViewModel(list);
+			var vm = new States.IntIdChoiceListViewModel(list);
 		}
 		return null;
 	}

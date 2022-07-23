@@ -23,8 +23,8 @@ public class ListViewModel : ProxyViewModelBase<ListState>
 	public ReactiveCommand<int> MoveUpCommand { get; } = new();
 	public ReactiveCommand<int> MoveDownCommand { get; } = new();
 	public List<IDisposable> Disposables => State.Disposables;
-	public override IObservable<Exception> OnError { get; }
 	public IReactiveProperty<int> SelectedIndex { get; } = new ReactiveProperty<int>(-1);
+	public ReactiveProperty<IStateViewModel?> ClosedUpViewModel { get; } = new();
 
 	public ListViewModel(ListState state, ViewModelInterpretFunc interpreter)
 		: base(state)
@@ -86,7 +86,7 @@ public class ListViewModel : ProxyViewModelBase<ListState>
 			}
 		}).AddTo(Disposables);
 
-		OnError = state.OnError.Merge(onError);
+		OnError = OnError.Merge(onError);
 
 		state.Disposables.AddRange(new IDisposable[]
 		{

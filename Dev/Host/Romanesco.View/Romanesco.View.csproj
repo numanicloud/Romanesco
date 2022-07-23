@@ -6,9 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Deptorygen" Version="1.0.5" />
-    <PackageReference Include="Deptorygen.Annotations" Version="1.0.5" />
-    <PackageReference Include="Deptorygen.GenericHost" Version="1.0.5" />
     <PackageReference Include="LivetCask" Version="3.2.1" />
   </ItemGroup>
 
@@ -19,6 +16,10 @@
     <ProjectReference Include="..\Romanesco.Model\Romanesco.Model.csproj" />
     <ProjectReference Include="..\..\Common\Romanesco.Styles\Romanesco.Styles.csproj" />
     <ProjectReference Include="..\Romanesco.ViewModel\Romanesco.ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <Analyzer Include="..\..\Imfact.dll" />
   </ItemGroup>
 
   <ItemGroup>

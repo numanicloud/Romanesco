@@ -15,6 +15,7 @@ public class ClassViewModel : ProxyViewModelBase<ClassState>, IOpenCommandConsum
 	public ReactiveCommand EditCommand { get; } = new();
 	public ReactiveCommand OnOpenCommand { get; } = new();
 	public List<IDisposable> Disposables => State.Disposables;
+	public ReactiveProperty<IStateViewModel?> CloseUpViewModel { get; } = new();
 
 	public ClassViewModel(ClassState state, IStateViewModel[] fields)
 		: base(state)
@@ -25,5 +26,23 @@ public class ClassViewModel : ProxyViewModelBase<ClassState>, IOpenCommandConsum
 
 		EditCommand.AddTo(Disposables);
 		OnOpenCommand.AddTo(Disposables);
+	}
+}
+
+public class ClassInlineViewModel : ClassViewModel
+{
+	public ClassInlineViewModel(ClassState state, IStateViewModel[] fields)
+		: base(state, fields)
+	{
+	}
+}
+
+public class ClassBlockViewModel : ClassViewModel
+{
+	public ReactiveProperty<IStateViewModel?> CloseUpViewModel { get; } = new();
+
+	public ClassBlockViewModel(ClassState state, IStateViewModel[] fields)
+		: base(state, fields)
+	{
 	}
 }

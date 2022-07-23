@@ -35,4 +35,98 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="View2\CheckboxView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\ClassBlockView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\ClassInlineView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\EnumView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\IdChoiceListView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\IdChoiceView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\ListBlockView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\ListInlineView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\PrimitiveListBlockView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\SubtypingBlockView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\SubtypingInlineView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View2\TextView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="View2\CheckboxView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\ClassBlockView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\ClassInlineView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\EnumView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\IdChoiceListView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\IdChoiceView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\Import.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\ListBlockView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\ListInlineView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\PrimitiveListBlockView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\SubtypingBlockView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\SubtypingInlineView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\TextView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

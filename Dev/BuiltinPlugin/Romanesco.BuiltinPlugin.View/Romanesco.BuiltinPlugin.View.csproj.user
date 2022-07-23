@@ -2,6 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="View2\DetailedView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\EnumView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -43,6 +46,54 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View2\BlockProperty.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\CheckboxView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\ClassBlockView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\ClassInlineView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\DetailedView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\EnumView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\IdChoiceListView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\IdChoiceView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\Import.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\InlineProperty.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\ListBlockView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\ListInlineView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\PrimitiveListBlockView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\SubtypingBlockView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\SubtypingInlineView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View2\TextView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\EnumView.xaml">
       <SubType>Designer</SubType>
     </Page>

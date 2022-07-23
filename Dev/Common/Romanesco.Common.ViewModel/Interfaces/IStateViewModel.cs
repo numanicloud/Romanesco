@@ -15,11 +15,6 @@ namespace Romanesco.Common.ViewModel.Interfaces
         /// <remarks>基本的にドメイン モデルにリダイレクトします。</remarks>
         IReadOnlyReactiveProperty<string> Title { get; }
         /// <summary>
-        /// 編集用のUIに表示し、実際に編集される入力値。
-        /// </summary>
-        /// <remarks>基本的にドメイン モデルにリダイレクトします。</remarks>
-        //ReactiveProperty<object> Content { get; }
-        /// <summary>
         /// 入力値を説明する文字列形式。
         /// </summary>
         /// <remarks>

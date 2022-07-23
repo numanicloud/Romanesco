@@ -1,4 +1,5 @@
-﻿using Romanesco.Common.View.Basics;
+﻿using System.Windows.Controls;
+using Romanesco.Common.View.Basics;
 using Romanesco.Common.ViewModel.Interfaces;
 
 namespace Romanesco.Common.View.Interfaces
@@ -8,5 +9,5 @@ namespace Romanesco.Common.View.Interfaces
     public interface IViewFactory
     {
         StateViewContext? InterpretAsView(IStateViewModel viewModel, ViewInterpretFunc interpretRecursively);
-    }
+	}
 }

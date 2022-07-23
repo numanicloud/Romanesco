@@ -24,6 +24,7 @@ namespace Romanesco
 				.ConfigureServices((context, services) =>
 				{
 					services.UseDeptorygenFactory(new HostFactory())
+						.AddSingleton<Application>(this)
 						.AddHostedService<StartUp>();
 				})
 				.Build();

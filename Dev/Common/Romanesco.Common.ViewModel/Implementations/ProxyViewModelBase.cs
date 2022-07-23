@@ -12,7 +12,7 @@ namespace Romanesco.Common.ViewModel.Implementations
 	{
 		public virtual IReadOnlyReactiveProperty<string> Title => State.Title;
 		public virtual IReadOnlyReactiveProperty<string> FormattedString => State.FormattedString;
-		public virtual IObservable<Exception> OnError => State.OnError;
+		public IObservable<Exception> OnError { get; set; }
 		public virtual IObservable<Unit> ShowDetail => ShowDetailSubject;
 		public TModel State { get; }
 
@@ -21,6 +21,7 @@ namespace Romanesco.Common.ViewModel.Implementations
 		protected ProxyViewModelBase(TModel state)
 		{
 			State = state;
+			OnError = state.OnError;
 		}
 	}
 }
