@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -41,7 +42,8 @@ namespace Romanesco.Startup
 			extensions.ConfigureServices(serviceCollection, api);
 
 			var pluginServices = serviceCollection.BuildServiceProvider();
-			var (model, view) = ResolveFactory(new PluginFactory(pluginServices, api));
+			var pluginFactory = new PluginFactory(pluginServices, api);
+			var (model, view) = ResolveFactory(pluginFactory);
 			api.ModelFactory = model;
 			api.Provider = pluginServices;
 
@@ -51,6 +53,50 @@ namespace Romanesco.Startup
 			mainWindow = host.ResolveMainWindow();
 			mainWindow.DataContext = viewContext;
 			mainWindow.Show();
+
+			InstallResourceDictionaries(pluginFactory);
+		}
+
+		private void InstallResourceDictionaries(PluginFactory pluginFactory)
+		{
+			var resources = pluginFactory.ResolveResourceDictionaryFactories()
+				.SelectMany(x => x.Get());
+
+			foreach (var r in resources)
+			{
+				_application.Resources.MergedDictionaries.Add(r);
+			}
+
+			return;
+
+			var dic = new Dictionary<object, ResourceDictionary>();
+			foreach (var resource in resources)
+			{
+				foreach (var key in resource.Keys)
+				{
+					if (resource[key] is not ResourceDictionary inner) continue;
+
+					if (dic.TryGetValue(key, out var merged))
+					{
+						merged.MergedDictionaries.Add(inner);
+					}
+					else
+					{
+						dic.Add(key, new ResourceDictionary()
+						{
+							MergedDictionaries = { inner }
+						});
+					}
+				}
+			}
+
+			var resultingResource = new ResourceDictionary();
+			foreach (var key in dic.Keys)
+			{
+				resultingResource.Add(key, dic[key]);
+			}
+
+			_application.Resources.MergedDictionaries.Add(resultingResource);
 		}
 
 		public async Task StopAsync(CancellationToken cancellationToken)

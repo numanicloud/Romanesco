@@ -1,8 +1,9 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 
 namespace Romanesco.Common.View.Interfaces;
 
 public interface IResourceDictionaryFactory
 {
-	ResourceDictionary Get();
+	IEnumerable<ResourceDictionary> Get();
 }
