@@ -43,6 +43,8 @@ namespace Romanesco.BuiltinPlugin.Test.Model
 		[Fact]
 		public void 新しい要素を追加することができる()
 		{
+			ReactivePropertyScheduler.SetDefault(ImmediateScheduler.Instance);
+
 			var api = new Mock<IApiFactory>();
 			api.Setup(m => m.OnProjectChanged).Returns(Observable.Never<Unit>());
 			var master = new MasterListContext(api.Object);

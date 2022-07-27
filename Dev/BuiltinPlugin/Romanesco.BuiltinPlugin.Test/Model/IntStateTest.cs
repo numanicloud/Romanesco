@@ -13,8 +13,8 @@ public class IntStateTest
 		var state = new IntState(storage, new CommandHistory());
 
 		Assert.Equal(0.ToString(), state.FormattedString.Value);
-
-		state.Storage.SetValue(12);
+		
+		state.PrimitiveContent.Value = 12;
 
 		Assert.Equal(12.ToString(), state.FormattedString.Value);
 	}
